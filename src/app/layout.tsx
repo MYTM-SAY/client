@@ -35,10 +35,9 @@ export default function RootLayout({
         <Providers>
           <SignedIn>
             <SidebarProvider>
-              <main className="flex h-screen overflow-hidden">
+              <main className="flex w-full h-screen overflow-hidden">
                 <AppSidebar />
                 <SidebarTrigger />
-
                 <div className="ml-2 flex-col flex flex-1 overflow-auto no-scrollbar">
                   <NavBar />
                   {children}

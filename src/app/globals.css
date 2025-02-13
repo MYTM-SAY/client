@@ -8,6 +8,12 @@ body {
 
 @layer base {
   :root {
+    --dropdown-background: 0 0% 98%; /* Background color */
+    --dropdown-foreground: 240 5.3% 26.1%; /* Text color */
+    --dropdown-border: 220 13% 91%; /* Border color */
+    --dropdown-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Shadow effect */
+    --dropdown-hover-background: 240 4.8% 95.9%; /* Hover background */
+    --dropdown-hover-foreground: 240 5.9% 10%; /* Hover text color */
     /* Light Theme */
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -63,16 +69,22 @@ body {
     --border: 220 10% 80%; /* Used for borders of inputs, cards, and dividers. */
 
     /* Background color for input fields */
-    --input: 220 10% 90%; /* Used for input fields, textareas, and select dropdowns. */
+    /* --input: 220 10% 90%; Used for input fields, textareas, and select dropdowns. */
 
     /* Focus ring color (e.g., for focused inputs or buttons) */
-    --ring: 220 70% 50%; /* Used for focus rings around interactive elements. */
+    /* --ring: 220 70% 50%; Used for focus rings around interactive elements. */
 
     /* Border radius for rounded corners */
     --radius: 0.5rem; /* Used for rounded corners on buttons, cards, inputs, etc. */
   }
 
   .dark {
+    --dropdown-background: 240 5.9% 10%;
+    --dropdown-foreground: 240 4.8% 95.9%;
+    --dropdown-border: 240 3.7% 15.9%;
+    --dropdown-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+    --dropdown-hover-background: 240 3.7% 15.9%;
+    --dropdown-hover-foreground: 240 4.8% 95.9%;
     /* Dark Theme */
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
@@ -128,10 +140,10 @@ body {
     --border: 0 0% 20%; /* Used for borders of inputs, cards, and dividers in dark mode. */
 
     /* Background color for input fields */
-    --input: 0 0% 20%; /* Used for input fields, textareas, and select dropdowns in dark mode. */
+    /* --input: 0 0% 20%; Used for input fields, textareas, and select dropdowns in dark mode. */
 
     /* Focus ring color (e.g., for focused inputs or buttons) */
-    --ring: 220 70% 60%; /* Used for focus rings around interactive elements in dark mode. */
+    /* --ring: 220 70% 60%; Used for focus rings around interactive elements in dark mode. */
   }
 }
 
@@ -141,6 +153,9 @@ body {
   }
   body {
     @apply bg-background text-foreground;
+  }
+  input {
+    @apply outline-none;
   }
 }
 @layer components {
