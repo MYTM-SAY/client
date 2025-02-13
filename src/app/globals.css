@@ -8,57 +8,116 @@ body {
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: 240 5.9% 10%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 240 10% 3.9%;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
-    --radius: 0.5rem;
+    /* Light Theme */
+
+    /* Background color for the entire app */
+    --background: 0 0% 100%; /* Used for the main background of pages. */
+
+    /* Text color for most content */
+    --foreground: 0 0% 0%; /* Used for primary text (headings, paragraphs, etc.). */
+
+    /* Background color for cards, modals, and other elevated surfaces */
+    --card: 0 0% 95%; /* Used for card components, modals, and dropdowns. */
+
+    /* Text color on top of card backgrounds */
+    --card-foreground: 0 0% 0%; /* Used for text inside cards, modals, etc. */
+
+    /* Primary brand color (e.g., buttons, links, highlights) */
+    --primary: 220 70% 50%; /* Used for primary buttons, links, and accents. */
+
+    /* Text color on top of primary color */
+    --primary-foreground: 0 0% 100%; /* Used for text on primary buttons or backgrounds. */
+
+    /* Secondary color (e.g., secondary buttons, backgrounds) */
+    --secondary: 220 10% 90%; /* Used for secondary buttons, backgrounds, and subtle accents. */
+
+    /* Text color on top of secondary color */
+    --secondary-foreground: 0 0% 0%; /* Used for text on secondary buttons or backgrounds. */
+
+    /* Muted background color (e.g., disabled elements, subtle backgrounds) */
+    --muted: 220 10% 90%; /* Used for disabled states, subtle backgrounds, and inactive elements. */
+
+    /* Muted text color (e.g., placeholder text, captions) */
+    --muted-foreground: 0 0% 40%; /* Used for placeholder text, captions, and less important text. */
+
+    /* Accent color (e.g., highlights, active states) */
+    --accent: 220 70% 50%; /* Used for highlights, active states, and interactive elements. */
+
+    /* Text color on top of accent color */
+    --accent-foreground: 0 0% 100%; /* Used for text on accent buttons or backgrounds. */
+
+    /* Destructive color (e.g., delete buttons, error messages) */
+    --destructive: 0 70% 50%; /* Used for destructive actions like delete buttons or error states. */
+
+    /* Text color on top of destructive color */
+    --destructive-foreground: 0 0% 100%; /* Used for text on destructive buttons or backgrounds. */
+
+    /* Border color for inputs, cards, and other UI elements */
+    --border: 220 10% 80%; /* Used for borders of inputs, cards, and dividers. */
+
+    /* Background color for input fields */
+    --input: 220 10% 90%; /* Used for input fields, textareas, and select dropdowns. */
+
+    /* Focus ring color (e.g., for focused inputs or buttons) */
+    --ring: 220 70% 50%; /* Used for focus rings around interactive elements. */
+
+    /* Border radius for rounded corners */
+    --radius: 0.5rem; /* Used for rounded corners on buttons, cards, inputs, etc. */
   }
+
   .dark {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 240 5.9% 10%;
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 240 4.9% 83.9%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+    /* Dark Theme */
+
+    /* Background color for the entire app */
+    --background: 0 0% 0%; /* Used for the main background of pages in dark mode. */
+
+    /* Text color for most content */
+    --foreground: 0 0% 100%; /* Used for primary text in dark mode. */
+
+    /* Background color for cards, modals, and other elevated surfaces */
+    --card: 0 0% 10%; /* Used for card components, modals, and dropdowns in dark mode. */
+
+    /* Text color on top of card backgrounds */
+    --card-foreground: 0 0% 100%; /* Used for text inside cards, modals, etc., in dark mode. */
+
+    /* Primary brand color (e.g., buttons, links, highlights) */
+    --primary: 220 70% 60%; /* Used for primary buttons, links, and accents in dark mode. */
+
+    /* Text color on top of primary color */
+    --primary-foreground: 0 0% 100%; /* Used for text on primary buttons or backgrounds in dark mode. */
+
+    /* Secondary color (e.g., secondary buttons, backgrounds) */
+    --secondary: 0 0% 20%; /* Used for secondary buttons, backgrounds, and subtle accents in dark mode. */
+
+    /* Text color on top of secondary color */
+    --secondary-foreground: 0 0% 100%; /* Used for text on secondary buttons or backgrounds in dark mode. */
+
+    /* Muted background color (e.g., disabled elements, subtle backgrounds) */
+    --muted: 0 0% 20%; /* Used for disabled states, subtle backgrounds, and inactive elements in dark mode. */
+
+    /* Muted text color (e.g., placeholder text, captions) */
+    --muted-foreground: 0 0% 60%; /* Used for placeholder text, captions, and less important text in dark mode. */
+
+    /* Accent color (e.g., highlights, active states) */
+    --accent: 220 70% 60%; /* Used for highlights, active states, and interactive elements in dark mode. */
+
+    /* Text color on top of accent color */
+    --accent-foreground: 0 0% 100%; /* Used for text on accent buttons or backgrounds in dark mode. */
+
+    /* Destructive color (e.g., delete buttons, error messages) */
+    --destructive: 0 70% 60%; /* Used for destructive actions like delete buttons or error states in dark mode. */
+
+    /* Text color on top of destructive color */
+    --destructive-foreground: 0 0% 100%; /* Used for text on destructive buttons or backgrounds in dark mode. */
+
+    /* Border color for inputs, cards, and other UI elements */
+    --border: 0 0% 20%; /* Used for borders of inputs, cards, and dividers in dark mode. */
+
+    /* Background color for input fields */
+    --input: 0 0% 20%; /* Used for input fields, textareas, and select dropdowns in dark mode. */
+
+    /* Focus ring color (e.g., for focused inputs or buttons) */
+    --ring: 220 70% 60%; /* Used for focus rings around interactive elements in dark mode. */
   }
 }
 
