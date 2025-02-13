@@ -129,3 +129,132 @@ body {
     @apply bg-background text-foreground;
   }
 }
+@layer components {
+  /* Heading Styles */
+  .h1 {
+    @apply text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl;
+  }
+
+  .h2 {
+    @apply text-3xl font-bold tracking-tight md:text-4xl;
+  }
+
+  .h3 {
+    @apply text-2xl font-semibold tracking-tight md:text-3xl;
+  }
+
+  .h4 {
+    @apply text-xl font-semibold tracking-tight md:text-2xl;
+  }
+
+  /* Paragraph Styles */
+  .p {
+    @apply text-base leading-relaxed;
+  }
+
+  .p-muted {
+    @apply text-base text-muted-foreground leading-relaxed;
+  }
+
+  .p-sm {
+    @apply text-sm leading-relaxed;
+  }
+
+  .p-sm-muted {
+    @apply text-sm text-muted-foreground leading-relaxed;
+  }
+
+  .p-lg {
+    @apply text-lg leading-relaxed;
+  }
+
+  .p-lg-muted {
+    @apply text-lg text-muted-foreground leading-relaxed;
+  }
+  /* Flex Utilities */
+  .flex-center {
+    @apply flex items-center justify-center;
+  }
+
+  .flex-between {
+    @apply flex items-center justify-between;
+  }
+
+  .flex-start {
+    @apply flex items-center justify-start;
+  }
+
+  .flex-end {
+    @apply flex items-center justify-end;
+  }
+
+  .flex-col-center {
+    @apply flex flex-col items-center justify-center;
+  }
+
+  .flex-col-between {
+    @apply flex flex-col items-center justify-between;
+  }
+
+  /* Grid Utilities */
+  .grid-2 {
+    @apply grid grid-cols-1 gap-4 md:grid-cols-2;
+  }
+
+  .grid-3 {
+    @apply grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3;
+  }
+
+  .grid-4 {
+    @apply grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4;
+  }
+
+  /* Spacing Utilities */
+  .section-padding {
+    @apply py-8 md:py-12 lg:py-16;
+  }
+
+  .container-padding {
+    @apply px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Animation Utilities */
+  .transition-slow {
+    @apply transition-all duration-300 ease-in-out;
+  }
+
+  .transition-fast {
+    @apply transition-all duration-150 ease-in-out;
+  }
+
+  /* Positioning Utilities */
+  .abs-center {
+    @apply absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2;
+  }
+
+  .abs-vertical-center {
+    @apply absolute top-1/2 -translate-y-1/2;
+  }
+
+  .abs-horizontal-center {
+    @apply absolute left-1/2 -translate-x-1/2;
+  }
+
+  /* Button Utilities */
+  .btn-primary {
+    @apply bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90 transition-slow;
+  }
+
+  .btn-secondary {
+    @apply bg-secondary text-secondary-foreground px-4 py-2 rounded-md hover:bg-secondary/90 transition-slow;
+  }
+
+  /* Input Utilities */
+  .input {
+    @apply bg-input text-foreground border border-border rounded-md px-3 py-2 focus:ring-2 focus:ring-ring focus:outline-none transition-slow;
+  }
+
+  .main-container {
+    @apply container mx-auto px-4 sm:px-6 lg:px-8;
+  }
+}
