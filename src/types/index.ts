@@ -3,3 +3,6 @@ export interface SideBarIconProps {
   href: string;
   isActive: boolean;
 }
+export interface CommunityCardProps {
+  status: string;
+}

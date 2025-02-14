@@ -177,7 +177,7 @@ body {
     @apply text-xl font-semibold tracking-tight md:text-2xl;
   }
   .h5 {
-    @apply text-lg font-semibold tracking-tight;
+    @apply text-base font-semibold tracking-tight;
   }
   /* Paragraph Styles */
   .p {

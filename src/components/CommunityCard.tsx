@@ -14,24 +14,46 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MdOutlineCancel } from "react-icons/md";
+import { CommunityCardProps } from "@/types";
+import { MdHeartBroken } from "react-icons/md";
+import { GiExitDoor } from "react-icons/gi";
 
-const CommunityCard = () => {
+const CommunityCard = ({ status }: CommunityCardProps) => {
   const [isFavorite, setIsFavorite] = useState(false);
 
   const handleFav = () => {
     setIsFavorite(!isFavorite);
   };
   return (
-    <div className="relative flex flex-col h-[300px] bg-card gap-2 pb-2 rounded-lg overflow-hidden">
+    <div className="relative flex flex-col h-[300px] bg-card gap-2 pb-2 rounded-lg overflow-hidden drop-shadow-lg">
       <DropdownMenu>
-        <DropdownMenuTrigger className="absolute h-[18px] top-2 right-2 z-10 bg-background rounded-sm cursor-pointer">
+        <DropdownMenuTrigger className="absolute h-[18px] top-2 right-2 z-10 bg-foreground text-background rounded-sm cursor-pointer">
           <VscSettings fontSize={18} />
         </DropdownMenuTrigger>
         <DropdownMenuContent className="custom-dropdown-content">
-          <DropdownMenuItem className="custom-dropdown-item dropdown-cancel">
-            <MdOutlineCancel />
-            Cancel join request
-          </DropdownMenuItem>
+          {status == "pending" ? (
+            <DropdownMenuItem className="custom-dropdown-item dropdown-cancel">
+              <MdOutlineCancel />
+              Cancel join request
+            </DropdownMenuItem>
+          ) : status == "favorite" ? (
+            <>
+              <DropdownMenuItem className="custom-dropdown-item dropdown-cancel">
+                <MdHeartBroken />
+                Remove from favorites
+              </DropdownMenuItem>
+
+              <DropdownMenuItem className="custom-dropdown-item dropdown-cancel">
+                <GiExitDoor />
+                Leave the community
+              </DropdownMenuItem>
+            </>
+          ) : (
+            <DropdownMenuItem className="custom-dropdown-item dropdown-cancel">
+              <GiExitDoor />
+              Leave the community
+            </DropdownMenuItem>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
       <div className="relative flex-1 w-full">
