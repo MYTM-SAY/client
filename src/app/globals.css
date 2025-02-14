@@ -14,6 +14,7 @@ body {
     --dropdown-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Shadow effect */
     --dropdown-hover-background: 240 4.8% 95.9%; /* Hover background */
     --dropdown-hover-foreground: 240 5.9% 10%; /* Hover text color */
+
     /* Light Theme */
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -175,7 +176,9 @@ body {
   .h4 {
     @apply text-xl font-semibold tracking-tight md:text-2xl;
   }
-
+  .h5 {
+    @apply text-lg font-semibold tracking-tight;
+  }
   /* Paragraph Styles */
   .p {
     @apply text-base leading-relaxed;
@@ -200,6 +203,7 @@ body {
   .p-lg-muted {
     @apply text-lg text-muted-foreground leading-relaxed;
   }
+
   /* Flex Utilities */
   .flex-center {
     @apply flex items-center justify-center;
@@ -296,5 +300,19 @@ body {
   .no-scrollbar {
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
+  }
+  .custom-dropdown-content {
+    background-color: hsl(var(--dropdown-background));
+    color: hsl(var(--dropdown-foreground));
+    border-color: hsl(var(--dropdown-border));
+    box-shadow: var(--dropdown-shadow);
+  }
+
+  .custom-dropdown-item:hover {
+    background-color: hsl(var(--dropdown-hover-background));
+    color: hsl(var(--dropdown-hover-foreground));
+  }
+  .dropdown-cancel {
+    @apply cursor-pointer hover:!bg-destructive hover:!text-background !text-destructive;
   }
 }
