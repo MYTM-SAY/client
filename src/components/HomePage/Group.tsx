@@ -37,7 +37,7 @@ const Group = ({ num }: GroupProps) => {
         <p>13k</p>
         <p>Public</p>
       </div>
-      <Btn className="absolute bottom-0 left-0 w-full rounded-none p-2">
+      <Btn className="absolute bottom-0 left-0 w-full rounded-none p-2 text-white">
         View
       </Btn>
     </div>

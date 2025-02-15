@@ -30,7 +30,7 @@ const JoinedGroups = () => {
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h2 className="h4">Joined groups</h2>
-        <Btn className="py-2 px-4">View more</Btn>
+        <Btn className="py-2 px-4 text-white">View more</Btn>
       </div>
 
       <div className="relative">
