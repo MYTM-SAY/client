@@ -32,3 +32,6 @@ export interface ShareButtonProps {
   url?: string;
   title?: string;
 }
+export interface GroupProps {
+  num: number;
+}

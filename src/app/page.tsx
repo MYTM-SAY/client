@@ -1,5 +1,18 @@
-export default function Home() {
+import React from "react";
+import Calendarr from "../components/HomePage/Calendarr";
+import JoinedGroups from "../components/HomePage/JoinedGroups";
+import Post from "../components/Post/Post";
+const page = () => {
+  const posts = Array.from({ length: 40 }, (_, i) => <Post key={i} num={i} />);
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen py-2 gap-4"></div>
+    <div className="flex w-full space-x-4 px-4 overflow-y-hidden mlg:flex-col">
+      <div className="mx-auto max-w-[1000px] overflow-y-auto  no-scrollbar mlg:order-2">
+        <JoinedGroups />
+        <div className="space-y-8 p-4 rounded-lg">{posts}</div>
+      </div>
+      <Calendarr />
+    </div>
   );
-}
+};
+
+export default page;
