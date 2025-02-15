@@ -13,7 +13,7 @@ const pages = () => {
     <div className="p-4 overflow-y-auto no-scrollbar w-full mx-auto max-w-[1000px]">
       <Accordion type="single" collapsible>
         <AccordionItem value="item-1">
-          <AccordionTrigger>Pending</AccordionTrigger>
+          <AccordionTrigger className="h4">Pending</AccordionTrigger>
           <AccordionContent className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-8">
             {ar.map((_, idx) => (
               <CommunityCard key={idx} status="pending" />
@@ -21,7 +21,7 @@ const pages = () => {
           </AccordionContent>
         </AccordionItem>
         <AccordionItem value="item-2">
-          <AccordionTrigger>Favorite</AccordionTrigger>
+          <AccordionTrigger className="h4">Favorite</AccordionTrigger>
           <AccordionContent className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-8">
             {ar.map((_, idx) => (
               <CommunityCard key={idx} status="favorite" />
@@ -29,7 +29,7 @@ const pages = () => {
           </AccordionContent>
         </AccordionItem>
         <AccordionItem value="item-3">
-          <AccordionTrigger>All</AccordionTrigger>
+          <AccordionTrigger className="h4">All</AccordionTrigger>
           <AccordionContent className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-8">
             {ar.map((_, idx) => (
               <CommunityCard key={idx} status="all" />

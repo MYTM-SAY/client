@@ -4,7 +4,7 @@ import "./globals.css";
 import { Providers } from "@/providers";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import AppSidebar from "@/components/SideBar/app-sidebar";
-
+import { Toaster } from "@/components/ui/toaster";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
 import NavBar from "@/components/NavBar/NavBar";
 const geistSans = Geist({
@@ -47,6 +47,7 @@ export default function RootLayout({
           </SignedIn>
           <SignedOut>{children}</SignedOut>
         </Providers>
+        <Toaster />
       </body>
     </html>
   );

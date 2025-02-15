@@ -22,13 +22,13 @@ const NavProfile = () => {
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
           </DropdownMenuTrigger>
-          <DropdownMenuContent>
+          <DropdownMenuContent className="custom-dropdown-content">
             <Link href="/profile/AlTarek">
-              <DropdownMenuItem className="!cursor-pointer">
+              <DropdownMenuItem className="!cursor-pointer custom-dropdown-item">
                 Profile
               </DropdownMenuItem>
             </Link>
-            <DropdownMenuItem className="dropdown-cancel">
+            <DropdownMenuItem className="dropdown-cancel custom-dropdown-item">
               <SignOutButton />
             </DropdownMenuItem>
           </DropdownMenuContent>

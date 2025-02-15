@@ -1,7 +1,26 @@
 import React from "react";
-
+import ContributionGraph from "@/components/Profile/ContributionGraph";
+import CommunitiesProfile from "@/components/Profile/CommunitiesProfile";
+import ProfileInfo from "@/components/Profile/ProfileInfo";
+import ActivityInCom from "@/components/Profile/ActivityInCom";
 const page = () => {
-  return <div>profile name</div>;
+  const contributions: number[] = Array.from({ length: 365 }, () =>
+    Math.floor(Math.random() * 5)
+  );
+
+  return (
+    <div className="flex w-full pt-[50px] flex-1 px-4 gap-4  mlg:flex-col   ">
+      <div
+        className="mx-auto flex-1  mlg:order-2 "
+        style={{ maxWidth: "min(100%, 1000px)" }}
+      >
+        <ContributionGraph contributions={contributions} />
+        <CommunitiesProfile />
+        <ActivityInCom />
+      </div>
+      <ProfileInfo />
+    </div>
+  );
 };
 
 export default page;

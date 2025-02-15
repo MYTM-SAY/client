@@ -8,6 +8,11 @@ body {
 
 @layer base {
   :root {
+    --pagination-text: #000000;
+    --pagination-border: rgba(0, 0, 0, 0.23);
+    --pagination-hover-bg: rgba(0, 0, 0, 0.04);
+    --pagination-selected-bg: rgba(0, 0, 0, 0.08);
+    --shd: 0 0 12px 6px rgba(0, 0, 0, 0.1);
     --dropdown-background: 0 0% 98%; /* Background color */
     --dropdown-foreground: 240 5.3% 26.1%; /* Text color */
     --dropdown-border: 220 13% 91%; /* Border color */
@@ -80,6 +85,11 @@ body {
   }
 
   .dark {
+    --pagination-text: #ffffff;
+    --pagination-border: rgba(255, 255, 255, 0.719);
+    --pagination-hover-bg: rgba(187, 187, 187, 0.571);
+    --pagination-selected-bg: rgba(222, 219, 219, 0.852);
+    --shd: 0 0 24px 12px rgba(75, 85, 99, 0.6);
     --dropdown-background: 240 5.9% 10%;
     --dropdown-foreground: 240 4.8% 95.9%;
     --dropdown-border: 240 3.7% 15.9%;
@@ -160,50 +170,6 @@ body {
   }
 }
 @layer components {
-  /* Heading Styles */
-  .h1 {
-    @apply text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl;
-  }
-
-  .h2 {
-    @apply text-3xl font-bold tracking-tight md:text-4xl;
-  }
-
-  .h3 {
-    @apply text-2xl font-semibold tracking-tight md:text-3xl;
-  }
-
-  .h4 {
-    @apply text-xl font-semibold tracking-tight md:text-2xl;
-  }
-  .h5 {
-    @apply text-base font-semibold tracking-tight;
-  }
-  /* Paragraph Styles */
-  .p {
-    @apply text-base leading-relaxed;
-  }
-
-  .p-muted {
-    @apply text-base text-muted-foreground leading-relaxed;
-  }
-
-  .p-sm {
-    @apply text-sm leading-relaxed;
-  }
-
-  .p-sm-muted {
-    @apply text-sm text-muted-foreground leading-relaxed;
-  }
-
-  .p-lg {
-    @apply text-lg leading-relaxed;
-  }
-
-  .p-lg-muted {
-    @apply text-lg text-muted-foreground leading-relaxed;
-  }
-
   /* Flex Utilities */
   .flex-center {
     @apply flex items-center justify-center;
@@ -314,5 +280,92 @@ body {
   }
   .dropdown-cancel {
     @apply cursor-pointer hover:!bg-destructive hover:!text-background !text-destructive;
+  }
+  .dark-gray-shadow {
+    box-shadow: var(--shd);
+  }
+  /* Heading Styles */
+  .h1 {
+    @apply text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl;
+  }
+
+  .h2 {
+    @apply text-3xl font-bold tracking-tight md:text-4xl;
+  }
+
+  .h3 {
+    @apply text-2xl font-semibold tracking-tight md:text-3xl;
+  }
+
+  .h4 {
+    @apply text-xl font-semibold tracking-tight md:text-2xl;
+  }
+  .h5 {
+    @apply text-lg font-semibold tracking-tight;
+  }
+  /* Paragraph Styles */
+  .p {
+    @apply text-base leading-relaxed;
+  }
+
+  .p-muted {
+    @apply text-base text-muted-foreground leading-relaxed;
+  }
+
+  .p-sm {
+    @apply text-sm leading-relaxed;
+  }
+
+  .p-sm-muted {
+    @apply text-sm text-muted-foreground leading-relaxed;
+  }
+
+  .p-lg {
+    @apply text-lg leading-relaxed;
+  }
+
+  .p-lg-muted {
+    @apply text-lg text-muted-foreground leading-relaxed;
+  }
+  .two-lines-truncate {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-height: 3em; /* 2 lines × 1.5 line-height */
+    position: relative; /* Required for absolute positioning of the "view more" span */
+  }
+  .MuiPagination-root .MuiPaginationItem-root {
+    @apply text-foreground border-border;
+  }
+
+  .MuiPagination-root .MuiPaginationItem-root:hover {
+    @apply bg-muted/50;
+  }
+
+  .MuiPagination-root .MuiPaginationItem-root.Mui-selected {
+    @apply bg-muted;
+  }
+
+  .MuiPagination-root .MuiPaginationItem-root.Mui-selected:hover {
+    @apply bg-muted/80;
+  }
+
+  /* For dark mode */
+  .dark .MuiPagination-root .MuiPaginationItem-root {
+    @apply text-foreground border-border;
+  }
+
+  .dark .MuiPagination-root .MuiPaginationItem-root:hover {
+    @apply bg-muted/50;
+  }
+
+  .dark .MuiPagination-root .MuiPaginationItem-root.Mui-selected {
+    @apply bg-muted;
+  }
+
+  .dark .MuiPagination-root .MuiPaginationItem-root.Mui-selected:hover {
+    @apply bg-muted/80;
   }
 }
