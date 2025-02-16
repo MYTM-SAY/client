@@ -10,10 +10,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const Group = ({ num }: GroupProps) => {
   return (
-    <div className="relative flex flex-col bg-card items-center px-4 pt-4 pb-12 space-y-1 rounded-lg overflow-hidden dark-gray-shadow">
+    <div className="relative flex flex-col bg-card items-center px-4 py-4 rounded-lg overflow-hidden dark-gray-shadow h-full justify-between">
       <DropdownMenu>
         <DropdownMenuTrigger className="absolute h-[18px] top-2 right-2 z-10 bg-foreground text-background rounded-sm cursor-pointer">
           <VscSettings fontSize={18} />
@@ -25,21 +26,30 @@ const Group = ({ num }: GroupProps) => {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-      <Image
-        src="/download (3).jpeg"
-        className=" rounded-full"
-        alt="Hello"
-        width={56}
-        height={56}
-      />
-      <p className="h5">{num}</p>
-      <div className="flex justify-between w-full p-muted">
-        <p>13k</p>
-        <p>Public</p>
+      <div className="flex-col-center">
+        <Image
+          src="/download (3).jpeg"
+          className=" rounded-full"
+          alt="Hello"
+          width={56}
+          height={56}
+        />
+        <p className="h5">Front-end community</p>
       </div>
-      <Btn className="absolute bottom-0 left-0 w-full rounded-none p-2 text-white">
-        View
-      </Btn>
+      <div className="flex items-center gap-3">
+        <Avatar className="w-8 h-8">
+          <AvatarImage src="/Rectangle 83.png" />
+          <AvatarFallback>CN</AvatarFallback>
+        </Avatar>
+        <p className="p-sm-muted">By Ian Macklin 👑</p>
+      </div>
+      <div className="flex flex-col justify-between w-full p-muted">
+        <div className="flex justify-between w-full p-muted">
+          <p>13k</p>
+          <p>Public</p>
+        </div>
+        <Btn className="w-full p-2 text-white">View</Btn>
+      </div>
     </div>
   );
 };

@@ -29,7 +29,7 @@ const CommunitiesProfile = () => {
                 Lorem, ipsum dolor sit amet consectetur
               </p>
             </div>
-            <Btn className="px-10 py-2 msm:mt-4 bg-foreground text-background ">
+            <Btn className="px-10 py-2 msm:mt-4 text-white bg-accent">
               Visit
             </Btn>
           </div>

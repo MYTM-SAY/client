@@ -85,7 +85,7 @@ const PostShare = ({
 
   return (
     <Drawer>
-      <DrawerTrigger asChild>
+      <DrawerTrigger asChild className="hover:!bg-accent hover:text-white">
         <Button className="flex items-center gap-2 px-4 py-2 text-foreground bg-card hover:bg-card/80">
           <RiShareForwardLine className="!w-6 !h-6" />
           Share

@@ -17,7 +17,7 @@ export default {
           max: "1024px",
         },
         mmd: {
-          max: "768px",
+          max: "800px",
         },
         msm: {
           max: "640px",

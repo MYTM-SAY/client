@@ -51,7 +51,10 @@ const JoinedGroups = () => {
           className="flex overflow-x-auto no-scrollbar gap-6 p-6"
         >
           {Array.from({ length: 20 }).map((_, index) => (
-            <div key={index} className="flex-shrink-0 w-[120px] text-center">
+            <div
+              key={index}
+              className="flex-shrink-0 w-[200px] h-[280px] text-center"
+            >
               <Group num={index} />
             </div>
           ))}

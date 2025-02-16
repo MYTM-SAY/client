@@ -1,4 +1,5 @@
 import React from "react";
+import CommunityNavBar from "@/components/Community/CommunityNavBar";
 
 export default function CommunityLayout({
   children,
@@ -6,8 +7,8 @@ export default function CommunityLayout({
   children: React.ReactNode;
 }) {
   return (
-    <section>
-      <div>hi iam layout</div> {children}
+    <section className="px-4">
+      <CommunityNavBar /> {children}
     </section>
   );
 }
