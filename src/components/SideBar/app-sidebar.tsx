@@ -4,6 +4,8 @@ import React from "react";
 import { usePathname } from "next/navigation";
 import { FaCompass, FaUserGroup } from "react-icons/fa6";
 import { FaHome } from "react-icons/fa";
+import { BsFillPlusCircleFill } from "react-icons/bs";
+
 import Image from "next/image";
 import {
   Sidebar,
@@ -59,6 +61,9 @@ const AppSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
       <SidebarFooter className="p-0">
         <SidebarSeparator className="mt-4 h-[2px]" />
         <SidebarMenu className="py-4 gap-8 flex-col-center">
+          <SideBarIcon href="/create" isActive={pathname === "/create"}>
+            <BsFillPlusCircleFill className="!w-8 !h-8" />
+          </SideBarIcon>
           <SideBarIcon href="/discover" isActive={pathname === "/discover"}>
             <FaCompass className="!w-8 !h-8" />
           </SideBarIcon>

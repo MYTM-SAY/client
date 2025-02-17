@@ -7,6 +7,12 @@ export interface SidebarProps {
   active: string;
 }
 
+export interface SideBarIconProps {
+  children: ReactNode;
+  href: string;
+  isActive: boolean;
+}
+
 export interface ContributionGraphProps {
   contributions: number[];
 }
