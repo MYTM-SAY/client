@@ -26,36 +26,39 @@ const CommunityCard = ({ status }: CommunityCardProps) => {
   };
   return (
     <div className="relative flex flex-col h-[300px] bg-card gap-2 pb-2 rounded-lg overflow-hidden drop-shadow-lg">
-      <DropdownMenu>
-        <DropdownMenuTrigger className="absolute h-[18px] top-2 right-2 z-10 bg-foreground text-background rounded-sm cursor-pointer">
-          <VscSettings fontSize={18} />
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="custom-dropdown-content">
-          {status == "pending" ? (
-            <DropdownMenuItem className="custom-dropdown-item dropdown-cancel">
-              <MdOutlineCancel />
-              Cancel join request
-            </DropdownMenuItem>
-          ) : status == "favorite" ? (
-            <>
+      {status != "normal" && (
+        <DropdownMenu>
+          <DropdownMenuTrigger className="absolute h-[18px] top-2 right-2 z-10 bg-foreground text-background rounded-sm cursor-pointer">
+            <VscSettings fontSize={18} />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="custom-dropdown-content">
+            {status == "pending" ? (
               <DropdownMenuItem className="custom-dropdown-item dropdown-cancel">
-                <MdHeartBroken />
-                Remove from favorites
+                <MdOutlineCancel />
+                Cancel join request
               </DropdownMenuItem>
+            ) : status == "favorite" ? (
+              <>
+                <DropdownMenuItem className="custom-dropdown-item dropdown-cancel">
+                  <MdHeartBroken />
+                  Remove from favorites
+                </DropdownMenuItem>
 
+                <DropdownMenuItem className="custom-dropdown-item dropdown-cancel">
+                  <GiExitDoor />
+                  Leave the community
+                </DropdownMenuItem>
+              </>
+            ) : (
               <DropdownMenuItem className="custom-dropdown-item dropdown-cancel">
                 <GiExitDoor />
                 Leave the community
               </DropdownMenuItem>
-            </>
-          ) : (
-            <DropdownMenuItem className="custom-dropdown-item dropdown-cancel">
-              <GiExitDoor />
-              Leave the community
-            </DropdownMenuItem>
-          )}
-        </DropdownMenuContent>
-      </DropdownMenu>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )}
+
       <div className="relative flex-1 w-full">
         <Image
           src="/Card image.png"

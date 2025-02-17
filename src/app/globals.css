@@ -286,34 +286,34 @@ body {
   }
   /* Heading Styles */
   .h1 {
-    @apply text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl;
+    @apply !text-4xl !font-bold !tracking-tight md:!text-5xl lg:!text-6xl;
   }
 
   .h2 {
-    @apply text-3xl font-bold tracking-tight md:text-4xl;
+    @apply !text-3xl !font-bold !tracking-tight md:!text-4xl;
   }
 
   .h3 {
-    @apply text-2xl font-semibold tracking-tight md:text-3xl;
+    @apply !text-2xl !font-semibold !tracking-tight md:!text-3xl;
   }
 
   .h4 {
-    @apply text-xl font-semibold tracking-tight md:text-2xl;
+    @apply !text-xl !font-semibold !tracking-tight md:!text-2xl;
   }
   .h5 {
-    @apply text-lg font-semibold tracking-tight;
+    @apply !text-lg !font-semibold !tracking-tight;
   }
   /* Paragraph Styles */
   .p {
-    @apply text-base leading-relaxed;
+    @apply !text-base !leading-relaxed;
   }
 
   .p-muted {
-    @apply text-base text-muted-foreground leading-relaxed;
+    @apply !text-base !text-muted-foreground !leading-relaxed;
   }
 
   .p-sm {
-    @apply text-sm leading-relaxed;
+    @apply !text-sm !leading-relaxed;
   }
 
   .p-sm-muted {
