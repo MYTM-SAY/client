@@ -4,11 +4,6 @@ import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { FaYoutube } from "react-icons/fa";
 
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-} from "@/components/ui/carousel";
 import Btn from "@/components/ui/Btn";
 
 const page = () => {

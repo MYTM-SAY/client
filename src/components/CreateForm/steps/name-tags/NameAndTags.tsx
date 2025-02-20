@@ -1,19 +1,28 @@
 "use client";
-import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { TagInput } from "./TagInput";
 
-export const NameAndTags = () => {
-  const [name, setName] = useState("");
-  const [tags, setTags] = useState<string[]>([]);
+interface NameAndTagsProps {
+  name: string;
+  tags: string[];
+  onChange: (name: string, tags: string[]) => void;
+}
+
+export const NameAndTags = ({ name, tags, onChange }: NameAndTagsProps) => {
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onChange(e.target.value, tags);
+  };
 
   const handleAddTag = (tag: string) => {
-    setTags([...tags, tag]);
+    onChange(name, [...tags, tag]);
   };
 
   const handleRemoveTag = (tagToRemove: string) => {
-    setTags(tags.filter((tag) => tag !== tagToRemove));
+    onChange(
+      name,
+      tags.filter((tag) => tag !== tagToRemove)
+    );
   };
 
   return (
@@ -24,7 +33,7 @@ export const NameAndTags = () => {
           id="communityName"
           placeholder="Enter your community name"
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={handleNameChange}
           className="max-w-md"
         />
       </div>
