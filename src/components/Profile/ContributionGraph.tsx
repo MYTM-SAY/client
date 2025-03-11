@@ -20,7 +20,7 @@ const years: Drops[] = [
   { value: "2024", label: "2024" },
 ];
 const ContributionGraph = ({ contributions }: ContributionGraphProps) => {
-  const colors: string[] = ["#ebedf0", "#9be9a8", "#40c463", "#30a14e"];
+  const colors: string[] = ["#ebedf0", "#8bb4f7", "#5a9cf7", "#3a85f5"];
   const monthDays: number[] = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
   const monthShortNames: string[] = [
     "Jan",
