@@ -2,7 +2,7 @@ import React from "react";
 import ContributionGraph from "@/components/Profile/ContributionGraph";
 import CommunitiesProfile from "@/components/Profile/CommunitiesProfile";
 import ProfileInfo from "@/components/Profile/ProfileInfo";
-import ActivityInCom from "@/components/Profile/ActivityInCom";
+import ContributionsInCommunityies from "@/components/Profile/ContributionsInCommunityies";
 const page = () => {
   const contributions: number[] = Array.from({ length: 365 }, () =>
     Math.floor(Math.random() * 5)
@@ -13,7 +13,7 @@ const page = () => {
       <div className="mx-auto flex-1  mlg:order-2 w-full max-w-[1000px]">
         <ContributionGraph contributions={contributions} />
         <CommunitiesProfile />
-        <ActivityInCom />
+        <ContributionsInCommunityies />
       </div>
       <ProfileInfo />
     </div>

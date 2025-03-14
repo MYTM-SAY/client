@@ -1,5 +1,5 @@
 import React from "react";
-import Calendarr from "../components/HomePage/Calendarr";
+import CalendarHolder from "../components/HomePage/CalendarHolder";
 import JoinedGroups from "../components/HomePage/JoinedGroups";
 import Post from "../components/Post/Post";
 const page = () => {
@@ -10,7 +10,7 @@ const page = () => {
         <JoinedGroups />
         <div className="space-y-8 p-4 rounded-lg">{posts}</div>
       </div>
-      <Calendarr />
+      <CalendarHolder />
     </div>
   );
 };

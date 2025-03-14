@@ -1,8 +1,7 @@
 "use client";
 
-import React, { MouseEvent, useState } from "react";
+import React, { useState } from "react";
 import Post from "../Post/Post";
-// import { Pagination } from "../Pagination";
 import Pagination from "@mui/material/Pagination";
 
 import {
@@ -13,12 +12,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const ActivityInCom = () => {
+const ContributionsInCommunityies = () => {
   const [active, setActive] = useState(1);
   const [com, setCom] = useState("12 ");
 
-  // You can move this data outside the component or keep it inside
-  const communityData = [
+  const theCommuntiesOfTheUser = [
     { value: "AI Geeks", label: "12" },
     { value: "CSS Geeks", label: "48" },
     { value: "JS Geeks", label: "52" },
@@ -28,10 +26,6 @@ const ActivityInCom = () => {
 
   const posts = Array.from({ length: 40 }, (_, i) => <Post key={i} num={i} />);
   const postPerPage = 4;
-
-  const paginate = (pageNumber: number, e: MouseEvent<HTMLAnchorElement>) => {
-    setActive(pageNumber);
-  };
 
   const startIndex = (active - 1) * postPerPage;
   const endIndex = startIndex + postPerPage;
@@ -57,7 +51,7 @@ const ActivityInCom = () => {
             <SelectValue placeholder="AI Geeks" />
           </SelectTrigger>
           <SelectContent className="bg-card  text-foreground ">
-            {communityData.map(({ value, label }) => (
+            {theCommuntiesOfTheUser.map(({ value, label }) => (
               <SelectItem key={value} value={label} className="p-lg">
                 {value}
               </SelectItem>
@@ -78,4 +72,4 @@ const ActivityInCom = () => {
   );
 };
 
-export default ActivityInCom;
+export default ContributionsInCommunityies;

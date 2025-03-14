@@ -5,14 +5,13 @@ import { Input } from "@/components/ui/input";
 import React from "react";
 import Pagination from "@mui/material/Pagination";
 import { IoSearch } from "react-icons/io5";
-import { useState, MouseEvent } from "react";
+import { useState } from "react";
 interface Tag {
   id: number;
   name: string;
   count?: number;
 }
 const page = () => {
-  const arr = [1, 1, 1, 11, 1, 1, 1, 1, 1, 1, 1, 1, 11, 1, 1, 1];
   const tags: Tag[] = [
     { id: 1, name: "Technology", count: 145 },
     { id: 2, name: "Design", count: 89 },
@@ -46,10 +45,6 @@ const page = () => {
     <CommunityCardDiscover key={i} isLoading={false} num={i} />
   ));
   const postPerPage = 8;
-
-  const paginate = (pageNumber: number, e: MouseEvent<HTMLAnchorElement>) => {
-    setActive(pageNumber);
-  };
 
   const startIndex = (active - 1) * postPerPage;
   const endIndex = startIndex + postPerPage;
