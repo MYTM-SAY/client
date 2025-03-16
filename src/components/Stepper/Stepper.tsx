@@ -1,32 +1,32 @@
-"use client";
+'use client'
 
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useState } from "react";
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { useState } from 'react'
 
 interface StepperProps {
   steps: {
-    id: number;
-    title: string;
-    content: React.ReactNode;
-  }[];
+    id: number
+    title: string
+    content: React.ReactNode
+  }[]
 }
 
 export const Stepper = ({ steps }: StepperProps) => {
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState(1)
 
   const handleNext = () => {
     if (currentStep < steps.length) {
-      setCurrentStep((prev) => prev + 1);
+      setCurrentStep((prev) => prev + 1)
     }
-  };
+  }
 
   const handlePrevious = () => {
     if (currentStep > 1) {
-      setCurrentStep((prev) => prev - 1);
+      setCurrentStep((prev) => prev - 1)
     }
-  };
+  }
 
   return (
     <div className="w-full max-w-3xl mx-auto px-4">
@@ -36,24 +36,24 @@ export const Stepper = ({ steps }: StepperProps) => {
           <li
             key={step.id}
             className={cn(
-              "flex items-center",
-              step.id !== steps.length && "w-full"
+              'flex items-center',
+              step.id !== steps.length && 'w-full',
             )}
           >
             <div
               className={cn(
-                "flex items-center justify-center w-10 h-10 rounded-full lg:h-12 lg:w-12 shrink-0",
+                'flex items-center justify-center w-10 h-10 rounded-full lg:h-12 lg:w-12 shrink-0',
                 currentStep >= step.id
-                  ? "bg-blue-600"
-                  : "bg-gray-200 dark:bg-gray-700"
+                  ? 'bg-blue-600'
+                  : 'bg-gray-200 dark:bg-gray-700',
               )}
             >
               <span
                 className={cn(
-                  "text-lg font-semibold",
+                  'text-lg font-semibold',
                   currentStep >= step.id
-                    ? "text-white"
-                    : "text-gray-500 dark:text-gray-300"
+                    ? 'text-white'
+                    : 'text-gray-500 dark:text-gray-300',
                 )}
               >
                 {step.id}
@@ -62,10 +62,10 @@ export const Stepper = ({ steps }: StepperProps) => {
             {step.id !== steps.length && (
               <div
                 className={cn(
-                  "w-full h-1 mx-2",
+                  'w-full h-1 mx-2',
                   currentStep > step.id
-                    ? "bg-blue-600"
-                    : "bg-gray-200 dark:bg-gray-700"
+                    ? 'bg-blue-600'
+                    : 'bg-gray-200 dark:bg-gray-700',
                 )}
               />
             )}
@@ -82,7 +82,7 @@ export const Stepper = ({ steps }: StepperProps) => {
                 <h2 className="text-lg font-semibold mb-4">{step.title}</h2>
                 {step.content}
               </div>
-            )
+            ),
         )}
       </div>
 
@@ -101,10 +101,10 @@ export const Stepper = ({ steps }: StepperProps) => {
               Next <ChevronRight className="ml-2 h-4 w-4" />
             </>
           ) : (
-            "Submit"
+            'Submit'
           )}
         </Button>
       </div>
     </div>
-  );
-};
+  )
+}

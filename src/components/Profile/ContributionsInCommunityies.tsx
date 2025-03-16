@@ -1,8 +1,8 @@
-"use client";
+'use client'
 
-import React, { useState } from "react";
-import Post from "../Post/Post";
-import Pagination from "@mui/material/Pagination";
+import React, { useState } from 'react'
+import Post from '../Post/Post'
+import Pagination from '@mui/material/Pagination'
 
 import {
   Select,
@@ -10,38 +10,38 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select'
 
 const ContributionsInCommunityies = () => {
-  const [active, setActive] = useState(1);
-  const [com, setCom] = useState("12 ");
+  const [active, setActive] = useState(1)
+  const [com, setCom] = useState('12 ')
 
   const theCommuntiesOfTheUser = [
-    { value: "AI Geeks", label: "12" },
-    { value: "CSS Geeks", label: "48" },
-    { value: "JS Geeks", label: "52" },
-    { value: "BI Geeks", label: "34" },
-    { value: "CI Geeks", label: "5" },
-  ];
+    { value: 'AI Geeks', label: '12' },
+    { value: 'CSS Geeks', label: '48' },
+    { value: 'JS Geeks', label: '52' },
+    { value: 'BI Geeks', label: '34' },
+    { value: 'CI Geeks', label: '5' },
+  ]
 
-  const posts = Array.from({ length: 40 }, (_, i) => <Post key={i} num={i} />);
-  const postPerPage = 4;
+  const posts = Array.from({ length: 40 }, (_, i) => <Post key={i} num={i} />)
+  const postPerPage = 4
 
-  const startIndex = (active - 1) * postPerPage;
-  const endIndex = startIndex + postPerPage;
-  const currentPosts = posts.slice(startIndex, endIndex);
-  const totalPages = Math.ceil(posts.length / postPerPage);
+  const startIndex = (active - 1) * postPerPage
+  const endIndex = startIndex + postPerPage
+  const currentPosts = posts.slice(startIndex, endIndex)
+  const totalPages = Math.ceil(posts.length / postPerPage)
 
   const handleSelectChange = (value: string) => {
-    setCom(value);
-  };
+    setCom(value)
+  }
   const handlePageChange = (
     event: React.ChangeEvent<unknown>,
-    page: number
+    page: number,
   ) => {
-    setActive(page);
-    window.scrollTo({ top: 0, behavior: "smooth" }); // Optional: scroll to top on page change
-  };
+    setActive(page)
+    window.scrollTo({ top: 0, behavior: 'smooth' }) // Optional: scroll to top on page change
+  }
   return (
     <div className="flex flex-col gap-8 w-full mt-10 ">
       <div className="flex-between flex-wrap gap-6 rounded-lg  text-foreground  px-4 py-2">
@@ -69,7 +69,7 @@ const ContributionsInCommunityies = () => {
         onChange={handlePageChange}
       />
     </div>
-  );
-};
+  )
+}
 
-export default ContributionsInCommunityies;
+export default ContributionsInCommunityies

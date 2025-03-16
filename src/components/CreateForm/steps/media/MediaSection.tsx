@@ -1,51 +1,49 @@
-"use client";
+'use client'
 // components/create-form/steps/media/MediaSection.tsx
-import { useState, useRef } from "react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { useState, useRef } from 'react'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import {
   Dialog,
   DialogContent,
   DialogTitle,
   DialogHeader,
   DialogClose,
-} from "@/components/ui/dialog";
-import { X, PlayCircle, Maximize2 } from "lucide-react";
-import { BannerUpload } from "./BannerUpload";
-import { AdditionalMedia } from "./AdditionalMedia";
+} from '@/components/ui/dialog'
+import { X, PlayCircle, Maximize2 } from 'lucide-react'
+import { BannerUpload } from './BannerUpload'
+import { AdditionalMedia } from './AdditionalMedia'
 
 interface MediaItem {
-  id: string;
-  type: "image" | "video";
-  url: string;
-  file?: File;
+  id: string
+  type: 'image' | 'video'
+  url: string
+  file?: File
 }
 
 interface SelectedMedia {
-  type: "image" | "video";
-  url: string;
+  type: 'image' | 'video'
+  url: string
 }
 
 export const MediaSection = () => {
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [mediaItems, setMediaItems] = useState<MediaItem[]>([]);
-  const [selectedMedia, setSelectedMedia] = useState<SelectedMedia | null>(
-    null
-  );
-  const videoInputRef = useRef<HTMLInputElement>(null);
-  const galleryInputRef = useRef<HTMLInputElement>(null);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null)
+  const [mediaItems, setMediaItems] = useState<MediaItem[]>([])
+  const [selectedMedia, setSelectedMedia] = useState<SelectedMedia | null>(null)
+  const videoInputRef = useRef<HTMLInputElement>(null)
+  const galleryInputRef = useRef<HTMLInputElement>(null)
 
   const handleBannerSelect = (file: File) => {
-    const reader = new FileReader();
+    const reader = new FileReader()
     reader.onloadend = () => {
-      setSelectedImage(reader.result as string);
-    };
-    reader.readAsDataURL(file);
-  };
+      setSelectedImage(reader.result as string)
+    }
+    reader.readAsDataURL(file)
+  }
 
-  const handleMediaUpload = (files: FileList, type: "image" | "video") => {
+  const handleMediaUpload = (files: FileList, type: 'image' | 'video') => {
     Array.from(files).forEach((file) => {
-      const reader = new FileReader();
+      const reader = new FileReader()
       reader.onloadend = () => {
         setMediaItems((prev) => [
           ...prev,
@@ -55,15 +53,15 @@ export const MediaSection = () => {
             url: reader.result as string,
             file,
           },
-        ]);
-      };
-      reader.readAsDataURL(file);
-    });
-  };
+        ])
+      }
+      reader.readAsDataURL(file)
+    })
+  }
 
   const handleRemoveMedia = (id: string) => {
-    setMediaItems((prev) => prev.filter((item) => item.id !== id));
-  };
+    setMediaItems((prev) => prev.filter((item) => item.id !== id))
+  }
 
   return (
     <div className="space-y-8">
@@ -82,7 +80,7 @@ export const MediaSection = () => {
         className="hidden"
         accept="video/*"
         onChange={(e) =>
-          e.target.files && handleMediaUpload(e.target.files, "video")
+          e.target.files && handleMediaUpload(e.target.files, 'video')
         }
       />
       <input
@@ -92,7 +90,7 @@ export const MediaSection = () => {
         accept="image/*"
         multiple
         onChange={(e) =>
-          e.target.files && handleMediaUpload(e.target.files, "image")
+          e.target.files && handleMediaUpload(e.target.files, 'image')
         }
       />
 
@@ -103,7 +101,7 @@ export const MediaSection = () => {
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {mediaItems.map((item) => (
               <div key={item.id} className="relative group">
-                {item.type === "image" ? (
+                {item.type === 'image' ? (
                   <div className="relative w-full h-48">
                     <img
                       src={item.url}
@@ -113,7 +111,7 @@ export const MediaSection = () => {
                     <div
                       className="absolute inset-0 flex items-center justify-center cursor-pointer bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                       onClick={() =>
-                        setSelectedMedia({ type: "image", url: item.url })
+                        setSelectedMedia({ type: 'image', url: item.url })
                       }
                     >
                       <Maximize2 className="w-12 h-12 text-white" />
@@ -129,7 +127,7 @@ export const MediaSection = () => {
                     <div
                       className="absolute inset-0 flex items-center justify-center cursor-pointer bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                       onClick={() =>
-                        setSelectedMedia({ type: "video", url: item.url })
+                        setSelectedMedia({ type: 'video', url: item.url })
                       }
                     >
                       <PlayCircle className="w-12 h-12 text-white" />
@@ -148,7 +146,7 @@ export const MediaSection = () => {
                 </div>
                 <div className="absolute bottom-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
                   <Badge variant="secondary">
-                    {item.type === "image" ? "Image" : "Video"}
+                    {item.type === 'image' ? 'Image' : 'Video'}
                   </Badge>
                 </div>
               </div>
@@ -165,14 +163,14 @@ export const MediaSection = () => {
         <DialogContent className="max-w-4xl ">
           <DialogHeader>
             <DialogTitle className="sr-only">
-              {selectedMedia?.type === "image"
-                ? "Image Preview"
-                : "Video Preview"}
+              {selectedMedia?.type === 'image'
+                ? 'Image Preview'
+                : 'Video Preview'}
             </DialogTitle>
             <DialogClose className="absolute right-4 top-4 rounded-sm !bg-destructive" />
           </DialogHeader>
           <div className="mt-2 ">
-            {selectedMedia?.type === "image" ? (
+            {selectedMedia?.type === 'image' ? (
               <img
                 src={selectedMedia.url}
                 alt="Preview"
@@ -193,5 +191,5 @@ export const MediaSection = () => {
         </DialogContent>
       </Dialog>
     </div>
-  );
-};
+  )
+}

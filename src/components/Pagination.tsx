@@ -1,11 +1,11 @@
-"use client";
-import { MouseEvent } from "react";
+'use client'
+import { MouseEvent } from 'react'
 
 interface PaginationProps {
-  active: number;
-  postsPerPage: number;
-  totalPosts: number;
-  paginate: (pageNumber: number, e: MouseEvent<HTMLAnchorElement>) => void;
+  active: number
+  postsPerPage: number
+  totalPosts: number
+  paginate: (pageNumber: number, e: MouseEvent<HTMLAnchorElement>) => void
 }
 
 export const Pagination = ({
@@ -14,9 +14,9 @@ export const Pagination = ({
   totalPosts,
   paginate,
 }: PaginationProps) => {
-  const pageNumbers = [];
+  const pageNumbers = []
   for (let i = 1; i <= Math.ceil(totalPosts / postsPerPage); i++)
-    pageNumbers.push(i);
+    pageNumbers.push(i)
 
   return (
     <nav>
@@ -25,7 +25,7 @@ export const Pagination = ({
           <li
             key={number}
             className={`${
-              number == active ? "bg-red-900" : ""
+              number == active ? 'bg-red-900' : ''
             } rounded-full w-8 h-8 flex items-center justify-center`}
           >
             <a href="#" onClick={(e) => paginate(number, e)}>
@@ -35,5 +35,5 @@ export const Pagination = ({
         ))}
       </ul>
     </nav>
-  );
-};
+  )
+}

@@ -1,21 +1,21 @@
-"use client";
+'use client'
 
-import { useState } from "react";
+import { useState } from 'react'
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Input } from "../ui/input";
-import { Camera, UserPlus } from "lucide-react";
-import PostHeader from "../Post/PostHeader";
+} from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { Textarea } from '@/components/ui/textarea'
+import { Input } from '../ui/input'
+import { Camera, UserPlus } from 'lucide-react'
+import PostHeader from '../Post/PostHeader'
 
 export function CreatePost() {
-  const [postContent, setPostContent] = useState("");
+  const [postContent, setPostContent] = useState('')
 
   return (
     <Dialog>
@@ -34,9 +34,9 @@ export function CreatePost() {
         </DialogHeader>
         <PostHeader
           profileImage="/download (3).jpeg"
-          username={"Youssif"}
+          username={'Youssif'}
           timestamp="6h ago"
-          category="General"
+          community="General"
         />
         <Textarea
           placeholder="What's on your mind, John?"
@@ -78,5 +78,5 @@ export function CreatePost() {
         </div>
       </DialogContent>
     </Dialog>
-  );
+  )
 }

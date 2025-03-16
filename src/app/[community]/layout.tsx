@@ -1,14 +1,14 @@
-import React from "react";
-import CommunityNavBar from "@/components/Community/CommunityNavBar";
+import React from 'react'
+import CommunityNavBar from '@/components/Community/CommunityNavBar'
 
 export default function CommunityLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
 }) {
   return (
-    <section className="px-4">
+    <section className="border">
       <CommunityNavBar /> {children}
     </section>
-  );
+  )
 }

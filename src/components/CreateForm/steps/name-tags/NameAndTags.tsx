@@ -1,29 +1,29 @@
-"use client";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { TagInput } from "./TagInput";
+'use client'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { TagInput } from './TagInput'
 
 interface NameAndTagsProps {
-  name: string;
-  tags: string[];
-  onChange: (name: string, tags: string[]) => void;
+  name: string
+  tags: string[]
+  onChange: (name: string, tags: string[]) => void
 }
 
 export const NameAndTags = ({ name, tags, onChange }: NameAndTagsProps) => {
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onChange(e.target.value, tags);
-  };
+    onChange(e.target.value, tags)
+  }
 
   const handleAddTag = (tag: string) => {
-    onChange(name, [...tags, tag]);
-  };
+    onChange(name, [...tags, tag])
+  }
 
   const handleRemoveTag = (tagToRemove: string) => {
     onChange(
       name,
-      tags.filter((tag) => tag !== tagToRemove)
-    );
-  };
+      tags.filter((tag) => tag !== tagToRemove),
+    )
+  }
 
   return (
     <div className="space-y-8">
@@ -43,5 +43,5 @@ export const NameAndTags = ({ name, tags, onChange }: NameAndTagsProps) => {
         onRemoveTag={handleRemoveTag}
       />
     </div>
-  );
-};
+  )
+}

@@ -1,15 +1,15 @@
-"use client";
-import React, { useState } from "react";
-import { PostContentProps } from "@/types";
+'use client'
+import React, { useState } from 'react'
+import { PostContentProps } from '@/types'
 const PostContent = ({ title, content }: PostContentProps) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false)
 
   return (
     <>
       <h2 className="h4 mt-3">{title}</h2>
       <p
         className={`mt-2 p-lg-muted text-foreground relative ${
-          !isExpanded ? "two-lines-truncate" : ""
+          !isExpanded ? 'two-lines-truncate' : ''
         }`}
       >
         {content}
@@ -31,7 +31,7 @@ const PostContent = ({ title, content }: PostContentProps) => {
         </span>
       )}
     </>
-  );
-};
+  )
+}
 
-export default PostContent;
+export default PostContent

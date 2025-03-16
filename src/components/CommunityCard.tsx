@@ -1,43 +1,43 @@
-"use client";
+'use client'
 
-import Image from "next/image";
-import { FaLock } from "react-icons/fa";
-import { FaShare } from "react-icons/fa";
-import { VscSettings } from "react-icons/vsc";
-import { IoIosHeartEmpty } from "react-icons/io";
-import { IoMdHeart } from "react-icons/io";
-import { useState } from "react";
+import Image from 'next/image'
+import { FaLock } from 'react-icons/fa'
+import { FaShare } from 'react-icons/fa'
+import { VscSettings } from 'react-icons/vsc'
+import { IoIosHeartEmpty } from 'react-icons/io'
+import { IoMdHeart } from 'react-icons/io'
+import { useState } from 'react'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { MdOutlineCancel } from "react-icons/md";
-import { CommunityCardProps } from "@/types";
-import { MdHeartBroken } from "react-icons/md";
-import { GiExitDoor } from "react-icons/gi";
+} from '@/components/ui/dropdown-menu'
+import { MdOutlineCancel } from 'react-icons/md'
+import { CommunityCardProps } from '@/types'
+import { MdHeartBroken } from 'react-icons/md'
+import { GiExitDoor } from 'react-icons/gi'
 
 const CommunityCard = ({ status }: CommunityCardProps) => {
-  const [isFavorite, setIsFavorite] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(false)
 
   const handleFav = () => {
-    setIsFavorite(!isFavorite);
-  };
+    setIsFavorite(!isFavorite)
+  }
   return (
     <div className="relative flex flex-col h-[300px] bg-card gap-2 pb-2 rounded-lg overflow-hidden drop-shadow-lg">
-      {status != "normal" && (
+      {status != 'normal' && (
         <DropdownMenu>
           <DropdownMenuTrigger className="absolute h-[18px] top-2 right-2 z-10 bg-foreground text-background rounded-sm cursor-pointer">
             <VscSettings fontSize={18} />
           </DropdownMenuTrigger>
           <DropdownMenuContent className="custom-dropdown-content">
-            {status == "pending" ? (
+            {status == 'pending' ? (
               <DropdownMenuItem className="custom-dropdown-item dropdown-cancel">
                 <MdOutlineCancel />
                 Cancel join request
               </DropdownMenuItem>
-            ) : status == "favorite" ? (
+            ) : status == 'favorite' ? (
               <>
                 <DropdownMenuItem className="custom-dropdown-item dropdown-cancel">
                   <MdHeartBroken />
@@ -80,8 +80,8 @@ const CommunityCard = ({ status }: CommunityCardProps) => {
               className={`absolute transition-all duration-300 cursor-pointer
                 ${
                   isFavorite
-                    ? "opacity-100 transform scale-100 text-red-500"
-                    : "opacity-0 transform scale-0"
+                    ? 'opacity-100 transform scale-100 text-red-500'
+                    : 'opacity-0 transform scale-0'
                 }
               `}
             />
@@ -91,15 +91,15 @@ const CommunityCard = ({ status }: CommunityCardProps) => {
               className={`absolute transition-all duration-300 cursor-pointer hover:text-red-300
                 ${
                   isFavorite
-                    ? "opacity-0 transform scale-0"
-                    : "opacity-100 transform scale-100"
+                    ? 'opacity-0 transform scale-0'
+                    : 'opacity-100 transform scale-100'
                 }
               `}
             />
           </div>
         </div>
       </div>
-      <p className="px-2 p-sm-muted" style={{ whiteSpace: "pre-wrap" }}>
+      <p className="px-2 p-sm-muted" style={{ whiteSpace: 'pre-wrap' }}>
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquam hic aut
         sequi nihil maxime natus provident,
       </p>
@@ -114,7 +114,7 @@ const CommunityCard = ({ status }: CommunityCardProps) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default CommunityCard;
+export default CommunityCard

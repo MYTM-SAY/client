@@ -1,30 +1,25 @@
-"use client";
+'use client'
 
-import Image from "next/image";
-import { FaLock } from "react-icons/fa";
-import { Eye, Users, Loader2 } from "lucide-react";
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "@/components/ui/card";
+import Image from 'next/image'
+import { FaLock } from 'react-icons/fa'
+import { Eye, Users, Loader2 } from 'lucide-react'
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { Skeleton } from "@/components/ui/skeleton";
-import { cn } from "@/lib/utils";
-import Link from "next/link";
+} from '@/components/ui/tooltip'
+import { Skeleton } from '@/components/ui/skeleton'
+import { cn } from '@/lib/utils'
+import Link from 'next/link'
 
 interface CommunityCardDiscoverProps {
-  isLoading?: boolean;
-  num: number;
+  isLoading?: boolean
+  num: number
 }
 
 export const CommunityCardSkeleton = () => (
@@ -42,28 +37,28 @@ export const CommunityCardSkeleton = () => (
       <Skeleton className="h-4 w-20" />
     </CardFooter>
   </Card>
-);
+)
 
 const CommunityCardDiscover = ({
   isLoading,
   num,
 }: CommunityCardDiscoverProps) => {
-  const [isHovered, setIsHovered] = useState(false);
-  const [isActionLoading, setIsActionLoading] = useState(false);
+  const [isHovered, setIsHovered] = useState(false)
+  const [isActionLoading, setIsActionLoading] = useState(false)
 
   const handleView = async () => {
     try {
-      setIsActionLoading(true);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      setIsActionLoading(true)
+      await new Promise((resolve) => setTimeout(resolve, 1000))
     } catch (error) {
-      console.error("Error viewing community:", error);
+      console.error('Error viewing community:', error)
     } finally {
-      setIsActionLoading(false);
+      setIsActionLoading(false)
     }
-  };
+  }
 
   if (isLoading) {
-    return <CommunityCardSkeleton />;
+    return <CommunityCardSkeleton />
   }
 
   return (
@@ -84,8 +79,8 @@ const CommunityCardDiscover = ({
         {/* Overlay */}
         <div
           className={cn(
-            "absolute inset-0 bg-black/60 flex items-center justify-center transition-opacity duration-300",
-            isHovered ? "opacity-100" : "opacity-0"
+            'absolute inset-0 bg-black/60 flex items-center justify-center transition-opacity duration-300',
+            isHovered ? 'opacity-100' : 'opacity-0',
           )}
           aria-hidden="true"
         >
@@ -162,7 +157,7 @@ const CommunityCardDiscover = ({
         </CardFooter>
       </div>
     </Card>
-  );
-};
+  )
+}
 
-export default CommunityCardDiscover;
+export default CommunityCardDiscover

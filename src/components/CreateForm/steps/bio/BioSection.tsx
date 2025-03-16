@@ -1,22 +1,22 @@
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
 
 interface BioSectionProps {
-  bio: string;
-  about: string;
-  onChange: (bio: string, about: string) => void;
+  bio: string
+  about: string
+  onChange: (bio: string, about: string) => void
 }
 
 export const BioSection = ({ bio, about, onChange }: BioSectionProps) => {
   const handleBioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onChange(e.target.value, about); // Changed from 'bio' to 'about' to maintain correct order
-  };
+    onChange(e.target.value, about) // Changed from 'bio' to 'about' to maintain correct order
+  }
 
   const handleAboutChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     // Changed event type
-    onChange(bio, e.target.value); // Changed order to match the onChange parameter order
-  };
+    onChange(bio, e.target.value) // Changed order to match the onChange parameter order
+  }
 
   return (
     <div className="space-y-8">
@@ -49,5 +49,5 @@ export const BioSection = ({ bio, about, onChange }: BioSectionProps) => {
         </p>
       </div>
     </div>
-  );
-};
+  )
+}

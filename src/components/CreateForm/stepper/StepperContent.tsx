@@ -1,10 +1,10 @@
 interface StepperContentProps {
-  currentStep: number;
+  currentStep: number
   steps: Array<{
-    id: number;
-    title: string;
-    content: React.ReactNode;
-  }>;
+    id: number
+    title: string
+    content: React.ReactNode
+  }>
 }
 
 export const StepperContent = ({ currentStep, steps }: StepperContentProps) => {
@@ -17,8 +17,8 @@ export const StepperContent = ({ currentStep, steps }: StepperContentProps) => {
               <h2 className="text-lg font-semibold mb-4">{step.title}</h2>
               {step.content}
             </div>
-          )
+          ),
       )}
     </div>
-  );
-};
+  )
+}

@@ -1,63 +1,63 @@
-"use client";
-import CommunityCardDiscover from "@/components/CommunityCardDiscover";
-import TagList from "@/components/Discover/TagList";
-import { Input } from "@/components/ui/input";
-import React from "react";
-import Pagination from "@mui/material/Pagination";
-import { IoSearch } from "react-icons/io5";
-import { useState } from "react";
+'use client'
+import CommunityCardDiscover from '@/components/CommunityCardDiscover'
+import TagList from '@/components/Discover/TagList'
+import { Input } from '@/components/ui/input'
+import React from 'react'
+import Pagination from '@mui/material/Pagination'
+import { IoSearch } from 'react-icons/io5'
+import { useState } from 'react'
 interface Tag {
-  id: number;
-  name: string;
-  count?: number;
+  id: number
+  name: string
+  count?: number
 }
 const page = () => {
   const tags: Tag[] = [
-    { id: 1, name: "Technology", count: 145 },
-    { id: 2, name: "Design", count: 89 },
-    { id: 3, name: "Development", count: 234 },
-    { id: 4, name: "UI/UX", count: 56 },
-    { id: 5, name: "Programming", count: 198 },
-    { id: 6, name: "Web", count: 167 },
-    { id: 7, name: "Mobile", count: 92 },
-    { id: 8, name: "Software", count: 143 },
-    { id: 9, name: "Frontend", count: 88 },
-    { id: 10, name: "Backend", count: 76 },
-    { id: 11, name: "Software", count: 143 },
-    { id: 12, name: "Frontend", count: 88 },
-    { id: 13, name: "Backend", count: 76 },
-    { id: 14, name: "Software", count: 143 },
-    { id: 15, name: "Frontend", count: 88 },
-    { id: 16, name: "Backend", count: 76 },
-  ];
-  const [selectedTags, setSelectedTags] = useState<number[]>([]);
+    { id: 1, name: 'Technology', count: 145 },
+    { id: 2, name: 'Design', count: 89 },
+    { id: 3, name: 'Development', count: 234 },
+    { id: 4, name: 'UI/UX', count: 56 },
+    { id: 5, name: 'Programming', count: 198 },
+    { id: 6, name: 'Web', count: 167 },
+    { id: 7, name: 'Mobile', count: 92 },
+    { id: 8, name: 'Software', count: 143 },
+    { id: 9, name: 'Frontend', count: 88 },
+    { id: 10, name: 'Backend', count: 76 },
+    { id: 11, name: 'Software', count: 143 },
+    { id: 12, name: 'Frontend', count: 88 },
+    { id: 13, name: 'Backend', count: 76 },
+    { id: 14, name: 'Software', count: 143 },
+    { id: 15, name: 'Frontend', count: 88 },
+    { id: 16, name: 'Backend', count: 76 },
+  ]
+  const [selectedTags, setSelectedTags] = useState<number[]>([])
 
   const handleTagClick = (tagId: number) => {
     setSelectedTags((prev) =>
       prev.includes(tagId)
         ? prev.filter((id) => id !== tagId)
-        : [...prev, tagId]
-    );
-  };
-  const [active, setActive] = useState(1);
+        : [...prev, tagId],
+    )
+  }
+  const [active, setActive] = useState(1)
 
   const posts = Array.from({ length: 40 }, (_, i) => (
     <CommunityCardDiscover key={i} isLoading={false} num={i} />
-  ));
-  const postPerPage = 8;
+  ))
+  const postPerPage = 8
 
-  const startIndex = (active - 1) * postPerPage;
-  const endIndex = startIndex + postPerPage;
-  const currentPosts = posts.slice(startIndex, endIndex);
-  const totalPages = Math.ceil(posts.length / postPerPage);
+  const startIndex = (active - 1) * postPerPage
+  const endIndex = startIndex + postPerPage
+  const currentPosts = posts.slice(startIndex, endIndex)
+  const totalPages = Math.ceil(posts.length / postPerPage)
 
   const handlePageChange = (
     event: React.ChangeEvent<unknown>,
-    page: number
+    page: number,
   ) => {
-    setActive(page);
-    window.scrollTo({ top: 0, behavior: "smooth" }); // Optional: scroll to top on page change
-  };
+    setActive(page)
+    window.scrollTo({ top: 0, behavior: 'smooth' }) // Optional: scroll to top on page change
+  }
   return (
     <div className="flex-col-center gap-16 container">
       <h1 className="h1">Discover</h1>
@@ -90,7 +90,7 @@ const page = () => {
         onChange={handlePageChange}
       />
     </div>
-  );
-};
+  )
+}
 
-export default page;
+export default page

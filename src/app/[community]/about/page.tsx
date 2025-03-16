@@ -1,15 +1,15 @@
-import * as React from "react";
-import Image from "next/image";
+import * as React from 'react'
+import Image from 'next/image'
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { FaYoutube } from "react-icons/fa";
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { FaYoutube } from 'react-icons/fa'
 
-import Btn from "@/components/ui/Btn";
+import Btn from '@/components/ui/Btn'
 
 const page = () => {
   const bio = `ANDY ELLIOTT'S #1 GROUP FOR
 SALES & PERSONAL
-DEVELOPMENT`;
+DEVELOPMENT`
   const text = `👋Join The ELITE SALES ALLIANCE & Learn How To DOMINATE Your Goals And Become Your
 Best Version!
 
@@ -24,7 +24,7 @@ Magnetic Company Culture, And Be Called “Tony Robbin's Greatest Student” In 
 ✅ The 5 Step Course To Change Your Life
 ✅ Free 1-1 Onboarding Call On How To Totally Recreate Yourself!
 ✅ Andy Elliott's 9 Skills Course
-`;
+`
   return (
     <div className="flex gap-4 p-2 justify-between">
       <div className="bg-card max-w-[1000px] w-full rounded-lg p-6 space-y-3">
@@ -44,7 +44,7 @@ Magnetic Company Culture, And Be Called “Tony Robbin's Greatest Student” In 
           </div>
         </div>
 
-        <div className="p-muted" style={{ whiteSpace: "pre-wrap" }}>
+        <div className="p-muted" style={{ whiteSpace: 'pre-wrap' }}>
           {text}
         </div>
       </div>
@@ -58,7 +58,7 @@ Magnetic Company Culture, And Be Called “Tony Robbin's Greatest Student” In 
         />
         <div className="px-2 space-y-4">
           <h2 className="h4">Community Name</h2>
-          <div className="p-muted" style={{ whiteSpace: "pre" }}>
+          <div className="p-muted" style={{ whiteSpace: 'pre' }}>
             {bio}
           </div>
           <div className="flex items-center gap-3">
@@ -86,7 +86,7 @@ Magnetic Company Culture, And Be Called “Tony Robbin's Greatest Student” In 
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default page;
+export default page

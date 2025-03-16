@@ -1,12 +1,12 @@
-import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Button } from '@/components/ui/button'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 interface StepperNavigationProps {
-  currentStep: number;
-  totalSteps: number;
-  onNext: () => void;
-  onPrevious: () => void;
-  isNextDisabled?: boolean;
+  currentStep: number
+  totalSteps: number
+  onNext: () => void
+  onPrevious: () => void
+  isNextDisabled?: boolean
 }
 
 export const StepperNavigation = ({
@@ -31,9 +31,9 @@ export const StepperNavigation = ({
             Next <ChevronRight className="ml-2 h-4 w-4" />
           </>
         ) : (
-          "Submit"
+          'Submit'
         )}
       </Button>
     </div>
-  );
-};
+  )
+}

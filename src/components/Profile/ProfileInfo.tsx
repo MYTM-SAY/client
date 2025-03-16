@@ -1,19 +1,14 @@
-import Btn from "../ui/Btn";
-import {
-  FaRegClock,
-  FaCalendarAlt,
-  FaLinkedin,
-  FaGithub,
-} from "react-icons/fa";
-import { SiLeetcode, SiCodeforces } from "react-icons/si";
-import { FaXTwitter } from "react-icons/fa6";
+import Btn from '../ui/Btn'
+import { FaRegClock, FaCalendarAlt, FaLinkedin, FaGithub } from 'react-icons/fa'
+import { SiLeetcode, SiCodeforces } from 'react-icons/si'
+import { FaXTwitter } from 'react-icons/fa6'
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import Link from "next/link";
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import Link from 'next/link'
 const ProfileInfo = () => {
   const text = `Ex-Software Engineer @Bld.ai
 3x ACPC Finalist
-2x ECPC Medalist 🥈🥉`;
+2x ECPC Medalist 🥈🥉`
 
   return (
     <div className="flex mlg:w-full flex-col items-center justify-between self-start bg-background border border-foreground rounded-lg py-6 px-12 gap-6 dark-gray-shadow ">
@@ -26,7 +21,7 @@ const ProfileInfo = () => {
         <h1 className="h4">Yousef Hassan</h1>
       </div>
       <div className="flex flex-col gap-8 px-4">
-        <div style={{ whiteSpace: "pre-wrap" }} className="p">
+        <div style={{ whiteSpace: 'pre-wrap' }} className="p">
           {text}
         </div>
         <ul className="flex flex-col gap-2 p-sm-muted">
@@ -81,7 +76,7 @@ const ProfileInfo = () => {
         </li>
       </ul>
     </div>
-  );
-};
+  )
+}
 
-export default ProfileInfo;
+export default ProfileInfo

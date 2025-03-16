@@ -1,28 +1,28 @@
-"use client";
-import React, { useState } from "react";
+'use client'
+import React, { useState } from 'react'
 import {
   BiUpvote,
   BiDownvote,
   BiSolidUpvote,
   BiSolidDownvote,
-} from "react-icons/bi";
-import { FaRegComment } from "react-icons/fa";
-import { Button } from "../ui/button";
-import PostShare from "./PostShare";
+} from 'react-icons/bi'
+import { FaRegComment } from 'react-icons/fa'
+import { Button } from '../ui/button'
+import PostShare from './PostShare'
 
 const PostActions = () => {
-  const [isUpvoted, setIsUpvoted] = useState(false);
-  const [isDownvoted, setIsDownvoted] = useState(false);
+  const [isUpvoted, setIsUpvoted] = useState(false)
+  const [isDownvoted, setIsDownvoted] = useState(false)
 
   const handleUpvote = () => {
-    setIsUpvoted(!isUpvoted);
-    if (isDownvoted) setIsDownvoted(false);
-  };
+    setIsUpvoted(!isUpvoted)
+    if (isDownvoted) setIsDownvoted(false)
+  }
 
   const handleDownvote = () => {
-    setIsDownvoted(!isDownvoted);
-    if (isUpvoted) setIsUpvoted(false);
-  };
+    setIsDownvoted(!isDownvoted)
+    if (isUpvoted) setIsUpvoted(false)
+  }
 
   return (
     <div className="flex gap-4 items-center flex-wrap mt-6">
@@ -51,13 +51,14 @@ const PostActions = () => {
           />
         )}
       </div>
+
       <Button className="flex items-center gap-2 px-4 py-2 text-foreground p-lg bg-card hover:text-white">
         <FaRegComment className="!w-6 !h-6" /> 12
       </Button>
-      <PostShare url="https://your-url.com" title="Your Custom Title" />
-      <p className="text-accent p">New comment 3m ago</p>
-    </div>
-  );
-};
 
-export default PostActions;
+      <PostShare url="https://your-url.com" title="Your Custom Title" />
+    </div>
+  )
+}
+
+export default PostActions

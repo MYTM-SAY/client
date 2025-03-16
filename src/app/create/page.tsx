@@ -1,32 +1,32 @@
-"use client";
+'use client'
 
-import { Stepper } from "@/components/CreateForm/stepper/Stepper";
-import { NameAndTags } from "@/components/CreateForm/steps/name-tags/NameAndTags";
-import { BioSection } from "@/components/CreateForm/steps/bio/BioSection";
-import { MediaSection } from "@/components/CreateForm/steps/media/MediaSection";
-import { useState } from "react";
+import { Stepper } from '@/components/CreateForm/stepper/Stepper'
+import { NameAndTags } from '@/components/CreateForm/steps/name-tags/NameAndTags'
+import { BioSection } from '@/components/CreateForm/steps/bio/BioSection'
+import { MediaSection } from '@/components/CreateForm/steps/media/MediaSection'
+import { useState } from 'react'
 
 const CreateForm = () => {
   const [formData, setFormData] = useState({
-    name: "",
+    name: '',
     tags: [] as string[],
-    about: "",
-    bio: "",
-  });
+    about: '',
+    bio: '',
+  })
 
   const isNextDisabled = (step: number) => {
     if (
-      (formData.name.trim() === "" && step == 1) ||
-      ((formData.bio.trim() === "" || formData.about.trim() == "") && step == 2)
+      (formData.name.trim() === '' && step == 1) ||
+      ((formData.bio.trim() === '' || formData.about.trim() == '') && step == 2)
     )
-      return true;
-    return false;
-  };
+      return true
+    return false
+  }
 
   const steps = [
     {
       id: 1,
-      title: "Name and Tags",
+      title: 'Name and Tags',
       content: (
         <NameAndTags
           name={formData.name}
@@ -39,7 +39,7 @@ const CreateForm = () => {
     },
     {
       id: 2,
-      title: "Bio Information",
+      title: 'Bio Information',
       content: (
         <BioSection
           bio={formData.bio}
@@ -52,10 +52,10 @@ const CreateForm = () => {
     },
     {
       id: 3,
-      title: "Media Upload",
+      title: 'Media Upload',
       content: <MediaSection />,
     },
-  ];
+  ]
 
   return (
     <div className="w-full flex-col-center gap-16 p-4">
@@ -65,7 +65,7 @@ const CreateForm = () => {
         isNextDisabled={(currentStep) => isNextDisabled(currentStep)}
       />
     </div>
-  );
-};
+  )
+}
 
-export default CreateForm;
+export default CreateForm

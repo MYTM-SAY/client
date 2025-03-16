@@ -1,13 +1,8 @@
-"use client";
+'use client'
 
-import { ReactNode } from "react";
-import ThemeProviderWrapper from "./ThemeProvider";
-import { ClerkProvider } from "@clerk/nextjs";
+import { ReactNode } from 'react'
+import ThemeProviderWrapper from './ThemeProvider'
 
 export function Providers({ children }: { children: ReactNode }) {
-  return (
-    <ThemeProviderWrapper>
-      <ClerkProvider>{children}</ClerkProvider>
-    </ThemeProviderWrapper>
-  );
+  return <ThemeProviderWrapper>{children}</ThemeProviderWrapper>
 }

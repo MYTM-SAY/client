@@ -1,87 +1,87 @@
-import React from "react";
-import { Button } from "../ui/button";
-import { RiShareForwardLine } from "react-icons/ri";
+import React from 'react'
+import { Button } from '../ui/button'
+import { RiShareForwardLine } from 'react-icons/ri'
 import {
   Drawer,
   DrawerContent,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "../ui/drawer";
+} from '../ui/drawer'
 import {
   FaFacebook,
   FaTwitter,
   FaLinkedin,
   FaWhatsapp,
   FaTelegram,
-} from "react-icons/fa";
-import { MdContentCopy } from "react-icons/md";
-import { useToast } from "@/hooks/use-toast";
-import { ShareButtonProps } from "@/types";
+} from 'react-icons/fa'
+import { MdContentCopy } from 'react-icons/md'
+import { useToast } from '@/hooks/use-toast'
+import { ShareButtonProps } from '@/types'
 
 const PostShare = ({
   url = window.location.href,
-  title = "Check this out!",
+  title = 'Check this out!',
 }: ShareButtonProps) => {
-  const { toast } = useToast();
+  const { toast } = useToast()
 
   const socialMediaLinks = [
     {
-      name: "Facebook",
+      name: 'Facebook',
       icon: <FaFacebook className="w-6 h-6" />,
       href: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
         url
       )}`,
-      color: "hover:bg-blue-600/10 hover:text-blue-600",
+      color: 'hover:bg-blue-600/10 hover:text-blue-600',
     },
     {
-      name: "Twitter",
+      name: 'Twitter',
       icon: <FaTwitter className="w-6 h-6" />,
       href: `https://twitter.com/intent/tweet?url=${encodeURIComponent(
         url
       )}&text=${encodeURIComponent(title)}`,
-      color: "hover:bg-blue-400/10 hover:text-blue-400",
+      color: 'hover:bg-blue-400/10 hover:text-blue-400',
     },
     {
-      name: "LinkedIn",
+      name: 'LinkedIn',
       icon: <FaLinkedin className="w-6 h-6" />,
       href: `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(
         url
       )}&title=${encodeURIComponent(title)}`,
-      color: "hover:bg-blue-700/10 hover:text-blue-700",
+      color: 'hover:bg-blue-700/10 hover:text-blue-700',
     },
     {
-      name: "WhatsApp",
+      name: 'WhatsApp',
       icon: <FaWhatsapp className="w-6 h-6" />,
-      href: `https://wa.me/?text=${encodeURIComponent(title + " " + url)}`,
-      color: "hover:bg-green-500/10 hover:text-green-500",
+      href: `https://wa.me/?text=${encodeURIComponent(title + ' ' + url)}`,
+      color: 'hover:bg-green-500/10 hover:text-green-500',
     },
     {
-      name: "Telegram",
+      name: 'Telegram',
       icon: <FaTelegram className="w-6 h-6" />,
       href: `https://t.me/share/url?url=${encodeURIComponent(
         url
       )}&text=${encodeURIComponent(title)}`,
-      color: "hover:bg-blue-500/10 hover:text-blue-500",
+      color: 'hover:bg-blue-500/10 hover:text-blue-500',
     },
-  ];
+  ]
 
   const copyToClipboard = async () => {
     try {
-      await navigator.clipboard.writeText(url);
+      await navigator.clipboard.writeText(url)
       toast({
-        title: "Link copied to clipboard!",
-        variant: "success",
+        title: 'Link copied to clipboard!',
+        variant: 'success',
         duration: 2000,
-      });
-    } catch (err) {
+      })
+    } catch {
       toast({
-        title: "Failed to copy link",
-        variant: "destructive",
+        title: 'Failed to copy link',
+        variant: 'destructive',
         duration: 2000,
-      });
+      })
     }
-  };
+  }
 
   return (
     <Drawer>
@@ -134,7 +134,7 @@ const PostShare = ({
         </div>
       </DrawerContent>
     </Drawer>
-  );
-};
+  )
+}
 
-export default PostShare;
+export default PostShare

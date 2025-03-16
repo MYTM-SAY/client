@@ -1,9 +1,9 @@
-"use client";
-import React, { useState } from "react";
-import { toast } from "react-hot-toast";
-import * as z from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+'use client'
+import React, { useState } from 'react'
+import { toast } from 'react-hot-toast'
+import * as z from 'zod'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
 import {
   Form,
   FormControl,
@@ -11,42 +11,42 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
-import { FileUploader } from "@/components/FileUploader";
-import { useUploadThing } from "@/components/uploadthing";
+} from '@/components/ui/form'
+import { Button } from '@/components/ui/button'
+import { FileUploader } from '@/components/FileUploader'
+import { useUploadThing } from '@/components/uploadthing'
 
 export default function UploadForm() {
-  const [files, setFiles] = useState<File[]>([]);
-  const [loading, setLoading] = useState(false);
-  const { startUpload } = useUploadThing("imageUploader");
+  const [files, setFiles] = useState<File[]>([])
+  const [loading, setLoading] = useState(false)
+  const { startUpload } = useUploadThing('imageUploader')
   const uploadFileSchema = z.object({
     image: z.array(z.string()).optional(),
-  });
+  })
   const form = useForm<z.infer<typeof uploadFileSchema>>({
     resolver: zodResolver(uploadFileSchema),
     defaultValues: {
       image: [],
     },
-  });
+  })
 
   async function onSubmit(data: z.infer<typeof uploadFileSchema>) {
-    setLoading(true);
+    setLoading(true)
     if (files.length > 0) {
       try {
-        console.log("1");
-        const uploadedImage = await startUpload(files);
-        console.log("2");
-        console.log({ data, uploadedImage });
+        console.log('1')
+        const uploadedImage = await startUpload(files)
+        console.log('2')
+        console.log({ data, uploadedImage })
       } catch (error) {
-        console.error(error);
-        toast.error("Error uploading image");
+        console.error(error)
+        toast.error('Error uploading image')
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
     }
-    toast.success("File Uploaded successfully");
-    setLoading(false);
+    toast.success('File Uploaded successfully')
+    setLoading(false)
   }
   return (
     <Form {...form}>
@@ -83,9 +83,9 @@ export default function UploadForm() {
           disabled={loading}
           className="w-[90%] bg-green-400 hover:bg-green-600 mt-4"
         >
-          {loading ? "Uploading File..." : "Upload File"}
+          {loading ? 'Uploading File...' : 'Upload File'}
         </Button>
       </form>
     </Form>
-  );
+  )
 }

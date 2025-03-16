@@ -1,13 +1,13 @@
-"use client";
-import { useRef } from "react";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Upload, X, Image } from "lucide-react";
+'use client'
+import { useRef } from 'react'
+import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
+import { Upload, X, Image } from 'lucide-react'
 
 interface BannerUploadProps {
-  selectedImage: string | null;
-  onImageSelect: (file: File) => void;
-  onImageRemove: () => void;
+  selectedImage: string | null
+  onImageSelect: (file: File) => void
+  onImageRemove: () => void
 }
 
 export const BannerUpload = ({
@@ -15,14 +15,14 @@ export const BannerUpload = ({
   onImageSelect,
   onImageRemove,
 }: BannerUploadProps) => {
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null)
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+    const file = e.target.files?.[0]
     if (file) {
-      onImageSelect(file);
+      onImageSelect(file)
     }
-  };
+  }
 
   return (
     <div className="space-y-2">
@@ -69,5 +69,5 @@ export const BannerUpload = ({
         )}
       </div>
     </div>
-  );
-};
+  )
+}

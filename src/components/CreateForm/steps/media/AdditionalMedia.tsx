@@ -1,10 +1,10 @@
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Plus, Video, Image } from "lucide-react";
+import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
+import { Plus, Video, Image } from 'lucide-react'
 
 interface AdditionalMediaProps {
-  onVideoUpload: () => void;
-  onGalleryUpload: () => void;
+  onVideoUpload: () => void
+  onGalleryUpload: () => void
 }
 
 export const AdditionalMedia = ({
@@ -56,5 +56,5 @@ export const AdditionalMedia = ({
         </div>
       </div>
     </div>
-  );
-};
+  )
+}

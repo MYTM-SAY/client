@@ -1,6 +1,6 @@
-import React from "react";
-import Image from "next/image";
-import Btn from "../ui/Btn";
+import React from 'react'
+import Image from 'next/image'
+import Btn from '../ui/Btn'
 const CommunitiesProfile = () => {
   return (
     <div>
@@ -36,7 +36,7 @@ const CommunitiesProfile = () => {
         ))}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default CommunitiesProfile;
+export default CommunitiesProfile

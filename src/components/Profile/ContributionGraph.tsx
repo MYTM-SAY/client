@@ -1,42 +1,42 @@
-import React from "react";
-import { ContributionGraphProps } from "../../types/index";
+import React from 'react'
+import { ContributionGraphProps } from '../../types/index'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select'
 
 interface Drops {
-  value: string;
-  label: string;
+  value: string
+  label: string
 }
 const years: Drops[] = [
-  { value: "2020", label: "2020" },
-  { value: "2021", label: "2021" },
-  { value: "2022", label: "2022" },
-  { value: "2023", label: "2023" },
-  { value: "2024", label: "2024" },
-];
+  { value: '2020', label: '2020' },
+  { value: '2021', label: '2021' },
+  { value: '2022', label: '2022' },
+  { value: '2023', label: '2023' },
+  { value: '2024', label: '2024' },
+]
 const ContributionGraph = ({ contributions }: ContributionGraphProps) => {
-  const colors: string[] = ["#ebedf0", "#8bb4f7", "#5a9cf7", "#3a85f5"];
-  const monthDays: number[] = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  const colors: string[] = ['#ebedf0', '#8bb4f7', '#5a9cf7', '#3a85f5']
+  const monthDays: number[] = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
   const monthShortNames: string[] = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-  ];
-  let cnt = 1000;
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ]
+  let cnt = 1000
   return (
     <div className="mb-8">
       <div className="flex-between pb-4">
@@ -76,16 +76,16 @@ const ContributionGraph = ({ contributions }: ContributionGraphProps) => {
                           colors[Math.min(contributions[index + month], 3)],
                       }}
                     ></div>
-                  );
+                  )
                 })}
               </div>
               <p className="">{monthShortNames[i]}</p>
             </div>
-          );
+          )
         })}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ContributionGraph;
+export default ContributionGraph

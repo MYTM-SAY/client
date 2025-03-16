@@ -1,12 +1,12 @@
-"use client";
+'use client'
 
-import React from "react";
-import { usePathname } from "next/navigation";
-import { FaCompass, FaUserGroup } from "react-icons/fa6";
-import { FaHome } from "react-icons/fa";
-import { BsFillPlusCircleFill } from "react-icons/bs";
+import React from 'react'
+import { usePathname } from 'next/navigation'
+import { FaCompass } from 'react-icons/fa6'
+import { Home, Users } from 'lucide-react'
+import { BsFillPlusCircleFill } from 'react-icons/bs'
 
-import Image from "next/image";
+import Image from 'next/image'
 import {
   Sidebar,
   SidebarContent,
@@ -14,33 +14,34 @@ import {
   SidebarHeader,
   SidebarMenu,
   SidebarSeparator,
-} from "@/components/ui/sidebar";
-import SideBarIcon from "./SideBarIcon";
+} from '@/components/ui/sidebar'
+import SideBarIcon from './SideBarIcon'
 
-const AppSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
-  const pathname = usePathname();
-  const arr: string[] = ["adonas", "jolly", "AlTarek", "Hassan"];
-  // console.log(pathname);
-  // console.log(`/${arr[0]}`);
-  // console.log(pathname.startsWith(`/${arr[0]}`));
+const AppSidebar = () => {
+  const pathname = usePathname()
+  const arr = Array(100).fill('community')
+
   return (
     <Sidebar side="left" variant="sidebar" collapsible="offcanvas">
       <SidebarHeader className="p-0">
-        <SidebarMenu className="py-6  gap-6 flex-col-center">
-          <SideBarIcon href="/" isActive={pathname === "/"}>
-            <FaHome className="!w-8 !h-8" />
+        <SidebarMenu className="flex flex-col items-center gap-7 py-7">
+          <SideBarIcon href="/" isActive={pathname === '/'}>
+            <Home size={30} />
           </SideBarIcon>
+
           <SideBarIcon
             href="/my-communities"
-            isActive={pathname === "/my-communities"}
+            isActive={pathname === '/my-communities'}
           >
-            <FaUserGroup className="!w-8 !h-8" />
+            <Users size={30} />
           </SideBarIcon>
         </SidebarMenu>
-        <SidebarSeparator className="mb-4 h-[2px]" />
       </SidebarHeader>
-      <SidebarContent className=" no-scrollbar">
-        <SidebarMenu className=" gap-6 flex-col-center">
+
+      <SidebarSeparator />
+
+      <SidebarContent className="mt-7 no-scrollbar">
+        <SidebarMenu className="gap-6 flex-col-center">
           {arr.map((i, idx) => (
             <SideBarIcon
               key={idx}
@@ -58,19 +59,21 @@ const AppSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
           ))}
         </SidebarMenu>
       </SidebarContent>
+
+      <SidebarSeparator />
+
       <SidebarFooter className="p-0">
-        <SidebarSeparator className="mt-4 h-[2px]" />
         <SidebarMenu className="py-4 gap-8 flex-col-center">
-          <SideBarIcon href="/create" isActive={pathname === "/create"}>
+          <SideBarIcon href="/create" isActive={pathname === '/create'}>
             <BsFillPlusCircleFill className="!w-8 !h-8" />
           </SideBarIcon>
-          <SideBarIcon href="/discover" isActive={pathname === "/discover"}>
+          <SideBarIcon href="/discover" isActive={pathname === '/discover'}>
             <FaCompass className="!w-8 !h-8" />
           </SideBarIcon>
         </SidebarMenu>
       </SidebarFooter>
     </Sidebar>
-  );
-};
+  )
+}
 
-export default AppSidebar;
+export default AppSidebar

@@ -1,14 +1,14 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import Post from "@/components/Post/Post";
-import Image from "next/image";
-import Btn from "@/components/ui/Btn";
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import Post from '@/components/Post/Post'
+import Image from 'next/image'
+import Btn from '@/components/ui/Btn'
 
-import { CreatePost } from "@/components/Fourm/CreatePost";
+import { CreatePost } from '@/components/Fourm/CreatePost'
 const page = () => {
-  const posts = Array.from({ length: 40 }, (_, i) => <Post key={i} num={i} />);
+  const posts = Array.from({ length: 40 }, (_, i) => <Post key={i} num={i} />)
   const bio = `ANDY ELLIOTT'S #1 GROUP FOR
 SALES & PERSONAL
-DEVELOPMENT`;
+DEVELOPMENT`
   return (
     <div className="flex gap-4 justify-between">
       <div className=" max-w-[1000px] w-full">
@@ -32,7 +32,7 @@ DEVELOPMENT`;
         />
         <div className="px-2 space-y-4">
           <h2 className="h4">Community Name</h2>
-          <div className="p-muted" style={{ whiteSpace: "pre" }}>
+          <div className="p-muted" style={{ whiteSpace: 'pre' }}>
             {bio}
           </div>
           <div className="flex items-center gap-3">
@@ -60,7 +60,7 @@ DEVELOPMENT`;
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default page;
+export default page

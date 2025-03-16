@@ -1,30 +1,30 @@
-"use client";
-import Btn from "../ui/Btn";
-import Group from "./Group";
-import * as React from "react";
-import { FaRegArrowAltCircleLeft } from "react-icons/fa";
-import { FaRegArrowAltCircleRight } from "react-icons/fa";
+'use client'
+import Btn from '../ui/Btn'
+import * as React from 'react'
+import { FaRegArrowAltCircleLeft } from 'react-icons/fa'
+import { FaRegArrowAltCircleRight } from 'react-icons/fa'
+import JoinedCommunityCard from './CommunityCardImproved'
 
 const JoinedGroups = () => {
-  const carouselRef = React.useRef<HTMLDivElement>(null);
+  const carouselRef = React.useRef<HTMLDivElement>(null)
 
   const scrollLeft = () => {
     if (carouselRef.current) {
       carouselRef.current.scrollBy({
         left: -145,
-        behavior: "smooth",
-      });
+        behavior: 'smooth',
+      })
     }
-  };
+  }
 
   const scrollRight = () => {
     if (carouselRef.current) {
       carouselRef.current.scrollBy({
         left: 145,
-        behavior: "smooth",
-      });
+        behavior: 'smooth',
+      })
     }
-  };
+  }
 
   return (
     <div className="space-y-4">
@@ -51,17 +51,12 @@ const JoinedGroups = () => {
           className="flex overflow-x-auto no-scrollbar gap-6 p-6"
         >
           {Array.from({ length: 20 }).map((_, index) => (
-            <div
-              key={index}
-              className="flex-shrink-0 w-[200px] h-[280px] text-center"
-            >
-              <Group num={index} />
-            </div>
+            <JoinedCommunityCard key={index} />
           ))}
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default JoinedGroups;
+export default JoinedGroups

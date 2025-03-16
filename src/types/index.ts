@@ -1,43 +1,37 @@
-import { ReactNode } from "react";
+import { ReactNode } from 'react'
 
 export interface SidebarProps {
   handleOnClick: (
-    event: React.MouseEvent<HTMLDivElement | HTMLLIElement>
-  ) => void;
-  active: string;
+    event: React.MouseEvent<HTMLDivElement | HTMLLIElement>,
+  ) => void
+  active: string
 }
 
 export interface SideBarIconProps {
-  children: ReactNode;
-  href: string;
-  isActive: boolean;
+  children: ReactNode
+  href: string
+  isActive: boolean
 }
 
 export interface ContributionGraphProps {
-  contributions: number[];
+  contributions: number[]
 }
 
 export interface ButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
-  children: ReactNode;
+  children: ReactNode
 }
 
 export interface CommunityCardProps {
-  status: string;
-}
-export interface PostHeaderProps {
-  profileImage: string;
-  username: string;
-  timestamp: string;
-  category: string;
+  status: string
 }
 export interface PostContentProps {
-  title: string;
-  content: string;
+  title: string
+  content: string
 }
 export interface ShareButtonProps {
-  url?: string;
-  title?: string;
+  url?: string
+  title?: string
 }
 export interface GroupProps {
-  num: number;
+  num: number
 }
