@@ -2,7 +2,6 @@ import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
 import { Providers } from '@/providers'
-import { SidebarProvider } from '@/components/ui/sidebar'
 import AppSidebar from '@/components/SideBar/app-sidebar'
 import { Toaster } from '@/components/ui/toaster'
 import NavBar from '@/components/NavBar/NavBar'
@@ -33,7 +32,6 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Providers>
-          <SidebarProvider>
             <main className="flex w-full">
               <AppSidebar />
               <div className="mx-auto">
@@ -43,7 +41,6 @@ export default function RootLayout({
                 </div>
               </div>
             </main>
-          </SidebarProvider>
         </Providers>
         <Toaster />
       </body>
