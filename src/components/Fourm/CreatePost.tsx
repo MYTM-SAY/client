@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { Input } from '../ui/input'
 import { Camera, UserPlus } from 'lucide-react'
-import PostHeader from '../Post/PostHeader'
+// import PostHeader from '../Post/PostHeader'
 
 export function CreatePost() {
   const [postContent, setPostContent] = useState('')
@@ -32,12 +32,12 @@ export function CreatePost() {
         <DialogHeader className="border-b p-4">
           <DialogTitle className="text-lg">Create Post</DialogTitle>
         </DialogHeader>
-        <PostHeader
+        {/* <PostHeader
           profileImage="/download (3).jpeg"
           username={'Youssif'}
           timestamp="6h ago"
           community="General"
-        />
+        /> */}
         <Textarea
           placeholder="What's on your mind, John?"
           className="px-4 mt-4 min-h-[150px] resize-none border-none shadow-none p-lg"

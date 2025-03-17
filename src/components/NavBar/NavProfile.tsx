@@ -9,7 +9,12 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
 import Link from 'next/link'
+import { signOutAction } from '@/lib/actions/auth'
 const NavProfile = () => {
+  const handleSignOut = async () => {
+    'use server'
+    await signOutAction()
+  }
   return (
     <div className="flex shrink-0 items-center justify-end gap-4">
       {/* <SignedIn> */}
@@ -28,7 +33,9 @@ const NavProfile = () => {
             </DropdownMenuItem>
           </Link>
           <DropdownMenuItem className="dropdown-cancel custom-dropdown-item">
-            <button>Logout</button>
+            <form action={handleSignOut}>
+              <button type="submit">Logout</button>
+            </form>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
