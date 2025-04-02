@@ -14,11 +14,17 @@ const tokenSubscribers: HaltedReqCb[] = []
 
 const onRefreshed = (newAccessToken: string) => {
   tokenSubscribers.forEach((cb) => cb(newAccessToken))
-  tokenSubscribers.length = 0 // Clear array after processing
+  tokenSubscribers.length = 0
 }
 
 const subscribeTokenRefresh = (haltedReqCb: HaltedReqCb) => {
   tokenSubscribers.push(haltedReqCb)
+}
+
+const customRedirect = (url: string) => {
+  if (typeof window !== 'undefined') {
+    window.location.href = url
+  }
 }
 
 instance.interceptors.response.use(
@@ -27,37 +33,42 @@ instance.interceptors.response.use(
     const originalReq = error.config
     const errorResponse = error.response
 
-    if (errorResponse?.status === 401) {
-      if (errorResponse.data.message === 'Unauthorized' && !isRefreshing) {
-        try {
-          isRefreshing = true
-          const {
-            data: { accessToken },
-          } = await instance.post('/auth/refresh-token')
-          isRefreshing = false
+    if (errorResponse?.status !== 401) {
+      return Promise.reject(error)
+    }
 
-          onRefreshed(accessToken)
+    if (errorResponse.data.message === 'Unauthorized' && !isRefreshing) {
+      try {
+        isRefreshing = true
+        const {
+          data: { accessToken },
+        } = await instance.post('/auth/refresh-token')
+        isRefreshing = false
 
-          return instance(originalReq)
-        } catch (err) {
-          window.location.href = '/sign-in'
-          return Promise.reject(err)
-        }
-      } else if (errorResponse.data.message === 'Invalid refresh token' && isRefreshing) {
-        window.location.href = '/sign-in'
-        return Promise.reject(error)
+        onRefreshed(accessToken)
+
+        return instance(originalReq)
+      } catch (err) {
+        customRedirect('/sign-in')
+        return Promise.reject(err)
       }
-      if (isRefreshing) {
-        return new Promise((resolve) => {
-          subscribeTokenRefresh(() => {
-            resolve(instance(originalReq))
-          })
+    }
+
+    if (errorResponse.data.message === 'Invalid refresh token' && isRefreshing) {
+      customRedirect('/sign-in')
+      return Promise.reject(error)
+    }
+
+    if (isRefreshing) {
+      return new Promise((resolve) => {
+        subscribeTokenRefresh(() => {
+          resolve(instance(originalReq))
         })
-      }
+      })
     }
 
     return Promise.reject(error)
   },
 )
 
-export default instance
+export { instance }

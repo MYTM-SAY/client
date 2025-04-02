@@ -5,7 +5,6 @@ import { FaLock } from 'react-icons/fa'
 import { Eye, Users, Loader2 } from 'lucide-react'
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import {
   Tooltip,
@@ -63,7 +62,7 @@ const CommunityCardDiscover = ({
 
   return (
     <Card
-      className="relative h-[300px] overflow-hidden group hover:shadow-lg transition-all duration-300 dark-gray-shadow"
+      className="relative overflow-hidden group hover:shadow-lg transition-all duration-300"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >

@@ -1,5 +1,4 @@
 import React from 'react'
-import NavSearch from './NavSearch'
 import NavProfile from './NavProfile'
 import { SidebarTrigger } from '../ui/sidebar'
 import Link from 'next/link'
@@ -14,7 +13,6 @@ export default function NavBar() {
         </Link>
       </div>
 
-      <NavSearch />
       <NavProfile />
     </div>
   )

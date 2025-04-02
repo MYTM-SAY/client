@@ -11,7 +11,7 @@ interface Tag {
   name: string
   count?: number
 }
-const page = () => {
+export default function Page() {
   const tags: Tag[] = [
     { id: 1, name: 'Technology', count: 145 },
     { id: 2, name: 'Design', count: 89 },
@@ -33,17 +33,11 @@ const page = () => {
   const [selectedTags, setSelectedTags] = useState<number[]>([])
 
   const handleTagClick = (tagId: number) => {
-    setSelectedTags((prev) =>
-      prev.includes(tagId)
-        ? prev.filter((id) => id !== tagId)
-        : [...prev, tagId],
-    )
+    setSelectedTags((prev) => (prev.includes(tagId) ? prev.filter((id) => id !== tagId) : [...prev, tagId]))
   }
   const [active, setActive] = useState(1)
 
-  const posts = Array.from({ length: 40 }, (_, i) => (
-    <CommunityCardDiscover key={i} isLoading={false} num={i} />
-  ))
+  const posts = Array.from({ length: 40 }, (_, i) => <CommunityCardDiscover key={i} isLoading={false} num={i} />)
   const postPerPage = 8
 
   const startIndex = (active - 1) * postPerPage
@@ -51,10 +45,7 @@ const page = () => {
   const currentPosts = posts.slice(startIndex, endIndex)
   const totalPages = Math.ceil(posts.length / postPerPage)
 
-  const handlePageChange = (
-    event: React.ChangeEvent<unknown>,
-    page: number,
-  ) => {
+  const handlePageChange = (event: React.ChangeEvent<unknown>, page: number) => {
     setActive(page)
     window.scrollTo({ top: 0, behavior: 'smooth' }) // Optional: scroll to top on page change
   }
@@ -70,17 +61,10 @@ const page = () => {
         />
       </div>
       <div className="relative w-full">
-        <TagList
-          tags={tags}
-          selectedTags={selectedTags}
-          onTagClick={handleTagClick}
-          className=" rounded-lg"
-        />
+        <TagList tags={tags} selectedTags={selectedTags} onTagClick={handleTagClick} className=" rounded-lg" />
         <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-background to-transparent z-10" />
       </div>
-      <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-8 w-full">
-        {currentPosts}
-      </div>
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-8 w-full">{currentPosts}</div>
       <Pagination
         className="mb-10  mt-5 scale-125 mmd:scale-100 self-center"
         count={totalPages}
@@ -92,5 +76,3 @@ const page = () => {
     </div>
   )
 }
-
-export default page

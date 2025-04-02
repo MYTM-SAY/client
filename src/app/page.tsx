@@ -1,8 +1,7 @@
-import React from 'react'
 import CalendarHolder from '../components/HomePage/CalendarHolder'
 import Post from '../components/Post/Post'
 
-const page = () => {
+export default async function Page() {
   const posts = Array.from({ length: 40 }, (_, i) => <Post key={i} />)
 
   return (
@@ -18,4 +17,3 @@ const page = () => {
   )
 }
 
-export default page

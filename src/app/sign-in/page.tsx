@@ -50,6 +50,8 @@ export default function LoginPage() {
     }
   }
 
+  // TODO: @YoussifHassan8 edit the design
+
   return (
     <div className="container relative min-h-screen flex-col items-center justify-center grid lg:max-w-none lg:grid-cols-2 lg:px-0">
       <div className="relative hidden h-full flex-col bg-muted p-10 text-white lg:flex dark:border-r">
@@ -100,14 +102,6 @@ export default function LoginPage() {
                       <Input type="password" placeholder="Enter your password" {...field} />
                     </FormControl>
                     <FormMessage />
-                    {/* <div className="flex justify-between items-center">
-                      <Link
-                        className="text-xs text-foreground underline"
-                        href="/forgot-password"
-                      >
-                        Forgot Password?
-                      </Link>
-                    </div> */}
                   </FormItem>
                 )}
               />
@@ -121,25 +115,8 @@ export default function LoginPage() {
             <div className="absolute inset-0 flex items-center">
               <Separator />
             </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
-            </div>
           </div>
-          <Button
-            variant="outline"
-            type="button"
-            disabled={isLoading}
-            onClick={async () => {
-              // TODO: Implement Google OAuth
-            }}
-          >
-            {isLoading ? (
-              <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-            ) : (
-              <Icons.google className="mr-2 h-4 w-4" />
-            )}
-            Google
-          </Button>
+         
           <p className="px-8 text-center text-sm text-muted-foreground">
             <Link href="/sign-up" className="hover:text-brand underline underline-offset-4">
               Don&apos;t have an account? Sign Up

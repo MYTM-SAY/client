@@ -8,7 +8,6 @@ const CommunityNavBar = () => {
     'Classroom',
     'Leaderboards',
     'Members',
-    'Calendar',
     'About',
   ]
   const baseClasses =

@@ -34,9 +34,7 @@ export default function UploadForm() {
     setLoading(true)
     if (files.length > 0) {
       try {
-        console.log('1')
         const uploadedImage = await startUpload(files)
-        console.log('2')
         console.log({ data, uploadedImage })
       } catch (error) {
         console.error(error)

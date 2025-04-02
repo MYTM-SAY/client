@@ -1,27 +1,27 @@
 'use server'
 
+import axios from 'axios'
+import { UserFromToken } from '@/types'
 import { AxiosError } from 'axios'
-import axios from '@/lib/utils/axios'
 import { cookies } from 'next/headers'
+import { backendBaseUrl } from '../utils'
 
-const backendBaseUrl = process.env.BACKEND_BASE_URL
+type GetUserReturn = { success: true; user: UserFromToken } | { success: false; message: string }
 
-export const getUser = async () => {
-  try {
-    const cookieStore = await cookies()
-    const res = await axios.get(`${backendBaseUrl}/users/me`, {
-      headers: {
-        Cookie: `accessToken=${cookieStore.get('accessToken')?.value}; refreshToken=${
-          cookieStore.get('refreshToken')?.value
-        }`,
-      },
-    })
-    return res.data.data
-  } catch (error) {
-    const axiosError = error as AxiosError
-    console.error(axiosError)
-    return { success: false, data: axiosError.response?.data || 'An error occurred' }
-  }
+export async function getUser(): Promise<GetUserReturn> {
+  const cookieHeader = (await cookies())
+    .getAll()
+    .map(({ name, value }) => `${name}=${value}`)
+    .join('; ')
+
+  const res = await fetch('http://localhost:3000/api/auth', {
+    credentials: 'include',
+    headers: {
+      Cookie: cookieHeader,
+    },
+  })
+  const data = await res.json()
+  return data
 }
 
 export const signUpAction = async (formData: FormData) => {

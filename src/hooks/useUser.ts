@@ -1,15 +1,10 @@
-import axios from '@/lib/utils/axios'
+import { instance as axios } from '@/lib/utils/axios'
+import { UserFromToken } from '@/types'
 import { useEffect, useState } from 'react'
 
-type User = {
-  id: string
-  email: string
-  username: string
-  fullname: string
-}
 
-const useUser = () => {
-  const [user, setUser] = useState<User | null>(null)
+export const useUser = () => {
+  const [user, setUser] = useState<UserFromToken | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   useEffect(() => {
     const fetchUser = async () => {
@@ -31,5 +26,3 @@ const useUser = () => {
 
   return { user, isLoading }
 }
-
-export default useUser

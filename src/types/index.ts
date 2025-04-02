@@ -1,9 +1,14 @@
 import { ReactNode } from 'react'
 
+export type UserFromToken = {
+  id: string
+  email: string
+  username: string
+  fullname: string
+}
+
 export interface SidebarProps {
-  handleOnClick: (
-    event: React.MouseEvent<HTMLDivElement | HTMLLIElement>,
-  ) => void
+  handleOnClick: (event: React.MouseEvent<HTMLDivElement | HTMLLIElement>) => void
   active: string
 }
 
