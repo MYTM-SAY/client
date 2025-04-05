@@ -4,22 +4,14 @@ import { toast } from 'react-hot-toast'
 import * as z from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Button } from '@/components/ui/button'
 import { FileUploader } from '@/components/FileUploader'
-import { useUploadThing } from '@/components/uploadthing'
+import { uploadMedia } from '@/lib/actions/upload'
 
 export default function UploadForm() {
   const [files, setFiles] = useState<File[]>([])
   const [loading, setLoading] = useState(false)
-  const { startUpload } = useUploadThing('imageUploader')
   const uploadFileSchema = z.object({
     image: z.array(z.string()).optional(),
   })
@@ -32,10 +24,14 @@ export default function UploadForm() {
 
   async function onSubmit(data: z.infer<typeof uploadFileSchema>) {
     setLoading(true)
-    if (files.length > 0) {
+    if (files.length > 0 && data.image) {
       try {
-        const uploadedImage = await startUpload(files)
-        console.log({ data, uploadedImage })
+        const res = await uploadMedia(files)
+        if (res.success) {
+          toast.success('File Uploaded successfully')
+        } else {
+          toast.error(res.message)
+        }
       } catch (error) {
         console.error(error)
         toast.error('Error uploading image')
@@ -62,25 +58,15 @@ export default function UploadForm() {
                   Upload File <span className="text-gray-400">(optional)</span>
                 </FormLabel>
                 <FormControl>
-                  <FileUploader
-                    onFieldChange={field.onChange}
-                    imageUrls={field.value}
-                    setFiles={setFiles}
-                  />
+                  <FileUploader onFieldChange={field.onChange} imageUrls={field.value} setFiles={setFiles} />
                 </FormControl>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  PNG, JPG, GIF up to 16MB
-                </p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">PNG, JPG, GIF up to 16MB</p>
                 <FormMessage />
               </FormItem>
             )}
           />
         </div>
-        <Button
-          type="submit"
-          disabled={loading}
-          className="w-[90%] bg-green-400 hover:bg-green-600 mt-4"
-        >
+        <Button type="submit" disabled={loading} className="w-[90%] bg-green-400 hover:bg-green-600 mt-4">
           {loading ? 'Uploading File...' : 'Upload File'}
         </Button>
       </form>
