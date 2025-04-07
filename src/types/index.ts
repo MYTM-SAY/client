@@ -85,3 +85,15 @@ export interface Classroom {
   communityId: string
   progress: number
 }
+
+export interface Post {
+  id: string
+  title: string
+  content: string
+  voteCounter: number
+  attachments: string[]
+  forumId: string
+  authorId: string
+  createdAt: string
+  updatedAt: string
+}
