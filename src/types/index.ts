@@ -1,5 +1,24 @@
 import { ReactNode } from 'react'
 
+export type ApiResponse<T> = {
+  data: ApiResponseData<T>
+}
+
+export type ApiResponseData<T> = {
+  success: boolean
+  data: T
+  message?: string
+}
+
+export type ApiResponseError = {
+  response: {
+    data: {
+      success: false
+      message: string
+    }
+  }
+}
+
 export type UserFromToken = {
   id: string
   email: string
