@@ -10,9 +10,11 @@ interface StepperProps {
     content: React.ReactNode
   }>
   isNextDisabled: (currentStep: number) => boolean
+  onComplete: () => void
+  isSubmitting: boolean
 }
 
-export const Stepper = ({ steps, isNextDisabled }: StepperProps) => {
+export const Stepper = ({ steps, isNextDisabled, onComplete, isSubmitting }: StepperProps) => {
   const [currentStep, setCurrentStep] = useState(1)
 
   const handleNext = () => {
@@ -37,6 +39,8 @@ export const Stepper = ({ steps, isNextDisabled }: StepperProps) => {
         onNext={handleNext}
         onPrevious={handlePrevious}
         isNextDisabled={isNextDisabled(currentStep)}
+        onComplete={onComplete}
+        isSubmitting={isSubmitting}
       />
     </div>
   )

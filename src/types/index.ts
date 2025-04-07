@@ -8,7 +8,9 @@ export type UserFromToken = {
 }
 
 export interface SidebarProps {
-  handleOnClick: (event: React.MouseEvent<HTMLDivElement | HTMLLIElement>) => void
+  handleOnClick: (
+    event: React.MouseEvent<HTMLDivElement | HTMLLIElement>,
+  ) => void
   active: string
 }
 
@@ -39,4 +41,28 @@ export interface ShareButtonProps {
 }
 export interface GroupProps {
   num: number
+}
+
+export interface Community {
+  id: string
+  name: string
+  description: string
+  createdAt: string
+  updatedAt: string
+  coverImgURL: string
+  logoImgURL: string
+  ownerId: string
+  isPublic: boolean
+  classrooms: Classroom[]
+}
+
+export interface Classroom {
+  id: string
+  name: string
+  description: string
+  createdAt: string
+  updatedAt: string
+  coverImg: string
+  communityId: string
+  progress: number
 }
