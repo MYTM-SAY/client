@@ -1,7 +1,7 @@
 'use client'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 // import ForumSection from '@/app/communities/_components/ForumSection'
-// import ClassroomSection from '@/app/communities/_components/ClassroomSection'
+import ClassroomSection from '@/app/communities/_components/ClassroomSection'
 import useCommunity from '@/hooks/useCommunity'
 
 export default function CommunityPage({ id }: { id: string }) {
@@ -33,8 +33,7 @@ export default function CommunityPage({ id }: { id: string }) {
         </TabsContent>
 
         <TabsContent value="classroom">
-          {/* <ClassroomSection communityId={id} /> */}
-          <div>Classroom</div>
+          <ClassroomSection communityId={id} />
         </TabsContent>
       </Tabs>
     </>
