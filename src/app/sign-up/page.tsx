@@ -86,7 +86,7 @@ export default function RegisterPage() {
         <div className="absolute inset-0 bg-[#1C2533]" />
         <div className="relative z-20 flex items-center text-lg font-medium">
           <Icons.logo className="mr-2 h-6 w-6 text-amber-500" />
-          TO-DO
+          Learnverse
         </div>
         <div className="relative z-20 mt-auto">
           <blockquote className="space-y-2">
