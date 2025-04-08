@@ -12,15 +12,15 @@ const page = () => {
   ]
 
   return (
-    <div className="max-w-2xl mx-auto p-6">
-      <h1 className="text-3xl font-bold text-gray-800 mb-8">Leaderboard</h1>
+    <div className="">
+      <h1 className="text-3xl font-bold text-center py-8">Leaderboard</h1>
 
       <ol className="">
         {leaderboardData.map((item, index) => (
-          <li key={index} className="p-4 my-4 rounded-lg shadow-md">
+          <li key={index} className="p-4 my-4 rounded-lg shadow-md border">
             <div className="flex justify-between items-center">
               <div className="flex items-center space-x-4">
-                <span className="text-gray-500 font-medium">
+                <span className="font-medium">
                   {index === 0 ? (
                     <Avatar className="rounded-full w-[40px] h-[40px] mx-auto">
                       <AvatarImage src="/Gold.png" />
@@ -44,7 +44,7 @@ const page = () => {
                   <AvatarImage src="/download (3).jpeg" />
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
-                <h3 className="text-gray-700 font-semibold">{item.name}</h3>
+                <h3 className="font-semibold">{item.name}</h3>
               </div>
               <span className="text-green-600 p font-bold">+{item.points}</span>
             </div>

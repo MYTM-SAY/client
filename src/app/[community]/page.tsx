@@ -1,6 +1,8 @@
+import Forum from "@/components/Forum/forum"
 
-const page = () => {
-  return <div>forum</div>
+export default function Page({ params }: { params: { community: string } }) {
+  console.log(params)
+  return <>
+    <Forum />
+  </>
 }
-
-export default page

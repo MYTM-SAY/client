@@ -1,8 +1,8 @@
-import React from 'react'
 import ClassroomCard from '@/components/Community/Classroom/ClassroomCard'
-const page = () => {
+
+export default function Page() {
   return (
-    <div className="flex flex-wrap  h-screen p-8 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
       <ClassroomCard />
       <ClassroomCard />
       <ClassroomCard />
@@ -14,5 +14,3 @@ const page = () => {
     </div>
   )
 }
-
-export default page

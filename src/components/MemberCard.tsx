@@ -1,10 +1,9 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import Btn from './ui/Btn'
 import { SlCalender } from 'react-icons/sl'
 
 const MemberCard = () => {
   return (
-    <div className="rounded-lg p-6 shadow-md space-y-4 max-w-[350px]">
+    <div className="rounded-lg p-5 shadow-md space-y-4 border">
       <div className="flex justify-end">
         <div className="flex items-center gap-1">
           <div className="w-2 h-2 rounded-full bg-green-500"></div>
@@ -29,8 +28,6 @@ const MemberCard = () => {
           <SlCalender />
           <span className="">Joined Feb 19, 2024</span>
         </div>
-
-        <Btn className="px-5 py-3 bg-accent text-white">View Profile</Btn>
       </div>
     </div>
   )

@@ -6,7 +6,7 @@ import { FaYoutube } from 'react-icons/fa'
 
 import Btn from '@/components/ui/Btn'
 
-const page = () => {
+export default function Page() {
   const bio = `ANDY ELLIOTT'S #1 GROUP FOR
 SALES & PERSONAL
 DEVELOPMENT`
@@ -88,5 +88,3 @@ Magnetic Company Culture, And Be Called “Tony Robbin's Greatest Student” In 
     </div>
   )
 }
-
-export default page

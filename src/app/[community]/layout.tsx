@@ -7,7 +7,7 @@ export default function CommunityLayout({
   children: React.ReactNode
 }) {
   return (
-    <section className="flex flex-col gap-4 pr-8">
+    <section className="flex flex-col gap-4">
       <CommunityNavBar /> {children}
     </section>
   )

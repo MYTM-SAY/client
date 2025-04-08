@@ -8,7 +8,6 @@ export default async function Page() {
     <div className="grid grid-cols-8 gap-5">
 
       <div className="col-span-6">
-        {/* <JoinedGroups /> */}
         <div className="space-y-5">{posts}</div>
       </div>
 

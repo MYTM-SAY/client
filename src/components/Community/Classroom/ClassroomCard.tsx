@@ -6,13 +6,13 @@ import Link from 'next/link'
 export default function ReduxCard() {
   return (
     <Link href="/adonas/classroom/vid">
-      <div className="h-[350px] w-[300px] flex flex-col justify-between relative overflow-hidden rounded-lg bg-card">
+      <div className="flex flex-col justify-between relative overflow-hidden rounded-lg bg-card">
         <div className="relative flex-1 ">
           <Image
             src={instructorImage}
             alt="Instructor"
-            layout="fill"
             objectFit="cover"
+            height={350}
           />
         </div>
         <div className="p-4 flex flex-col gap-2 ">

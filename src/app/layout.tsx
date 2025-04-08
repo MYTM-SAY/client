@@ -38,9 +38,9 @@ export default async function RootLayout({
           <Providers>
             <main className="flex w-full">
               <AppSidebar />
-              <div className="mx-auto">
+              <div className="w-full">
                 <NavBar />
-                <div className="container mx-auto px-5">{children}</div>
+                <div className="cont">{children}</div>
               </div>
             </main>
           </Providers>
