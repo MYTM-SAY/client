@@ -1,7 +1,18 @@
-import React from 'react'
-
+import React from "react";
+import ClassroomCard from "@/components/communityClassroom/ClassroomCard";
 const page = () => {
-  return <div>classroom</div>
-}
+  return (
+    <div className="flex flex-wrap  h-screen p-8 gap-4">
+      <ClassroomCard />
+      <ClassroomCard />
+      <ClassroomCard />
+      <ClassroomCard />
+      <ClassroomCard />
+      <ClassroomCard />
+      <ClassroomCard />
+      <ClassroomCard />
+    </div>
+  );
+};
 
-export default page
+export default page;
