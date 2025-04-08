@@ -1,7 +1,12 @@
+import { CalendarContainer } from '@/components/Community/Calendar/CalendarContainer'
 import React from 'react'
 
 const page = () => {
-  return <div>calendar</div>
+  return (
+    <div className="mb-20">
+      <CalendarContainer />
+    </div>
+  )
 }
 
 export default page

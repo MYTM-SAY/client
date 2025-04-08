@@ -19,7 +19,8 @@ import SideBarIcon from './SideBarIcon'
 
 const AppSidebar = () => {
   const pathname = usePathname()
-  const arr = Array(100).fill('community')
+
+  const arr = Array.from({ length: 100 }, (_, i) => `community-${i + 1}`)
 
   return (
     <Sidebar side="left" variant="sidebar" collapsible="offcanvas">

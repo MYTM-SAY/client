@@ -97,3 +97,11 @@ export interface Post {
   createdAt: string
   updatedAt: string
 }
+export interface Event {
+  id: string
+  title: string
+  date: string // ISO string format
+  time?: string
+  description?: string
+  color?: string
+}

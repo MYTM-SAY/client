@@ -1,12 +1,12 @@
-import Image from "next/image";
-import instructorImage from "@/../public/image2.png";
-import { Progress } from "@/components/ui/progress";
-import Link from "next/link";
+import Image from 'next/image'
+import instructorImage from '@/../public/image2.png'
+import { Progress } from '@/components/ui/progress'
+import Link from 'next/link'
 
 export default function ReduxCard() {
   return (
     <Link href="/adonas/classroom/vid">
-      <div className="h-[350px] w-[300px] flex flex-col justify-between relative overflow-hidden rounded-lg bg-[#18181B]">
+      <div className="h-[350px] w-[300px] flex flex-col justify-between relative overflow-hidden rounded-lg bg-card">
         <div className="relative flex-1 ">
           <Image
             src={instructorImage}
@@ -30,5 +30,5 @@ export default function ReduxCard() {
         </div>
       </div>
     </Link>
-  );
+  )
 }

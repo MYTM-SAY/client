@@ -5,7 +5,7 @@ import Btn from '@/components/ui/Btn'
 
 import { CreatePost } from '@/components/Fourm/CreatePost'
 const page = () => {
-  const posts = Array.from({ length: 40 }, (_, i) => <Post key={i} num={i} />)
+  const posts = Array.from({ length: 40 }, (_, i) => <Post key={i} />)
   const bio = `ANDY ELLIOTT'S #1 GROUP FOR
 SALES & PERSONAL
 DEVELOPMENT`
