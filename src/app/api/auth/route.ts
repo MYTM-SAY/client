@@ -30,6 +30,8 @@ export async function GET() {
           },
         })
 
+        console.log("from /refresh-token:", data)
+
         // Update access token in cookies
         cookieStore.set('accessToken', data.accessToken, {
           httpOnly: true,
@@ -37,6 +39,7 @@ export async function GET() {
           path: '/',
         })
 
+        // TODO: this needs a backend fix, userdata must be sent with the refresh token
         return NextResponse.json({ success: true, user: data.user })
       } catch {
         // Remove invalid refresh token

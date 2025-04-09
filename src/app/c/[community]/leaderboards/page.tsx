@@ -41,7 +41,7 @@ const page = () => {
                   )}
                 </span>
                 <Avatar className="rounded-full w-[50px] h-[50px] mx-auto">
-                  <AvatarImage src="/download (3).jpeg" />
+                  <AvatarImage src="/pp-fallback.svg" />
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
                 <h3 className="font-semibold">{item.name}</h3>

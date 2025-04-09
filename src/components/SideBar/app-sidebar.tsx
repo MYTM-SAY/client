@@ -20,7 +20,7 @@ import SideBarIcon from './SideBarIcon'
 const AppSidebar = () => {
   const pathname = usePathname()
 
-  const arr = Array.from({ length: 100 }, (_, i) => `community-${i + 1}`)
+  const arr = Array.from({ length: 5 }, (_, i) => `community-${i + 1}`)
 
   return (
     <Sidebar side="left" variant="sidebar" collapsible="offcanvas">
@@ -46,11 +46,11 @@ const AppSidebar = () => {
           {arr.map((i, idx) => (
             <SideBarIcon
               key={idx}
-              href={`/${i}`}
+              href={`/c/${i}`}
               isActive={pathname.startsWith(`/${i}`)}
             >
               <Image
-                src="/download (3).jpeg"
+                src="/pp-fallback.svg"
                 width={56}
                 height={56}
                 alt="Community"

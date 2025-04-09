@@ -1,4 +1,3 @@
-import React from 'react'
 import { ThemeToggle } from '@/components/NavBar/ThemeToggle'
 import {
   DropdownMenu,
@@ -9,25 +8,31 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
 import Link from 'next/link'
-import { signOutAction } from '@/lib/actions/auth'
-const NavProfile = () => {
+import { getUser, signOutAction } from '@/lib/actions/auth'
+
+const NavProfile = async () => {
+  const userReq = await getUser()
   const handleSignOut = async () => {
     'use server'
     await signOutAction()
   }
+
+  if (!userReq.success) {
+    return "An error has occurred"
+  }
+
   return (
     <div className="flex shrink-0 items-center justify-end gap-4">
-      {/* <SignedIn> */}
       <ThemeToggle />
       <DropdownMenu>
         <DropdownMenuTrigger>
           <Avatar>
-            <AvatarImage src="/download (3).jpeg" />
+            <AvatarImage src="/pp-fallback.svg" />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="custom-dropdown-content">
-          <Link href="/profile/AlTarek">
+          <Link href={`/profile/${userReq.user.username}`}>
             <DropdownMenuItem className="!cursor-pointer custom-dropdown-item">
               Profile
             </DropdownMenuItem>
@@ -39,7 +44,6 @@ const NavProfile = () => {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-      {/* </SignedIn> */}
     </div>
   )
 }

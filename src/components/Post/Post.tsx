@@ -18,7 +18,7 @@ export default function PostCard() {
       {/* header */}
       <div className="flex gap-4 items-center">
         <Image
-          src="/download (3).jpeg"
+          src="/pp-fallback.svg"
           className="rounded-full"
           alt="Profile Image"
           width={68}

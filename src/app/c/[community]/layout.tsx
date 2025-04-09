@@ -8,6 +8,9 @@ export default function CommunityLayout({
 }) {
   return (
     <section className="flex flex-col gap-4">
+      <header className="">
+        <h2 className="text-4xl text-center font-bold my-10">Welcome to the YYYYYY Community!</h2>
+      </header>
       <CommunityNavBar /> {children}
     </section>
   )

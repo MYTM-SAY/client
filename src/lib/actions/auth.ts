@@ -14,7 +14,9 @@ export async function getUser(): Promise<GetUserReturn> {
     .map(({ name, value }) => `${name}=${value}`)
     .join('; ')
 
-  const res = await fetch('http://localhost:3000/api/auth', {
+  const base = process.env.NEXT_PUBLIC_BACKEND_BASE_URL
+
+  const res = await fetch(`${base}/auth`, {
     credentials: 'include',
     headers: {
       Cookie: cookieHeader,

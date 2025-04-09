@@ -33,7 +33,7 @@ export function CreatePost() {
           <DialogTitle className="text-lg">Create Post</DialogTitle>
         </DialogHeader>
         {/* <PostHeader
-          profileImage="/download (3).jpeg"
+          profileImage="/pp-fallback.svg"
           username={'Youssif'}
           timestamp="6h ago"
           community="General"

@@ -12,7 +12,7 @@ const MemberCard = () => {
       </div>
 
       <Avatar className="rounded-full w-[150px] h-[150px] mx-auto">
-        <AvatarImage src="/download (3).jpeg" />
+        <AvatarImage src="/pp-fallback.svg" />
         <AvatarFallback>CN</AvatarFallback>
       </Avatar>
 

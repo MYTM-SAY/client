@@ -14,7 +14,7 @@ const ProfileInfo = () => {
     <div className="flex mlg:w-full flex-col items-center justify-between self-start bg-background border border-foreground rounded-lg py-6 px-12 gap-6 dark-gray-shadow ">
       <div className="flex flex-col items-center justify-center gap-4">
         <Avatar className="rounded-full border border-gray-300 dark:border-gray-700 w-[150px] h-[150px]">
-          <AvatarImage src="/download (3).jpeg" />
+          <AvatarImage src="/pp-fallback.svg" />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
 

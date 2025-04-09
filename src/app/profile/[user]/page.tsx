@@ -9,8 +9,8 @@ const page = () => {
   )
 
   return (
-    <div className="flex w-full pt-[50px] flex-1 px-4 gap-4  mlg:flex-col   ">
-      <div className="mx-auto flex-1  mlg:order-2 w-full max-w-[1000px]">
+    <div className="grid sm:grid-cols-3 gap-5">
+      <div className="col-span-2">
         <ContributionGraph contributions={contributions} />
         <CommunitiesProfile />
         <ContributionsInCommunityies />

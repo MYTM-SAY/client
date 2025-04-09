@@ -5,7 +5,6 @@ import { Providers } from '@/providers'
 import AppSidebar from '@/components/SideBar/app-sidebar'
 import { Toaster } from '@/components/ui/toaster'
 import NavBar from '@/components/NavBar/NavBar'
-import { getUser } from '@/lib/actions/auth'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -27,27 +26,20 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const data = await getUser()
-
-  console.log('RootLayout data:', data)
-
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        {data.success ? (
-          <Providers>
-            <main className="flex w-full">
-              <AppSidebar />
-              <div className="w-full">
-                <NavBar />
-                <div className="cont">{children}</div>
-              </div>
-            </main>
-          </Providers>
-        ) : (
-          <>{children}</>
-        )}
-
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+        <Providers>
+          <main className="flex w-full">
+            <AppSidebar />
+            <div className="w-full">
+              <NavBar />
+              <div className="cont">{children}</div>
+            </div>
+          </main>
+        </Providers>
         <Toaster />
       </body>
     </html>

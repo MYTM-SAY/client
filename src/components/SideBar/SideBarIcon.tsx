@@ -1,7 +1,12 @@
-import React from 'react'
+import { ReactNode } from 'react'
 import Link from 'next/link'
 import { SidebarMenuItem } from '@/components/ui/sidebar'
-import { SideBarIconProps } from '@/types'
+
+interface SideBarIconProps {
+  children: ReactNode
+  href: string
+  isActive: boolean
+}
 
 const SideBarIcon = ({ children, href, isActive }: SideBarIconProps) => {
   return (

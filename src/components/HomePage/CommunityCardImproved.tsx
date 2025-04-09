@@ -36,7 +36,7 @@ export default function JoinedCommunityCard(props: CommunityCardProps) {
 
       <div>
         <img
-          src="/download (3).jpeg"
+          src="/pp-fallback.svg"
           className="object-cover h-24 w-full"
           alt=""
         />

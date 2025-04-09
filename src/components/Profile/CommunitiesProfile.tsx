@@ -14,7 +14,7 @@ const CommunitiesProfile = () => {
             <div>
               <div className="flex gap-4 flex-wrap msm:justify-center ">
                 <Image
-                  src="/download (3).jpeg"
+                  src="/pp-fallback.svg"
                   className="rounded-lg"
                   alt="Community"
                   width={68}
