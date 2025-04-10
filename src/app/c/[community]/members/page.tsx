@@ -1,7 +1,7 @@
 import MemberCard from '@/components/MemberCard'
 import Btn from '@/components/ui/Btn'
 
-const page = () => {
+export default async function Page() {
   return (
     <div className="pb-10"> {/* temp padding */}
       <div className="flex justify-between mb-5">
@@ -24,5 +24,3 @@ const page = () => {
     </div>
   )
 }
-
-export default page

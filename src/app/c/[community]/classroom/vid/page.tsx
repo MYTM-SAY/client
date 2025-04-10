@@ -93,7 +93,7 @@ const courseContent2 = [
     ],
   },
 ]
-const page = () => {
+export default function Page() {
   const [courseContent, setCourseContent] = useState(courseContent2)
   const [showContent, setShowContent] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
@@ -136,5 +136,3 @@ const page = () => {
     </div>
   )
 }
-
-export default page

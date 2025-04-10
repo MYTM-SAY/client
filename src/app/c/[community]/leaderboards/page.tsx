@@ -1,6 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
-const page = () => {
+export default async function Page() {
   const leaderboardData = [
     { name: 'Sara Ahmed', points: 17134 },
     { name: 'Sara Ahmed', points: 10532 },
@@ -54,5 +54,3 @@ const page = () => {
     </div>
   )
 }
-
-export default page

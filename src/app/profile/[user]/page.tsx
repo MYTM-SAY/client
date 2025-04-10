@@ -3,7 +3,10 @@ import ContributionGraph from '@/components/Profile/ContributionGraph'
 import CommunitiesProfile from '@/components/Profile/CommunitiesProfile'
 import ProfileInfo from '@/components/Profile/ProfileInfo'
 import ContributionsInCommunityies from '@/components/Profile/ContributionsInCommunityies'
-const page = () => {
+
+
+export default async function Page() {
+  
   const contributions: number[] = Array.from({ length: 365 }, () =>
     Math.floor(Math.random() * 5),
   )
@@ -20,4 +23,3 @@ const page = () => {
   )
 }
 
-export default page
