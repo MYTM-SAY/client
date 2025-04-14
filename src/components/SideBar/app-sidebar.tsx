@@ -1,7 +1,4 @@
-'use client'
 
-import React from 'react'
-import { usePathname } from 'next/navigation'
 import { FaCompass } from 'react-icons/fa6'
 import { Home, Users } from 'lucide-react'
 import { BsFillPlusCircleFill } from 'react-icons/bs'
@@ -16,9 +13,16 @@ import {
   SidebarSeparator,
 } from '@/components/ui/sidebar'
 import SideBarIcon from './SideBarIcon'
+import { getUser } from '@/lib/actions/auth'
+import { getJoinedCommunities } from '@/lib/actions/community'
 
-const AppSidebar = () => {
-  const pathname = usePathname()
+const AppSidebar = async () => {
+  const userRequest = await getUser()
+  if (!userRequest.success) {
+    return null
+  }
+
+  await getJoinedCommunities(userRequest.user.id)
 
   const arr = Array.from({ length: 5 }, (_, i) => `community-${i + 1}`)
 
@@ -26,13 +30,13 @@ const AppSidebar = () => {
     <Sidebar side="left" variant="sidebar" collapsible="offcanvas">
       <SidebarHeader className="p-0">
         <SidebarMenu className="flex flex-col items-center gap-7 py-7">
-          <SideBarIcon href="/" isActive={pathname === '/'}>
+          <SideBarIcon href="/" isActive={false}>
             <Home size={30} />
           </SideBarIcon>
 
           <SideBarIcon
             href="/my-communities"
-            isActive={pathname === '/my-communities'}
+            isActive={false}
           >
             <Users size={30} />
           </SideBarIcon>
@@ -47,7 +51,7 @@ const AppSidebar = () => {
             <SideBarIcon
               key={idx}
               href={`/c/${i}`}
-              isActive={pathname.startsWith(`/${i}`)}
+              isActive={false}
             >
               <Image
                 src="/pp-fallback.svg"
@@ -65,10 +69,10 @@ const AppSidebar = () => {
 
       <SidebarFooter className="p-0">
         <SidebarMenu className="py-4 gap-8 flex-col-center">
-          <SideBarIcon href="/create" isActive={pathname === '/create'}>
+          <SideBarIcon href="/create" isActive={false}>
             <BsFillPlusCircleFill className="!w-8 !h-8" />
           </SideBarIcon>
-          <SideBarIcon href="/discover" isActive={pathname === '/discover'}>
+          <SideBarIcon href="/discover" isActive={false}>
             <FaCompass className="!w-8 !h-8" />
           </SideBarIcon>
         </SidebarMenu>

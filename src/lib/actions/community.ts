@@ -1,13 +1,13 @@
-const baseURL = process.env.BACKEND_BASE_URL || 'http://localhost:3000'
 
-export const Community = {
-    async getAll() {
-        const res = await fetch(`${baseURL}/communities`, {
-            cache: 'no-store',
-        })
-        if (!res.ok) {
-            throw new Error('Failed to fetch data')
-        }
-        return res.json()
-    }
+const baseURL = process.env.BACKEND_BASE_URL || 'http://localhost:5000/api/v1'
+
+
+export async function getJoinedCommunities(id: string) {
+    const res = await fetch(`${baseURL}/communities/${id}/join-requests`, {
+        cache: 'no-store',
+        credentials: 'include',
+    })
+    const data = await res.json()
+    console.log(data)
 }
+

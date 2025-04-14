@@ -1,5 +1,7 @@
 import { ReactNode } from 'react'
 
+export type ServerResponse<T> = {success: true, data: T } | {success: false, message: string}
+
 export type ApiResponse<T> = {
   data: ApiResponseData<T>
 }

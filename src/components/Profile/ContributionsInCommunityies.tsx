@@ -24,7 +24,7 @@ const ContributionsInCommunityies = () => {
     { value: 'CI Geeks', label: '5' },
   ]
 
-  const posts = Array.from({ length: 40 }, (_, i) => <Post key={i} num={i} />)
+  const posts = Array.from({ length: 40 }, (_, i) => <Post key={i} />)
   const postPerPage = 4
 
   const startIndex = (active - 1) * postPerPage
