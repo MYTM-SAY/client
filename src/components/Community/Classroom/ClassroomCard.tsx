@@ -5,7 +5,7 @@ import Link from 'next/link'
 
 export default function ReduxCard() {
   return (
-    <Link href="/adonas/classroom/vid">
+    <Link href="/c/1/classroom/vid">
       <div className="flex flex-col justify-between relative overflow-hidden rounded-lg bg-card">
         <div className="relative flex-1 ">
           <Image

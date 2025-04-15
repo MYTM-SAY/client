@@ -14,17 +14,23 @@ import {
 } from '@/components/ui/sidebar'
 import SideBarIcon from './SideBarIcon'
 import { getUser } from '@/lib/actions/auth'
-import { getJoinedCommunities } from '@/lib/actions/community'
+import { getJoinedCommunities } from '@/app/actions/community'
 
 const AppSidebar = async () => {
+  
   const userRequest = await getUser()
   if (!userRequest.success) {
-    return null
+    return <>Internal server error</>
   }
 
-  await getJoinedCommunities(userRequest.user.id)
+  const joinedCommsRequest = await getJoinedCommunities(userRequest.user.id)
+  if (!joinedCommsRequest.success) {
+    return <>Internal server error</>
+  }
 
-  const arr = Array.from({ length: 5 }, (_, i) => `community-${i + 1}`)
+  const communities = joinedCommsRequest.data
+
+  // const arr = Array.from({ length: 5 }, (_, i) => `community-${i + 1}`)
 
   return (
     <Sidebar side="left" variant="sidebar" collapsible="offcanvas">
@@ -47,10 +53,10 @@ const AppSidebar = async () => {
 
       <SidebarContent className="mt-7 no-scrollbar">
         <SidebarMenu className="gap-6 flex-col-center">
-          {arr.map((i, idx) => (
+          {communities.map((i, idx) => (
             <SideBarIcon
               key={idx}
-              href={`/c/${i}`}
+              href={`/c/${i.Community.id}`}
               isActive={false}
             >
               <Image

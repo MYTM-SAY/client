@@ -1,6 +1,8 @@
 import { ReactNode } from 'react'
 
 export type ServerResponse<T> = {success: true, data: T } | {success: false, message: string}
+const Role = ['OWNER', 'MEMBER', 'MODERATOR'] as const
+export type Role = typeof Role
 
 export type ApiResponse<T> = {
   data: ApiResponseData<T>

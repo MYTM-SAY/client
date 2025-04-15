@@ -14,6 +14,7 @@ const NavProfile = async () => {
   const userReq = await getUser()
   
   const handleSignOut = async () => {
+    'use server'
     await signOutAction()
   }
 
