@@ -3,7 +3,11 @@ import Post from '@/components/Post/Post'
 import { CreatePost } from './CreatePost'
 import { getUser } from '@/lib/actions/auth'
 
-export default async function Forum() {
+interface Props {
+  name: string
+}
+
+export default async function Forum({ name }: Props) {
   const posts = Array.from({ length: 40 }, (_, i) => <Post key={i} />)
   const user = await getUser()
 
@@ -11,7 +15,6 @@ export default async function Forum() {
 
   return (
     <div className="">
-
       <div className="col-span-2">
         <div className="flex-center gap-1 px-4 py-2 rounded-lg border-[2px] border-foreground w-full mb-5">
           <Avatar>
@@ -22,7 +25,6 @@ export default async function Forum() {
         </div>
         <div className="space-y-3">{posts}</div>
       </div>
-
     </div>
   )
 }

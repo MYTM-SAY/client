@@ -30,8 +30,6 @@ const AppSidebar = async () => {
 
   const communities = joinedCommsRequest.data
 
-  // const arr = Array.from({ length: 5 }, (_, i) => `community-${i + 1}`)
-
   return (
     <Sidebar side="left" variant="sidebar" collapsible="offcanvas">
       <SidebarHeader className="p-0">
@@ -53,10 +51,10 @@ const AppSidebar = async () => {
 
       <SidebarContent className="mt-7 no-scrollbar">
         <SidebarMenu className="gap-6 flex-col-center">
-          {communities.map((i, idx) => (
+          {communities.map((comm, idx) => (
             <SideBarIcon
               key={idx}
-              href={`/c/${i.Community.id}`}
+              href={`/c/${comm.Community.id}`}
               isActive={false}
             >
               <Image
