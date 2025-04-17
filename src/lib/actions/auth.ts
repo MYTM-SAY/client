@@ -6,7 +6,9 @@ import { AxiosError } from 'axios'
 import { cookies } from 'next/headers'
 import { backendBaseUrl } from '../utils'
 
-type GetUserReturn = { success: true; user: UserFromToken } | { success: false; message: string }
+type GetUserReturn =
+  | { success: true; user: UserFromToken }
+  | { success: false; message: string }
 
 export async function getUser(): Promise<GetUserReturn> {
   const cookieHeader = (await cookies())
@@ -30,10 +32,12 @@ export const signUpAction = async (formData: FormData) => {
   const email = formData.get('email')?.toString()
   const password = formData.get('password')?.toString()
   const username = formData.get('username')?.toString()
-  const fullname = formData.get('name')?.toString()
-
-  if (!email || !password || !username || !fullname) {
-    return { success: false, data: 'Email, password, username and full name are required' }
+  const fullname = formData.get('fullname')?.toString()
+  const dob = formData.get('dob')?.toString()
+  console.log(email, password, username, fullname, dob)
+  if (!email || !password || !username || !fullname || !dob) {
+    console.log(88)
+    return { success: false, data: 'All fields are required' }
   }
   try {
     const res = await axios.post(`${backendBaseUrl}/auth/register`, {
@@ -41,8 +45,9 @@ export const signUpAction = async (formData: FormData) => {
       password,
       username,
       fullname,
+      dob,
     })
-
+    console.log(res)
     const cookieStore = await cookies()
     cookieStore.set('accessToken', res.data.data.accessToken, {
       httpOnly: true,
@@ -61,11 +66,20 @@ export const signUpAction = async (formData: FormData) => {
   } catch (error) {
     const axiosError = error as AxiosError
     console.error(axiosError)
-    return { success: false, data: axiosError.response?.data || 'An error occurred' }
+    return {
+      success: false,
+      data: axiosError.response?.data || 'An error occurred',
+    }
   }
 }
 
-export const signInAction = async ({ email, password }: { email: string; password: string }) => {
+export const signInAction = async ({
+  email,
+  password,
+}: {
+  email: string
+  password: string
+}) => {
   try {
     const res = await axios.post(`${backendBaseUrl}/auth/login`, {
       email,
@@ -94,7 +108,10 @@ export const signInAction = async ({ email, password }: { email: string; passwor
   } catch (error) {
     const axiosError = error as AxiosError
     console.error(axiosError)
-    return { success: false, data: axiosError.response?.data || 'An error occurred' }
+    return {
+      success: false,
+      data: axiosError.response?.data || 'An error occurred',
+    }
   }
 }
 

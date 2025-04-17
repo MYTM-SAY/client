@@ -24,7 +24,7 @@ import { useRouter } from 'next/navigation'
 
 const formSchema = z
   .object({
-    name: z.string().min(2, 'Name must be at least 2 characters'),
+    fullname: z.string().min(2, 'Full name must be at least 2 characters'),
     email: z.string().email('Invalid email address'),
     username: z
       .string()
@@ -35,6 +35,9 @@ const formSchema = z
       ),
     password: z.string().min(8, 'Password must be at least 8 characters'),
     confirmPassword: z.string(),
+    dob: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format (YYYY-MM-DD)'),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",
@@ -48,11 +51,12 @@ export default function RegisterPage() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: '',
+      fullname: '',
       email: '',
       username: '',
       password: '',
       confirmPassword: '',
+      dob: '',
     },
   })
 
@@ -60,14 +64,15 @@ export default function RegisterPage() {
     setIsLoading(true)
     try {
       const formData = new FormData()
-      formData.append('name', values.name)
+      formData.append('fullname', values.fullname)
       formData.append('email', values.email)
       formData.append('username', values.username)
       formData.append('password', values.password)
+      formData.append('dob', values.dob)
       const res = await signUpAction(formData)
       console.log(res)
       if (res.success) {
-        router.push('/')
+        router.push('/settings')
       } else {
         toast({
           title: 'Error',
@@ -126,7 +131,7 @@ export default function RegisterPage() {
               >
                 <FormField
                   control={form.control}
-                  name="name"
+                  name="fullname"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Name</FormLabel>
@@ -192,6 +197,19 @@ export default function RegisterPage() {
                           placeholder="Confirm your password"
                           {...field}
                         />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="dob"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Date of Birth</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
