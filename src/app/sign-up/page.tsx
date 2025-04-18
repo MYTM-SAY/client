@@ -72,7 +72,7 @@ export default function RegisterPage() {
       const res = await signUpAction(formData)
       console.log(res)
       if (res.success) {
-        router.push('/settings')
+        router.push('/create-profile')
       } else {
         toast({
           title: 'Error',
