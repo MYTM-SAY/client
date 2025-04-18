@@ -1,12 +1,6 @@
 'use client'
 
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import * as z from 'zod'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
 import {
   Form,
   FormControl,
@@ -15,7 +9,16 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import { toast } from '@/hooks/use-toast'
+import { instance } from '@/lib/utils/axios'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import * as z from 'zod'
 
 const profileFormSchema = z.object({
   bio: z.string().optional(),
@@ -55,7 +58,8 @@ type ProfileFormValues = z.infer<typeof profileFormSchema>
 const Page = () => {
   const [tags, setTags] = useState<string[]>([])
   const [inputTag, setInputTag] = useState('')
-
+  const router = useRouter()
+  const [isLoading, setIsLoading] = useState(false)
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     defaultValues: {
@@ -70,7 +74,24 @@ const Page = () => {
   })
 
   async function onSubmit(data: ProfileFormValues) {
-    // ToDo: handle onSubmit
+    setIsLoading(true)
+    try {
+      const res = await instance.post('/profiles', {
+        ...data,
+        tags,
+      })
+      await new Promise((resolve) => setTimeout(resolve, 2000))
+      if (res.data.success) {
+        router.push('/')
+        toast({
+          title: 'Profile created successfully',
+        })
+      }
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const handleAddTag = (e: React.KeyboardEvent) => {
@@ -246,8 +267,8 @@ const Page = () => {
             </p>
           </div>
 
-          <Button type="submit" className="w-full">
-            Create Profile
+          <Button type="submit" className="w-full" disabled={isLoading}>
+            {isLoading ? 'Creating profile...' : 'Create Profile'}
           </Button>
         </form>
       </Form>
