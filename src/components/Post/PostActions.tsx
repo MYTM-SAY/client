@@ -10,7 +10,11 @@ import { FaRegComment } from 'react-icons/fa'
 import { Button } from '../ui/button'
 import PostShare from './PostShare'
 
-const PostActions = () => {
+interface Props {
+  votes: number
+}
+
+export default function PostActions({ votes }: Props) {
   const [isUpvoted, setIsUpvoted] = useState(false)
   const [isDownvoted, setIsDownvoted] = useState(false)
 
@@ -38,7 +42,7 @@ const PostActions = () => {
             onClick={handleUpvote}
           />
         )}
-        1.8k
+        {votes}
         {isDownvoted ? (
           <BiSolidDownvote
             className="!w-6 !h-6 text-red-500"
@@ -61,4 +65,3 @@ const PostActions = () => {
   )
 }
 
-export default PostActions

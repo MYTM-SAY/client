@@ -1,17 +1,16 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import Post from '@/components/Post/Post'
-import { CreatePost } from './CreatePost'
-import { getUser } from '@/lib/actions/auth'
+import PostCard from '@/components/Post/Post'
+import CreatePostModal from './CreatePostModal'
+import type { Post } from '@/types'
 
 interface Props {
-  name: string
+  posts: Post[]
 }
 
-export default async function Forum({ name }: Props) {
-  const posts = Array.from({ length: 40 }, (_, i) => <Post key={i} />)
-  const user = await getUser()
+export default async function Forum({ posts }: Props) {
+  const rposts = posts.map((post) => <PostCard key={post.id} post={post} />)
 
-  console.log(user)
+  // TODO: to the backend team we need the PP
 
   return (
     <div className="">
@@ -21,9 +20,9 @@ export default async function Forum({ name }: Props) {
             <AvatarImage src="/pp-fallback.svg" />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
-          <CreatePost />
+          <CreatePostModal fid={posts[0].forumId} />
         </div>
-        <div className="space-y-3">{posts}</div>
+        <div className="space-y-3">{rposts}</div>
       </div>
     </div>
   )

@@ -1,16 +1,14 @@
+
 import PostContent from './PostContent'
 import PostActions from './PostActions'
 import PostSettingsDropdown from './PostSettingsDropDown'
 import Image from 'next/image'
 import Link from 'next/link'
+import { Post } from '@/types'
 
-// TEMP:
-const username = 'Hasasn Ezz'
-const timestamp = '6h ago'
-const commId = '343'
-const community = 'Software Engineers'
 
-export default function PostCard() {
+export default function PostCard({ post }: { post?: Post }) {
+
   return (
     <div className="relative p-6 rounded-lg bg-card text-foreground shadow">
       <PostSettingsDropdown />
@@ -25,24 +23,21 @@ export default function PostCard() {
           height={68}
         />
         <div>
-          <Link href={'/u/' + username} className="h4">
-            {username}
+          <Link href={`/u/temp-user`} className="h4">
+            temp author
           </Link>
           <p className="p-muted">
-            {timestamp} in{' '}
-            <Link href={'/c/' + commId} className="font-bold underline">
-              {community}
+            6h ago in{' '}
+            <Link href={`/c/69`} className="font-bold underline">
+              Temp comm name
             </Link>
           </p>
         </div>
       </div>
 
-      <PostContent
-        title="Curious, how do you manage the full ML lifecycle?"
-        content="Hi guys! I’ve been pondering a specific question/idea that I would like to pose as a discussion. It concerns the idea of more quickly going from idea to Hie as a discussion. It concerns the idea of more quickly going from idea to Hie as a discussion. It concerns the idea of more quickly going from idea to Hie as a discussion. It concerns the idea of more quickly going from idea to Hi"
-      />
+      <PostContent title={post?.title || ''} content={post?.content || ''} />
 
-      <PostActions />
+      <PostActions votes={post?.voteCounter || 0} />
     </div>
   )
 }

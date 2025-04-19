@@ -2,12 +2,24 @@ import { ReactNode } from 'react'
 
 export type ServerResponse<T> =
   | { success: true; data: T }
-  | { success: false; message: string, statusCode?: number }
+  | { success: false; message: string; statusCode?: number }
 const Role = ['OWNER', 'MEMBER', 'MODERATOR'] as const
 export type Role = typeof Role
 export interface ServerError {
   success: false
   message: string
+}
+
+export interface Post {
+  id: number
+  title: string
+  content: string
+  voteCounter: number
+  attachments: unknown[]
+  forumId: number
+  authorId: number
+  createdAt: string
+  updatedAt: string
 }
 
 export type ApiResponse<T> = {
@@ -88,18 +100,6 @@ export interface Classroom {
   coverImg: string
   communityId: string
   progress: number
-}
-
-export interface Post {
-  id: string
-  title: string
-  content: string
-  voteCounter: number
-  attachments: string[]
-  forumId: string
-  authorId: string
-  createdAt: string
-  updatedAt: string
 }
 export interface Event {
   id: string
