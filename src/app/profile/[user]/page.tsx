@@ -4,7 +4,7 @@ import CommunitiesProfile from '@/components/Profile/CommunitiesProfile'
 import ProfileInfo from '@/components/Profile/ProfileInfo'
 import ContributionsInCommunityies from '@/components/Profile/ContributionsInCommunityies'
 import { getUser } from '@/lib/actions/auth'
-import { getUserProfileInfo } from '@/app/actions/profile'
+import { getUserProfileInfo, getUserContributions } from '@/app/actions/profile'
 export default async function Page() {
   const contributions: number[] = Array.from({ length: 365 }, () =>
     Math.floor(Math.random() * 5),
@@ -15,9 +15,10 @@ export default async function Page() {
     return 'An error has occurred'
   }
   const userInfoReq = await getUserProfileInfo(userReq.user.id)
-
+  const userContributions = await getUserContributions(userReq.user.id)
   console.log(userInfoReq)
   console.log(userReq.user)
+  // ToDo: Add userContributions
   return (
     <div className="grid sm:grid-cols-3 gap-5">
       <div className="col-span-2">
@@ -25,7 +26,17 @@ export default async function Page() {
         <CommunitiesProfile />
         <ContributionsInCommunityies />
       </div>
-      <ProfileInfo />
+      <ProfileInfo
+        username={userReq.user.username}
+        fullname={userReq.user.fullname}
+        bio={userInfoReq.data.bio}
+        facebook={userInfoReq.data.facebook}
+        instagram={userInfoReq.data.instagram}
+        linkedIn={userInfoReq.data.linkedin}
+        x={userInfoReq.data.twitter}
+        youtube={userInfoReq.data.youtube}
+        profilePic={userInfoReq.data.profilePictureURL}
+      />
     </div>
   )
 }

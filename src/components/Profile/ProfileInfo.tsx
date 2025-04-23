@@ -1,24 +1,58 @@
 import Btn from '../ui/Btn'
-import { FaRegClock, FaCalendarAlt, FaLinkedin, FaGithub } from 'react-icons/fa'
-import { SiLeetcode, SiCodeforces } from 'react-icons/si'
+import { FaRegClock, FaCalendarAlt, FaLinkedin } from 'react-icons/fa'
+
 import { FaXTwitter } from 'react-icons/fa6'
+import { IoLogoFacebook } from 'react-icons/io'
+import { FaYoutube } from 'react-icons/fa'
+import { FiInstagram } from 'react-icons/fi'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import Link from 'next/link'
-const ProfileInfo = () => {
-  const text = `Ex-Software Engineer @Bld.ai
-3x ACPC Finalist
-2x ECPC Medalist 🥈🥉`
 
+interface ProfileInfoProps {
+  username: string
+  fullname: string
+  bio: string
+  facebook?: string
+  instagram?: string
+  linkedIn?: string
+  x?: string
+  youtube?: string
+  profilePic?: string
+}
+const ProfileInfo = ({
+  username,
+  fullname,
+  bio,
+  facebook = '#',
+  instagram = '#',
+  linkedIn = '#',
+  x = '#',
+  youtube = '#',
+  profilePic,
+}: ProfileInfoProps) => {
+  const text = bio
+  console.log(
+    username,
+    fullname,
+    bio,
+    facebook,
+    instagram,
+    linkedIn,
+    x,
+    youtube,
+    profilePic,
+  )
   return (
     <div className="flex mlg:w-full flex-col items-center justify-between self-start bg-background border border-foreground rounded-lg py-6 px-12 gap-6 dark-gray-shadow ">
       <div className="flex flex-col items-center justify-center gap-4">
         <Avatar className="rounded-full border border-gray-300 dark:border-gray-700 w-[150px] h-[150px]">
-          <AvatarImage src="/pp-fallback.svg" />
+          <AvatarImage src={profilePic} />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
 
-        <h1 className="h4">Yousef Hassan</h1>
+        <h1 className="h4">{fullname}</h1>
+        <p className="p-muted">{username}</p>
       </div>
       <div className="flex flex-col gap-8 px-4">
         <div style={{ whiteSpace: 'pre-wrap' }} className="p">
@@ -50,27 +84,27 @@ const ProfileInfo = () => {
       </div>
       <ul className="flex gap-8 p-muted text-xl">
         <li>
-          <Link href="https://www.skool.com/adonis-gang">
-            <SiLeetcode />
+          <Link href={facebook}>
+            <IoLogoFacebook />
           </Link>
         </li>
         <li>
-          <Link href="https://www.skool.com/adonis-gang">
-            <SiCodeforces />
+          <Link href={instagram}>
+            <FiInstagram />
           </Link>
         </li>
         <li>
-          <Link href="https://www.skool.com/adonis-gang">
+          <Link href={linkedIn}>
             <FaLinkedin />
           </Link>
         </li>
         <li>
-          <Link href="https://www.skool.com/adonis-gang">
-            <FaGithub />
+          <Link href={youtube}>
+            <FaYoutube />
           </Link>
         </li>
         <li>
-          <Link href="https://www.skool.com/adonis-gang">
+          <Link href={x}>
             <FaXTwitter />
           </Link>
         </li>
