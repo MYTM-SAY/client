@@ -4,7 +4,11 @@ import CommunitiesProfile from '@/components/Profile/CommunitiesProfile'
 import ProfileInfo from '@/components/Profile/ProfileInfo'
 import ContributionsInCommunityies from '@/components/Profile/ContributionsInCommunityies'
 import { getUser } from '@/lib/actions/auth'
-import { getUserProfileInfo, getUserContributions } from '@/app/actions/profile'
+import {
+  getUserProfileInfo,
+  getUserContributions,
+  getUserCommunities,
+} from '@/app/actions/profile'
 export default async function Page() {
   const contributions: number[] = Array.from({ length: 365 }, () =>
     Math.floor(Math.random() * 5),
@@ -16,14 +20,16 @@ export default async function Page() {
   }
   const userInfoReq = await getUserProfileInfo(userReq.user.id)
   const userContributions = await getUserContributions(userReq.user.id)
+  const UserCommunities = await getUserCommunities()
   console.log(userInfoReq)
   console.log(userReq.user)
-  // ToDo: Add userContributions
+  console.log(userContributions.data[0].UserContributions[0])
+  console.log(UserCommunities.data)
   return (
     <div className="grid sm:grid-cols-3 gap-5">
       <div className="col-span-2">
         <ContributionGraph contributions={contributions} />
-        <CommunitiesProfile />
+        <CommunitiesProfile userCommunities={UserCommunities.data} />
         <ContributionsInCommunityies />
       </div>
       <ProfileInfo
@@ -36,6 +42,8 @@ export default async function Page() {
         x={userInfoReq.data.twitter}
         youtube={userInfoReq.data.youtube}
         profilePic={userInfoReq.data.profilePictureURL}
+        userContributions={userContributions.data[0].UserContributions[0].count}
+        UserCommunities={UserCommunities.data.length}
       />
     </div>
   )
