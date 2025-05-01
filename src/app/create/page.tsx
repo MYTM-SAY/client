@@ -9,6 +9,7 @@ import { instance } from '@/lib/utils/axios'
 import { useRouter } from 'next/navigation'
 import { toast } from 'react-hot-toast'
 import { AxiosError } from 'axios'
+
 interface CommunityFormData {
   name: string
   tags: string[]
@@ -73,13 +74,13 @@ const useCommunityForm = () => {
     setError(null)
     console.log(formData)
     try {
-      const response = await instance.post('/communities', {
-        name: formData.name,
-        description: formData.description,
-        bio: formData.bio,
-        Tags: formData.tags,
+      const response = await instance.post(`/communities`, {
+        name: 'Tech Community',
+        description: 'A place for tech enthusiasts.',
+        bio: 'We are a passionate group of tech enthusiasts sharing knowledge and collaborating on innovative projects.',
         coverImgURL: 'https://example.com/cover.jpg',
         logoImgURL: 'https://example.com/logo.jpg',
+        Tags: ['javascript', 'backend', 'cloud'],
       })
       toast.success('Community created successfully!')
 
