@@ -26,19 +26,48 @@ interface SelectedMedia {
   url: string
 }
 
-export const MediaSection = () => {
-  const [selectedImage, setSelectedImage] = useState<string | null>(null)
+interface MediaSectionProps {
+  onChangeCover: (file: File | null) => void
+  onChangeLogo: (file: File | null) => void
+}
+
+export const MediaSection = ({
+  onChangeCover,
+  onChangeLogo,
+}: MediaSectionProps) => {
+  const [coverImage, setCoverImage] = useState<string | null>(null)
+  const [logoImage, setLogoImage] = useState<string | null>(null)
   const [mediaItems, setMediaItems] = useState<MediaItem[]>([])
   const [selectedMedia, setSelectedMedia] = useState<SelectedMedia | null>(null)
   const videoInputRef = useRef<HTMLInputElement>(null)
   const galleryInputRef = useRef<HTMLInputElement>(null)
 
-  const handleBannerSelect = (file: File) => {
+  const handleCoverSelect = (file: File) => {
     const reader = new FileReader()
     reader.onloadend = () => {
-      setSelectedImage(reader.result as string)
+      setCoverImage(reader.result as string)
     }
     reader.readAsDataURL(file)
+    onChangeCover(file)
+  }
+
+  const handleCoverRemove = () => {
+    setCoverImage(null)
+    onChangeCover(null)
+  }
+
+  const handleLogoSelect = (file: File) => {
+    const reader = new FileReader()
+    reader.onloadend = () => {
+      setLogoImage(reader.result as string)
+    }
+    reader.readAsDataURL(file)
+    onChangeLogo(file)
+  }
+
+  const handleLogoRemove = () => {
+    setLogoImage(null)
+    onChangeLogo(null)
   }
 
   const handleMediaUpload = (files: FileList, type: 'image' | 'video') => {
@@ -65,15 +94,32 @@ export const MediaSection = () => {
 
   return (
     <div className="space-y-8">
-      <BannerUpload
-        selectedImage={selectedImage}
-        onImageSelect={handleBannerSelect}
-        onImageRemove={() => setSelectedImage(null)}
-      />
+      {/* Cover Image Upload */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold">Community Cover Image</h3>
+        <BannerUpload
+          selectedImage={coverImage}
+          onImageSelect={handleCoverSelect}
+          onImageRemove={handleCoverRemove}
+        />
+      </div>
+
+      {/* Logo Image Upload */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold">Community Logo</h3>
+        <BannerUpload
+          selectedImage={logoImage}
+          onImageSelect={handleLogoSelect}
+          onImageRemove={handleLogoRemove}
+        />
+      </div>
+
+      {/* Additional Media Section (Optional) */}
       <AdditionalMedia
         onVideoUpload={() => videoInputRef.current?.click()}
         onGalleryUpload={() => galleryInputRef.current?.click()}
       />
+
       <input
         type="file"
         ref={videoInputRef}
@@ -97,7 +143,7 @@ export const MediaSection = () => {
       {/* Media Preview Section */}
       {mediaItems.length > 0 && (
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold">Media Preview</h3>
+          <h3 className="text-lg font-semibold">Additional Media</h3>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {mediaItems.map((item) => (
               <div key={item.id} className="relative group">
@@ -134,7 +180,6 @@ export const MediaSection = () => {
                     </div>
                   </div>
                 )}
-                {/* Separate overlay for delete button and badge */}
                 <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
                   <Button
                     variant="destructive"
@@ -155,12 +200,12 @@ export const MediaSection = () => {
         </div>
       )}
 
-      {/* Media Dialog */}
+      {/* Media Preview Dialog */}
       <Dialog
         open={!!selectedMedia}
         onOpenChange={() => setSelectedMedia(null)}
       >
-        <DialogContent className="max-w-4xl ">
+        <DialogContent className="max-w-4xl">
           <DialogHeader>
             <DialogTitle className="sr-only">
               {selectedMedia?.type === 'image'
@@ -169,7 +214,7 @@ export const MediaSection = () => {
             </DialogTitle>
             <DialogClose className="absolute right-4 top-4 rounded-sm !bg-destructive" />
           </DialogHeader>
-          <div className="mt-2 ">
+          <div className="mt-2">
             {selectedMedia?.type === 'image' ? (
               <img
                 src={selectedMedia.url}

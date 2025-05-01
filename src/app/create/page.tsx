@@ -12,9 +12,10 @@ import { AxiosError } from 'axios'
 interface CommunityFormData {
   name: string
   tags: string[]
-  about: string
+  description: string
   bio: string
-  media?: File | null
+  coverImage?: File | null
+  logoImage?: File | null
 }
 
 const useCommunityForm = () => {
@@ -22,9 +23,8 @@ const useCommunityForm = () => {
   const [formData, setFormData] = useState<CommunityFormData>({
     name: '',
     tags: [],
-    about: '',
+    description: '',
     bio: '',
-    media: null,
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -41,55 +41,56 @@ const useCommunityForm = () => {
     setFormData((prev) => ({ ...prev, bio }))
   }
 
-  const updateAbout = (about: string) => {
-    setFormData((prev) => ({ ...prev, about }))
+  const updateDescription = (description: string) => {
+    setFormData((prev) => ({ ...prev, description }))
   }
 
-  const updateMedia = (media: File | null) => {
-    setFormData((prev) => ({ ...prev, media }))
-  }
+  const updateCoverImage = (coverImage: File | null) =>
+    setFormData((prev) => ({ ...prev, coverImage }))
+  const updateLogoImage = (logoImage: File | null) =>
+    setFormData((prev) => ({ ...prev, logoImage }))
 
   const isStepValid = (step: number): boolean => {
     switch (step) {
       case 1:
         return formData.name.trim() !== ''
       case 2:
-        return formData.bio.trim() !== '' && formData.about.trim() !== ''
+        return formData.bio.trim() !== '' && formData.description.trim() !== ''
       case 3:
-        return true // Media is optional
+        return true
       default:
         return false
     }
   }
-
+  // const uploadImage = async (file: File): Promise<string> => {
+  //   const formData = new FormData()
+  //   formData.append('file', file)
+  //   const response = await instance.post('/upload', formData)
+  //   return response.data.url
+  // }
   const submitCommunity = async () => {
     setIsSubmitting(true)
     setError(null)
-    
+    console.log(formData)
     try {
-
-      // TODO: Add media upload
-      if (formData.media) {
-        // formDataToSubmit.append('media', formData.media)
-      }
-      
       const response = await instance.post('/communities', {
         name: formData.name,
-        description: formData.bio,
-        coverImgURL: 'https://picsum.photos/200/300',
-        logoImgURL: 'https://picsum.photos/200/300',
-        // about: formData.about,
-        // tags: formData.tags,
-        // media: formData.media,
+        description: formData.description,
+        bio: formData.bio,
+        Tags: formData.tags,
+        coverImgURL: 'https://example.com/cover.jpg',
+        logoImgURL: 'https://example.com/logo.jpg',
       })
-      
       toast.success('Community created successfully!')
-      
+
       router.push(`/communities/${response.data.id}`)
     } catch (err) {
       if (err instanceof AxiosError) {
         console.error('Error creating community:', err)
-        setError(err.response?.data?.message || 'Failed to create community. Please try again.')
+        setError(
+          err.response?.data?.message ||
+            'Failed to create community. Please try again.',
+        )
         toast.error(err.response?.data?.message || 'Failed to create community')
       } else {
         console.error('Error creating community:', err)
@@ -106,8 +107,9 @@ const useCommunityForm = () => {
     updateName,
     updateTags,
     updateBio,
-    updateAbout,
-    updateMedia,
+    updateDescription,
+    updateCoverImage,
+    updateLogoImage,
     isStepValid,
     submitCommunity,
     isSubmitting,
@@ -116,17 +118,18 @@ const useCommunityForm = () => {
 }
 
 const CreateCommunityPage = () => {
-  const { 
-    formData, 
-    updateName, 
-    updateTags, 
-    updateBio, 
-    updateAbout, 
-    updateMedia,
-    isStepValid, 
+  const {
+    formData,
+    updateName,
+    updateTags,
+    updateBio,
+    updateDescription,
+    updateCoverImage,
+    updateLogoImage,
+    isStepValid,
     submitCommunity,
     isSubmitting,
-    error
+    error,
   } = useCommunityForm()
 
   const handleComplete = async () => {
@@ -155,10 +158,10 @@ const CreateCommunityPage = () => {
         content: (
           <BioSection
             bio={formData.bio}
-            about={formData.about}
-            onChange={(bio, about) => {
+            description={formData.description}
+            onChange={(bio, description) => {
               updateBio(bio)
-              updateAbout(about)
+              updateDescription(description)
             }}
           />
         ),
@@ -167,27 +170,34 @@ const CreateCommunityPage = () => {
         id: 3,
         title: 'Media Upload',
         content: (
-          <MediaSection 
-            // onChange={(file) => updateMedia(file)} 
+          <MediaSection
+            onChangeCover={updateCoverImage}
+            onChangeLogo={updateLogoImage}
           />
         ),
       },
     ],
-    [formData, updateName, updateTags, updateBio, updateAbout, updateMedia],
+    [
+      formData,
+      updateName,
+      updateTags,
+      updateBio,
+      updateDescription,
+      updateCoverImage,
+      updateLogoImage,
+    ],
   )
 
   return (
     <div className="w-full flex-col-center gap-16 p-4">
       <h1 className="h1">Create Your Own Community</h1>
-      
       {error && (
         <div className="w-full max-w-3xl p-4 mb-4 text-red-700 bg-red-100 rounded-md">
           {error}
         </div>
       )}
-      
-      <Stepper 
-        steps={steps} 
+      <Stepper
+        steps={steps}
         isNextDisabled={(currentStep) => !isStepValid(currentStep)}
         onComplete={handleComplete}
         isSubmitting={isSubmitting}
