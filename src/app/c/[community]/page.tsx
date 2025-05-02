@@ -22,5 +22,6 @@ export default async function Page({ params }: Props) {
     return <>Internal server error</>
   }
 
-  return <Forum posts={res.data.Forums[0].Posts} />
+  // TODO: awaiting the backend fix
+  return <Forum posts={res.data.Forums[0].Posts || []} />
 }

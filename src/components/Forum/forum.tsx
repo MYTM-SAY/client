@@ -8,6 +8,8 @@ interface Props {
 }
 
 export default async function Forum({ posts }: Props) {
+  if (!posts) return <>Internal server error...</>
+
   const rposts = posts.map((post) => <PostCard key={post.id} post={post} />)
 
   // TODO: to the backend team we need the PP
@@ -20,7 +22,7 @@ export default async function Forum({ posts }: Props) {
             <AvatarImage src="/pp-fallback.svg" />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
-          <CreatePostModal fid={posts[0].forumId} />
+          <CreatePostModal fid={posts[0]?.forumId || 1} />
         </div>
         <div className="space-y-3">{rposts}</div>
       </div>

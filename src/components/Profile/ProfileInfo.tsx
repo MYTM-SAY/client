@@ -20,8 +20,8 @@ interface ProfileInfoProps {
   x?: string
   youtube?: string
   profilePic?: string
-  userContributions: number
-  UserCommunities: number
+  userContributionCount: number
+  joinedCommuntiesCount: number
 }
 const ProfileInfo = ({
   username,
@@ -33,8 +33,8 @@ const ProfileInfo = ({
   x = '#',
   youtube = '#',
   profilePic,
-  userContributions,
-  UserCommunities,
+  userContributionCount,
+  joinedCommuntiesCount,
 }: ProfileInfoProps) => {
   const text = bio
   const router = useRouter()
@@ -64,11 +64,11 @@ const ProfileInfo = ({
       </div>
       <div className="flex justify-between gap-16 ">
         <div className="flex flex-col items-center p-muted">
-          <p className="font-semibold">{userContributions}</p>
+          <p className="font-semibold">{userContributionCount}</p>
           <p>Contributions</p>
         </div>
         <div className="flex flex-col items-center p-muted">
-          <p className="font-semibold">{UserCommunities}</p>
+          <p className="font-semibold">{joinedCommuntiesCount}</p>
           <p>Communities</p>
         </div>
       </div>
