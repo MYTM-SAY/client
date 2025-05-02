@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { Input } from '../ui/input'
 import { Camera } from 'lucide-react'
-import { createPost } from '@/app/actions/community'
+import { createPost } from '@/app/actions/post'
 
 export default function CreatePostModal({ fid }: { fid: string | number }) {
   return (
@@ -19,8 +19,7 @@ export default function CreatePostModal({ fid }: { fid: string | number }) {
           variant="ghost"
           className="w-full justify-start text-muted-foreground"
         >
-          {/* TODO: add real name instaed of JOE */}
-          What&apos;s on your mind, Joe? 
+          What&apos;s on your mind? 
         </Button>
       </DialogTrigger>
 
@@ -30,8 +29,6 @@ export default function CreatePostModal({ fid }: { fid: string | number }) {
         </DialogHeader>
 
         <form action={createPost}>
-
-          {/* add forumId */}
           <input type="hidden" name="fid" value={fid} />
 
           <Input

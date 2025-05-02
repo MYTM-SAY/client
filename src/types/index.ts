@@ -5,6 +5,11 @@ export type ServerResponse<T> =
   | { success: false; message: string; statusCode?: number }
 const Role = ['OWNER', 'MEMBER', 'MODERATOR'] as const
 export type Role = typeof Role
+
+export interface Tag {
+  id: number
+  name: string
+}
 export interface ServerError {
   success: false
   message: string
@@ -66,10 +71,7 @@ export interface ButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
 export interface CommunityCardProps {
   status: string
 }
-export interface PostContentProps {
-  title: string
-  content: string
-}
+
 export interface ShareButtonProps {
   url?: string
   title?: string

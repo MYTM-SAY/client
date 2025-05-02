@@ -1,28 +1,30 @@
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import PostCard from '@/components/Post/Post'
 import CreatePostModal from './CreatePostModal'
-import type { Post } from '@/types'
+import { getPosts } from '@/app/actions/post'
+import { GetCommunityResponse } from '@/app/actions/community'
 
 interface Props {
-  posts: Post[]
+  forumId: number
+  community: GetCommunityResponse
 }
 
-export default async function Forum({ posts }: Props) {
-  if (!posts) return <>Internal server error...</>
+export default async function Forum({ forumId, community }: Props) {
+  const postsReq = await getPosts(forumId)
+  if (!postsReq.success) {
+    return <>Internal Server Error</> // TODO: put the 500 page
+  }
 
-  const rposts = posts.map((post) => <PostCard key={post.id} post={post} />)
+  console.log(postsReq.data)
 
-  // TODO: to the backend team we need the PP
+  const rposts = postsReq.data.map((post) => (
+    <PostCard key={post.id} post={post} community={community} />
+  ))
 
   return (
     <div className="">
       <div className="col-span-2">
-        <div className="flex-center gap-1 px-4 py-2 rounded-lg border-[2px] border-foreground w-full mb-5">
-          <Avatar>
-            <AvatarImage src="/pp-fallback.svg" />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
-          <CreatePostModal fid={posts[0]?.forumId || 1} />
+        <div className="flex-center gap-1 px-4 py-2 rounded-lg border w-full mb-5">
+          <CreatePostModal fid={forumId} />
         </div>
         <div className="space-y-3">{rposts}</div>
       </div>

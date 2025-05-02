@@ -12,9 +12,10 @@ import PostShare from './PostShare'
 
 interface Props {
   votes: number
+  commentCount: number
 }
 
-export default function PostActions({ votes }: Props) {
+export default function PostActions({ votes, commentCount }: Props) {
   const [isUpvoted, setIsUpvoted] = useState(false)
   const [isDownvoted, setIsDownvoted] = useState(false)
 
@@ -57,7 +58,7 @@ export default function PostActions({ votes }: Props) {
       </div>
 
       <Button className="flex items-center gap-2 px-4 py-2 text-foreground p-lg bg-card hover:text-white">
-        <FaRegComment className="!w-6 !h-6" /> 12
+        <FaRegComment className="!w-6 !h-6" /> {commentCount}
       </Button>
 
       <PostShare url="https://your-url.com" title="Your Custom Title" />

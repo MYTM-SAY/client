@@ -7,14 +7,10 @@ interface Props {
   }
 }
 
-// TODO: fix the layout thing
-
 export default async function Page({ params }: Props) {
   const { community: communityId } = await params
   const res = await getCommunity(communityId)
 
-  
-  // TODO: add status code
   if (!res.success) {
     if (res.statusCode === 404) {
       return <>Page not found</>
@@ -22,6 +18,5 @@ export default async function Page({ params }: Props) {
     return <>Internal server error</>
   }
 
-  // TODO: awaiting the backend fix
-  return <Forum posts={res.data.Forums[0].Posts || []} />
+  return <Forum forumId={res.data.forumId} community={res.data} />
 }

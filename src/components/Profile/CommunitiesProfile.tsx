@@ -7,13 +7,18 @@ type CommunityListProps = {
   userId: string
 }
 
-export default async function CommunitiesProfile({ userId }: CommunityListProps) {
+export default async function CommunitiesProfile({
+  userId,
+}: CommunityListProps) {
   const userCommunities = await getJoinedCommunities(userId)
   if (!userCommunities.success) {
     return 'An error has occurred'
   }
 
-  const communities = userCommunities.data.map(d => ({...d.Community, role: d.Role}))
+  const communities = userCommunities.data.map((d) => ({
+    ...d.Community,
+    role: d.Role,
+  }))
 
   return (
     <div>
@@ -35,12 +40,18 @@ export default async function CommunitiesProfile({ userId }: CommunityListProps)
                 />
                 <div>
                   <p className="h5">{community.name}</p>
-                  <p className="p-muted capitalize">Public • 167.6k • {(community.role as never as string).toLowerCase()}</p>
+                  <p className="p-muted capitalize">
+                    {community.isPublic ? 'Public' : 'Private'} • 167.6k •{' '}
+                    {(community.role as never as string).toLowerCase()}
+                  </p>
                 </div>
               </div>
-              <p className="mt-4 p-lg-muted">Bio</p>
+              <p className="mt-4 p-lg-muted">{community?.description || ''}</p>
             </div>
-            <Link href={'/c/' + community.id} className="px-10 py-2 msm:mt-4 text-white bg-accent rounded-lg">
+            <Link
+              href={'/c/' + community.id}
+              className="px-10 py-2 msm:mt-4 text-white bg-accent rounded-lg"
+            >
               Visit
             </Link>
           </div>
@@ -49,4 +60,3 @@ export default async function CommunitiesProfile({ userId }: CommunityListProps)
     </div>
   )
 }
-

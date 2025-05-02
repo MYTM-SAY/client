@@ -1,44 +1,26 @@
 'use server'
 
-import type { ServerResponse, Role, ServerError, Post } from '@/types'
+import type { ServerResponse, Role, ServerError, Tag } from '@/types'
 import { axiosInstance } from './'
 import { AxiosError } from 'axios'
 
-export async function createPost(formData: FormData) {
-  const postData = Object.fromEntries(formData.entries()) as {
-    fid: string // forum id
-    title: string
-    content: string
-    media: unknown // TODO: define file type
-  }
-  
-  try {
-    const res = await axiosInstance.post(`/posts/forums/${postData.fid}`, {
-      title: postData.title,
-      content: postData.content,
-      attachments: [], // TODO: add file upload
-    })
 
-    console.log("post created", res.data)
-  } catch (error) {
-    console.log("error creating post", error)
-  }
-}
 
-interface GetCommunityResponse {
+export interface GetCommunityResponse {
   id: number
   name: string
   description: string
+  bio: string
   createdAt: string
   updatedAt: string
   coverImgURL: string
   logoImgURL: string
   ownerId: number
   isPublic: boolean
-  Classrooms: unknown[] // TODO: define missing types
-  Forums: {
-    Posts: Post[]
-  }[]
+  Tags: Tag[]
+  forumId: number
+  membersCount: number
+  role: Role
 }
 
 export async function getCommunity(
@@ -64,6 +46,13 @@ interface GetJoinedCommunitiesResponse {
     id: string | number
     name: string
     logoImgURL: string
+    isPublic: boolean
+    description?: string
+    Owner: {
+      id: string | number
+      fullname: string
+      username: string
+    }
   }
 }
 
