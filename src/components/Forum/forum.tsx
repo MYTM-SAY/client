@@ -6,18 +6,26 @@ import { GetCommunityResponse } from '@/app/actions/community'
 interface Props {
   forumId: number
   community: GetCommunityResponse
+  authedUserId: string | number
 }
 
-export default async function Forum({ forumId, community }: Props) {
+export default async function Forum({
+  forumId,
+  community,
+  authedUserId,
+}: Props) {
   const postsReq = await getPosts(forumId)
   if (!postsReq.success) {
     return <>Internal Server Error</> // TODO: put the 500 page
   }
 
-  console.log(postsReq.data)
-
   const rposts = postsReq.data.map((post) => (
-    <PostCard key={post.id} post={post} community={community} />
+    <PostCard
+      key={post.id}
+      post={post}
+      community={community}
+      isAuthor={authedUserId == post.authorId}
+    />
   ))
 
   return (

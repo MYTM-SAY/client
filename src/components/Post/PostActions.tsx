@@ -7,15 +7,17 @@ import {
   BiSolidDownvote,
 } from 'react-icons/bi'
 import { FaRegComment } from 'react-icons/fa'
-import { Button } from '../ui/button'
 import PostShare from './PostShare'
+import Link from 'next/link'
 
 interface Props {
+  id: string | number
   votes: number
   commentCount: number
+  title: string
 }
 
-export default function PostActions({ votes, commentCount }: Props) {
+export default function PostActions({ id, votes, commentCount, title }: Props) {
   const [isUpvoted, setIsUpvoted] = useState(false)
   const [isDownvoted, setIsDownvoted] = useState(false)
 
@@ -57,11 +59,11 @@ export default function PostActions({ votes, commentCount }: Props) {
         )}
       </div>
 
-      <Button className="flex items-center gap-2 px-4 py-2 text-foreground p-lg bg-card hover:text-white">
+      <Link href={`/p/${id}`} className="flex items-center gap-2 px-4 py-2 text-foreground p-lg bg-card hover:text-white">
         <FaRegComment className="!w-6 !h-6" /> {commentCount}
-      </Button>
+      </Link>
 
-      <PostShare url="https://your-url.com" title="Your Custom Title" />
+      <PostShare url={`/p/${id}`} title={title} />
     </div>
   )
 }
