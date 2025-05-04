@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import Post from '../Post/Post'
 import Pagination from '@mui/material/Pagination'
-
+import { PostsResponse } from '@/app/actions/post'
 import {
   Select,
   SelectContent,
@@ -11,8 +11,39 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+// interface AuthorProfile {
+//   profilePictureURL: string
+// }
 
-const ContributionsInCommunityies = () => {
+// interface Author {
+//   id: number
+//   username: string
+//   fullname: string
+//   email: string
+//   UserProfile: AuthorProfile
+// }
+
+// interface Post {
+//   id: number
+//   title: string
+//   content: string
+//   attachments: string[]
+//   forumId: number
+//   createdAt: string
+//   updatedAt: string
+//   Author: Author
+//   commentsCount: number
+//   forumName: string
+// }
+
+interface PostWithForum extends PostsResponse {
+  forumName: string
+}
+
+interface Props {
+  posts: PostWithForum[]
+}
+const ContributionsInCommunityies = ({ posts }: Props) => {
   const [active, setActive] = useState(1)
   const [com, setCom] = useState('12 ')
 
@@ -24,7 +55,6 @@ const ContributionsInCommunityies = () => {
     { value: 'CI Geeks', label: '5' },
   ]
 
-  const posts = Array.from({ length: 40 }, (_, i) => <Post key={i} />)
   const postPerPage = 4
 
   const startIndex = (active - 1) * postPerPage
@@ -59,7 +89,15 @@ const ContributionsInCommunityies = () => {
           </SelectContent>
         </Select>
       </div>
-      {currentPosts}
+      {currentPosts.map((post) => (
+        <Post
+          key={post.id}
+          post={post}
+          communityId={post.forumId}
+          communityName={post.forumName}
+          isAuthor={false} // Update this with actual author check if possible
+        />
+      ))}
       <Pagination
         className="mb-10  mt-5 scale-125 mmd:scale-100 self-center"
         count={totalPages}

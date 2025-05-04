@@ -4,16 +4,21 @@ import PostSettingsDropdown from './PostSettingsDropDown'
 import Image from 'next/image'
 import Link from 'next/link'
 import { PostsResponse } from '@/app/actions/post'
-import { GetCommunityResponse } from '@/app/actions/community'
 import { formatDateTime } from '@/lib/utils'
 
 interface Props {
   post: PostsResponse
-  community: GetCommunityResponse
+  communityId: number | string
+  communityName: string
   isAuthor: boolean
 }
 
-export default function PostCard({ post, community, isAuthor }: Props) {
+export default function PostCard({
+  post,
+  communityId,
+  communityName,
+  isAuthor,
+}: Props) {
   return (
     <div className="relative p-6 rounded-lg bg-card text-foreground shadow">
       {isAuthor && <PostSettingsDropdown />}
@@ -32,8 +37,8 @@ export default function PostCard({ post, community, isAuthor }: Props) {
           </Link>
           <p className="p-muted">
             {formatDateTime(post.createdAt)} in{' '}
-            <Link href={`/c/${community.id}`} className="font-bold underline">
-              {community.name}
+            <Link href={`/c/${communityId}`} className="font-bold underline">
+              {communityName}
             </Link>
           </p>
         </div>

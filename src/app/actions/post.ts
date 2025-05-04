@@ -44,7 +44,6 @@ export interface PostsResponse {
   commentsCount: number
 }
 
-
 export async function getPosts(
   forumId: string | number,
 ): Promise<ServerResponse<PostsResponse[]>> {

@@ -6,6 +6,8 @@ import ContributionsInCommunityies from '@/components/Profile/ContributionsInCom
 import { getUser } from '@/lib/actions/auth'
 import { getUserProfileInfo, getUserContributions } from '@/app/actions/profile'
 import { getJoinedCommunities } from '@/app/actions/community'
+import { getAllPostsOfUserUsingId } from '@/app/actions/user'
+
 export default async function Page() {
   const contributions: number[] = Array.from({ length: 365 }, () =>
     Math.floor(Math.random() * 5),
@@ -18,6 +20,7 @@ export default async function Page() {
   const userInfoReq = await getUserProfileInfo(userReq.user.id)
   const userContributions = await getUserContributions(userReq.user.id)
   const userCommunities = await getJoinedCommunities(userReq.user.id)
+  const posts = await getAllPostsOfUserUsingId(userReq.user.id)
   if (!userCommunities.success) {
     return 'An error has occurred'
   }
@@ -25,13 +28,38 @@ export default async function Page() {
     ...d.Community,
     role: d.Role,
   }))
+  const postTwo = posts.data.map((post) => {
+    const community = communities.find((c) => c.id === post.forumId)
+
+    return {
+      id: post.id,
+      title: post.title,
+      content: post.content,
+      voteCounter: null,
+      attachments: post.attachments,
+      forumId: post.forumId,
+      forumName: community?.name ?? null,
+      authorId: post.Author?.id ?? null,
+      createdAt: post.createdAt,
+      updatedAt: post.updatedAt,
+      Authorfiltered: {
+        id: post.Author?.id ?? null,
+        username: post.Author?.username ?? null,
+        fullname: post.Author?.fullname ?? null,
+        profilePictureURL: post.Author?.UserProfile?.profilePictureURL ?? null,
+      },
+      commentsCount: post.commentsCount,
+    }
+  })
+
+  console.log(postTwo)
 
   return (
     <div className="grid sm:grid-cols-3 gap-5">
       <div className="col-span-2">
         <ContributionGraph contributions={contributions} />
         <CommunitiesProfile communities={communities} />
-        {/* <ContributionsInCommunityies /> */}
+        <ContributionsInCommunityies posts={postTwo} />?
       </div>
 
       <ProfileInfo
@@ -45,7 +73,7 @@ export default async function Page() {
         youtube={userInfoReq.data?.youtube || '#'}
         profilePic={userInfoReq.data?.profilePictureURL || '#'}
         userContributionCount={
-          userContributions.data[0]?.UserContributions[0]?.count || 0
+          userContributions.data[0].UserContributions[0].count
         }
         joinedCommuntiesCount={communities.length}
       />
