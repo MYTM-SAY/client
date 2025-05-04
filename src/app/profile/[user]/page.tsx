@@ -45,7 +45,7 @@ export default async function Page() {
         youtube={userInfoReq.data?.youtube || '#'}
         profilePic={userInfoReq.data?.profilePictureURL || '#'}
         userContributionCount={
-          userContributions.data[0].UserContributions[0].count
+          userContributions.data[0]?.UserContributions[0]?.count || 0
         }
         joinedCommuntiesCount={communities.length}
       />
