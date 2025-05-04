@@ -94,7 +94,7 @@ export interface Community {
 }
 
 export interface Classroom {
-  id: string
+  id: number
   name: string
   description: string
   createdAt: string
@@ -102,6 +102,43 @@ export interface Classroom {
   coverImg: string
   communityId: string
   progress: number
+  sections: Section[]
+}
+
+export interface Section {
+  id: number
+  name: string
+  description: string
+  classroomId: number
+  lessons: Lesson[]
+  createdAt: string
+  updatedAt: string
+}
+
+export interface Lesson {
+  id: number
+  name: string
+  notes: string
+  sectionId: number
+  createdAt: string
+  updatedAt: string
+  Material: Material
+}
+
+export interface Material {
+  id: number
+  materialType: MaterialType
+  fileUrl: string
+  createdAt: string
+  updatedAt: string
+}
+
+export enum MaterialType {
+  VIDEO = 'VIDEO',
+  AUDIO = 'AUDIO',
+  IMG = 'IMG',
+  DOC = 'DOC',
+  FILE = 'FILE',
 }
 export interface Event {
   id: string
