@@ -18,7 +18,7 @@ interface PostWithForum extends PostsResponse {
 
 interface Props {
   posts: PostWithForum[]
-  id: number
+  id: number | string
 }
 const ContributionsInCommunityies = ({ posts, id }: Props) => {
   const [active, setActive] = useState(1)
