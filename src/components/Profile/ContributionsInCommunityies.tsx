@@ -11,30 +11,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-// interface AuthorProfile {
-//   profilePictureURL: string
-// }
-
-// interface Author {
-//   id: number
-//   username: string
-//   fullname: string
-//   email: string
-//   UserProfile: AuthorProfile
-// }
-
-// interface Post {
-//   id: number
-//   title: string
-//   content: string
-//   attachments: string[]
-//   forumId: number
-//   createdAt: string
-//   updatedAt: string
-//   Author: Author
-//   commentsCount: number
-//   forumName: string
-// }
 
 interface PostWithForum extends PostsResponse {
   forumName: string
@@ -42,8 +18,9 @@ interface PostWithForum extends PostsResponse {
 
 interface Props {
   posts: PostWithForum[]
+  id: number
 }
-const ContributionsInCommunityies = ({ posts }: Props) => {
+const ContributionsInCommunityies = ({ posts, id }: Props) => {
   const [active, setActive] = useState(1)
   const [com, setCom] = useState('12 ')
 
@@ -95,7 +72,7 @@ const ContributionsInCommunityies = ({ posts }: Props) => {
           post={post}
           communityId={post.forumId}
           communityName={post.forumName}
-          isAuthor={false} // Update this with actual author check if possible
+          isAuthor={post.authorId === id}
         />
       ))}
       <Pagination

@@ -59,7 +59,7 @@ export default async function Page() {
       <div className="col-span-2">
         <ContributionGraph contributions={contributions} />
         <CommunitiesProfile communities={communities} />
-        <ContributionsInCommunityies posts={postTwo} />?
+        <ContributionsInCommunityies posts={postTwo} id={userReq.user.id} />?
       </div>
 
       <ProfileInfo
