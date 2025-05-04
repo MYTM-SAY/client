@@ -1,24 +1,29 @@
-import type { ServerResponse, Role, ServerError } from '@/types'
+'use server'
+
+import type { ServerResponse, Role, ServerError, Tag } from '@/types'
 import { axiosInstance } from './'
 import { AxiosError } from 'axios'
 
-interface GetCommunityResponse {
+export interface GetCommunityResponse {
   id: number
   name: string
   description: string
+  bio: string
   createdAt: string
   updatedAt: string
   coverImgURL: string
   logoImgURL: string
   ownerId: number
   isPublic: boolean
-  Classrooms: unknown[] // TODO: define missing types
-  Forums: {
-    Posts: unknown[] // TODO: define missing types
-  }[]
+  Tags: Tag[]
+  forumId: number
+  membersCount: number
+  role: Role
 }
 
-export async function getCommunity(id: string): Promise<ServerResponse<GetCommunityResponse>> {
+export async function getCommunity(
+  id: string,
+): Promise<ServerResponse<GetCommunityResponse>> {
   try {
     const res = await axiosInstance.get(`/communities/${id}`)
     return res.data
@@ -36,13 +41,23 @@ export async function getCommunity(id: string): Promise<ServerResponse<GetCommun
 interface GetJoinedCommunitiesResponse {
   Role: Role
   Community: {
+    MembersCount: number | string
     id: string | number
     name: string
     logoImgURL: string
+    isPublic: boolean
+    description?: string
+    Owner: {
+      id: string | number
+      fullname: string
+      username: string
+    }
   }
 }
 
-export async function getJoinedCommunities(id: string): Promise<ServerResponse<GetJoinedCommunitiesResponse[]>> {
+export async function getJoinedCommunities(
+  id: string,
+): Promise<ServerResponse<GetJoinedCommunitiesResponse[]>> {
   try {
     const res = await axiosInstance.get(`/users/${id}/communities`)
     return res.data

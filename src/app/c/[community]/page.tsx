@@ -1,6 +1,6 @@
 import { getCommunity } from '@/app/actions/community'
-import CommunityNavBar from '@/components/Community/CommunityNavBar'
 import Forum from '@/components/Forum/forum'
+import { getUser } from '@/lib/actions/auth'
 
 interface Props {
   params: {
@@ -8,13 +8,15 @@ interface Props {
   }
 }
 
-// TODO: fix the layout thing
-
 export default async function Page({ params }: Props) {
+  const userReq = await getUser()
+  if (!userReq.success) {
+    return <>Internal server error</> // TODO: replace with 500 erorr component
+  }
+
   const { community: communityId } = await params
   const res = await getCommunity(communityId)
 
-  // TODO: add status code
   if (!res.success) {
     if (res.statusCode === 404) {
       return <>Page not found</>
@@ -22,18 +24,5 @@ export default async function Page({ params }: Props) {
     return <>Internal server error</>
   }
 
-  const { name } = res.data
-
-  return (
-    <section className="flex flex-col gap-4">
-      <header className="">
-        <h2 className="text-4xl text-center font-bold my-10">
-          Welcome to the {name} Community!
-        </h2>
-      </header>
-      <CommunityNavBar />
-
-      <Forum name={res.data.name} />
-    </section>
-  )
+  return <Forum forumId={res.data.forumId} community={res.data} authedUserId={userReq.user.id} />
 }

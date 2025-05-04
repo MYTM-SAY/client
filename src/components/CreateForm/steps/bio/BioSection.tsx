@@ -4,13 +4,13 @@ import { Textarea } from '@/components/ui/textarea'
 
 interface BioSectionProps {
   bio: string
-  about: string
-  onChange: (bio: string, about: string) => void
+  description: string
+  onChange: (bio: string, description: string) => void
 }
 
-export const BioSection = ({ bio, about, onChange }: BioSectionProps) => {
+export const BioSection = ({ bio, description, onChange }: BioSectionProps) => {
   const handleBioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onChange(e.target.value, about) // Changed from 'bio' to 'about' to maintain correct order
+    onChange(e.target.value, description) // Changed from 'bio' to 'about' to maintain correct order
   }
 
   const handleAboutChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -36,12 +36,12 @@ export const BioSection = ({ bio, about, onChange }: BioSectionProps) => {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="fullBio">About</Label>
+        <Label htmlFor="fullBio">Description</Label>
         <Textarea
           id="fullBio"
           placeholder="Tell us more about your community..."
           className="min-h-[200px]"
-          value={about}
+          value={description}
           onChange={handleAboutChange}
         />
         <p className="text-sm text-muted-foreground">

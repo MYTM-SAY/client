@@ -5,9 +5,26 @@ export type ServerResponse<T> =
   | { success: false; message: string; statusCode?: number }
 const Role = ['OWNER', 'MEMBER', 'MODERATOR'] as const
 export type Role = typeof Role
+
+export interface Tag {
+  id: number
+  name: string
+}
 export interface ServerError {
   success: false
   message: string
+}
+
+export interface Post {
+  id: number
+  title: string
+  content: string
+  voteCounter: number
+  attachments: unknown[]
+  forumId: number
+  authorId: number
+  createdAt: string
+  updatedAt: string
 }
 
 export type ApiResponse<T> = {
@@ -54,10 +71,7 @@ export interface ButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
 export interface CommunityCardProps {
   status: string
 }
-export interface PostContentProps {
-  title: string
-  content: string
-}
+
 export interface ShareButtonProps {
   url?: string
   title?: string
@@ -125,18 +139,6 @@ export enum MaterialType {
   IMG = 'IMG',
   DOC = 'DOC',
   FILE = 'FILE',
-}
-
-export interface Post {
-  id: string
-  title: string
-  content: string
-  voteCounter: number
-  attachments: string[]
-  forumId: string
-  authorId: string
-  createdAt: string
-  updatedAt: string
 }
 export interface Event {
   id: string

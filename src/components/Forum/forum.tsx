@@ -1,29 +1,40 @@
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import Post from '@/components/Post/Post'
-import { CreatePost } from './CreatePost'
-import { getUser } from '@/lib/actions/auth'
+import PostCard from '@/components/Post/Post'
+import CreatePostModal from './CreatePostModal'
+import { getPosts } from '@/app/actions/post'
+import { GetCommunityResponse } from '@/app/actions/community'
 
 interface Props {
-  name: string
+  forumId: number
+  community: GetCommunityResponse
+  authedUserId: string | number
 }
 
-export default async function Forum({ name }: Props) {
-  const posts = Array.from({ length: 40 }, (_, i) => <Post key={i} />)
-  const user = await getUser()
+export default async function Forum({
+  forumId,
+  community,
+  authedUserId,
+}: Props) {
+  const postsReq = await getPosts(forumId)
+  if (!postsReq.success) {
+    return <>Internal Server Error</> // TODO: put the 500 page
+  }
 
-  console.log(user)
+  const rposts = postsReq.data.map((post) => (
+    <PostCard
+      key={post.id}
+      post={post}
+      community={community}
+      isAuthor={authedUserId == post.authorId}
+    />
+  ))
 
   return (
     <div className="">
       <div className="col-span-2">
-        <div className="flex-center gap-1 px-4 py-2 rounded-lg border-[2px] border-foreground w-full mb-5">
-          <Avatar>
-            <AvatarImage src="/pp-fallback.svg" />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
-          <CreatePost />
+        <div className="flex-center gap-1 px-4 py-2 rounded-lg border w-full mb-5">
+          <CreatePostModal fid={forumId} />
         </div>
-        <div className="space-y-3">{posts}</div>
+        <div className="space-y-3">{rposts}</div>
       </div>
     </div>
   )

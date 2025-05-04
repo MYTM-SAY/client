@@ -1,12 +1,38 @@
 import React from 'react'
 import Image from 'next/image'
-import Btn from '../ui/Btn'
-const CommunitiesProfile = () => {
+import Link from 'next/link'
+import { Role } from '@/types'
+type Community = {
+  id: string | number
+  name: string
+  description?: string
+  bio?: string
+  createdAt?: string
+  updatedAt?: string
+  coverImgURL?: string
+  logoImgURL: string
+  ownerId?: number
+  isPublic: boolean
+  Owner: {
+    id: string | number
+    fullname: string
+    username: string
+  }
+  MembersCount: number | string
+  role: Role
+}
+type CommunityListProps = {
+  communities: Community[]
+}
+
+export default async function CommunitiesProfile({
+  communities,
+}: CommunityListProps) {
   return (
     <div>
       <p className="h4 mb-4">Communities</p>
       <div className="p-6 flex flex-col gap-10 bg-card  rounded-lg shadow-md">
-        {[1, 2, 3].map((_, index) => (
+        {communities.map((community, index) => (
           <div
             key={index}
             className="flex w-full justify-between items-start msm:items-center msm:flex-col "
@@ -14,29 +40,32 @@ const CommunitiesProfile = () => {
             <div>
               <div className="flex gap-4 flex-wrap msm:justify-center ">
                 <Image
-                  src="/pp-fallback.svg"
-                  className="rounded-lg"
+                  src={community.logoImgURL}
+                  className="rounded-full border"
                   alt="Community"
                   width={68}
                   height={68}
                 />
                 <div>
-                  <p className="h5">Complete Front-end course</p>
-                  <p className="p-muted">Private • 167.6k • Admin</p>
+                  <p className="h5">{community.name}</p>
+                  <p className="p-muted capitalize">
+                    {community.isPublic ? 'Public' : 'Private'} •{' '}
+                    {community.MembersCount} •{' '}
+                    {(community.role as never as string).toLowerCase()}
+                  </p>
                 </div>
               </div>
-              <p className="mt-4 p-lg-muted">
-                Lorem, ipsum dolor sit amet consectetur
-              </p>
+              <p className="mt-4 p-lg-muted">{community?.description || ''}</p>
             </div>
-            <Btn className="px-10 py-2 msm:mt-4 text-white bg-accent">
+            <Link
+              href={'/c/' + community.id}
+              className="px-10 py-2 msm:mt-4 text-white bg-accent rounded-lg"
+            >
               Visit
-            </Btn>
+            </Link>
           </div>
         ))}
       </div>
     </div>
   )
 }
-
-export default CommunitiesProfile

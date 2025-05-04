@@ -16,7 +16,8 @@ export async function getUser(): Promise<GetUserReturn> {
     .map(({ name, value }) => `${name}=${value}`)
     .join('; ')
 
-  const base = process.env.NEXT_PUBLIC_NEXT_BACKEND_BASE_URL
+  const base =
+    process.env.NEXT_PUBLIC_NEXT_BACKEND_BASE_URL || 'http://localhost:3000/api'
 
   const res = await fetch(`${base}/auth`, {
     credentials: 'include',
@@ -47,7 +48,6 @@ export const signUpAction = async (formData: FormData) => {
       fullname,
       dob,
     })
-    console.log(res)
     const cookieStore = await cookies()
     cookieStore.set('accessToken', res.data.data.accessToken, {
       httpOnly: true,
@@ -85,7 +85,7 @@ export const signInAction = async ({
       email,
       password,
     })
-
+    console.log(res)
     if (res.status !== 200) {
       return { success: false, data: res.data.error.message }
     }

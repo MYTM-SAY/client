@@ -14,7 +14,12 @@ interface StepperProps {
   isSubmitting: boolean
 }
 
-export const Stepper = ({ steps, isNextDisabled, onComplete, isSubmitting }: StepperProps) => {
+export const Stepper = ({
+  steps,
+  isNextDisabled,
+  onComplete,
+  isSubmitting,
+}: StepperProps) => {
   const [currentStep, setCurrentStep] = useState(1)
 
   const handleNext = () => {
