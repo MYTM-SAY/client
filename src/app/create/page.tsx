@@ -72,19 +72,17 @@ const useCommunityForm = () => {
   const submitCommunity = async () => {
     setIsSubmitting(true)
     setError(null)
-    console.log(formData)
     try {
       const response = await instance.post(`/communities`, {
-        name: 'Tech Community',
-        description: 'A place for tech enthusiasts.',
-        bio: 'We are a passionate group of tech enthusiasts sharing knowledge and collaborating on innovative projects.',
-        coverImgURL: 'https://example.com/cover.jpg',
-        logoImgURL: 'https://example.com/logo.jpg',
-        Tags: ['javascript', 'backend', 'cloud'],
+        name: formData.name,
+        description: formData.description,
+        bio: formData.bio,
+        coverImgURL: formData.coverImage,
+        logoImgURL: formData.logoImage,
+        Tags: formData.tags,
       })
       toast.success('Community created successfully!')
-
-      router.push(`/communities/${response.data.id}`)
+      router.push(`/communities/${response.data.data.id}`)
     } catch (err) {
       if (err instanceof AxiosError) {
         console.error('Error creating community:', err)
