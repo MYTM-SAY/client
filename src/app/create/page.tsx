@@ -63,26 +63,33 @@ const useCommunityForm = () => {
         return false
     }
   }
-  // const uploadImage = async (file: File): Promise<string> => {
-  //   const formData = new FormData()
-  //   formData.append('file', file)
-  //   const response = await instance.post('/upload', formData)
-  //   return response.data.url
-  // }
+  const uploadImage = async (file: File): Promise<string> => {
+    const formData = new FormData()
+    formData.append('file', file)
+    const response = await instance.post('/upload/file', formData)
+    return response.data.fileUrl
+  }
   const submitCommunity = async () => {
     setIsSubmitting(true)
     setError(null)
     try {
+      const coverImgURL = formData.coverImage
+        ? await uploadImage(formData.coverImage)
+        : undefined
+      const logoImgURL = formData.logoImage
+        ? await uploadImage(formData.logoImage)
+        : undefined
+
       const response = await instance.post(`/communities`, {
         name: formData.name,
         description: formData.description,
         bio: formData.bio,
-        coverImgURL: formData.coverImage,
-        logoImgURL: formData.logoImage,
+        coverImgURL,
+        logoImgURL,
         Tags: formData.tags,
       })
       toast.success('Community created successfully!')
-      router.push(`/communities/${response.data.data.id}`)
+      router.push(`/c/${response.data.data.id}`)
     } catch (err) {
       if (err instanceof AxiosError) {
         console.error('Error creating community:', err)
