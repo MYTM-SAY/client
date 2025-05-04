@@ -1,25 +1,33 @@
 import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { getJoinedCommunities } from '@/app/actions/community'
-
+import { Role } from '@/types'
+type Community = {
+  id: string | number
+  name: string
+  description?: string
+  bio?: string
+  createdAt?: string
+  updatedAt?: string
+  coverImgURL?: string
+  logoImgURL: string
+  ownerId?: number
+  isPublic: boolean
+  Owner: {
+    id: string | number
+    fullname: string
+    username: string
+  }
+  MembersCount: number | string
+  role: Role
+}
 type CommunityListProps = {
-  userId: string
+  communities: Community[]
 }
 
 export default async function CommunitiesProfile({
-  userId,
+  communities,
 }: CommunityListProps) {
-  const userCommunities = await getJoinedCommunities(userId)
-  if (!userCommunities.success) {
-    return 'An error has occurred'
-  }
-
-  const communities = userCommunities.data.map((d) => ({
-    ...d.Community,
-    role: d.Role,
-  }))
-
   return (
     <div>
       <p className="h4 mb-4">Communities</p>
@@ -41,7 +49,8 @@ export default async function CommunitiesProfile({
                 <div>
                   <p className="h5">{community.name}</p>
                   <p className="p-muted capitalize">
-                    {community.isPublic ? 'Public' : 'Private'} • 167.6k •{' '}
+                    {community.isPublic ? 'Public' : 'Private'} •{' '}
+                    {community.MembersCount} •{' '}
                     {(community.role as never as string).toLowerCase()}
                   </p>
                 </div>

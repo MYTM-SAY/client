@@ -4,8 +4,6 @@ import type { ServerResponse, Role, ServerError, Tag } from '@/types'
 import { axiosInstance } from './'
 import { AxiosError } from 'axios'
 
-
-
 export interface GetCommunityResponse {
   id: number
   name: string
@@ -43,6 +41,7 @@ export async function getCommunity(
 interface GetJoinedCommunitiesResponse {
   Role: Role
   Community: {
+    MembersCount: number | string
     id: string | number
     name: string
     logoImgURL: string

@@ -4,11 +4,8 @@ import CommunitiesProfile from '@/components/Profile/CommunitiesProfile'
 import ProfileInfo from '@/components/Profile/ProfileInfo'
 import ContributionsInCommunityies from '@/components/Profile/ContributionsInCommunityies'
 import { getUser } from '@/lib/actions/auth'
-import {
-  getUserProfileInfo,
-  getUserContributions,
-} from '@/app/actions/profile'
-
+import { getUserProfileInfo, getUserContributions } from '@/app/actions/profile'
+import { getJoinedCommunities } from '@/app/actions/community'
 export default async function Page() {
   const contributions: number[] = Array.from({ length: 365 }, () =>
     Math.floor(Math.random() * 5),
@@ -20,13 +17,21 @@ export default async function Page() {
 
   const userInfoReq = await getUserProfileInfo(userReq.user.id)
   const userContributions = await getUserContributions(userReq.user.id)
-  
+  const userCommunities = await getJoinedCommunities(userReq.user.id)
+  if (!userCommunities.success) {
+    return 'An error has occurred'
+  }
+  const communities = userCommunities.data.map((d) => ({
+    ...d.Community,
+    role: d.Role,
+  }))
+
   return (
     <div className="grid sm:grid-cols-3 gap-5">
       <div className="col-span-2">
         <ContributionGraph contributions={contributions} />
-        <CommunitiesProfile userId={userReq.user.id} />
-        <ContributionsInCommunityies />
+        <CommunitiesProfile communities={communities} />
+        {/* <ContributionsInCommunityies /> */}
       </div>
 
       <ProfileInfo
@@ -39,10 +44,11 @@ export default async function Page() {
         x={userInfoReq.data?.twitter || '#'}
         youtube={userInfoReq.data?.youtube || '#'}
         profilePic={userInfoReq.data?.profilePictureURL || '#'}
-        userContributionCount={userContributions.data[0].UserContributions[0].count}
-        joinedCommuntiesCount={5} // TODO: will fix this later @hassan
+        userContributionCount={
+          userContributions.data[0].UserContributions[0].count
+        }
+        joinedCommuntiesCount={communities.length}
       />
-
     </div>
   )
 }
