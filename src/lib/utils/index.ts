@@ -1,3 +1,3 @@
 export * from './cn'
 
-export const backendBaseUrl = process.env.BACKEND_BASE_URL
+export const backendBaseUrl = process.env.NEXT_PUBLIC_BACKEND_BASE_URL

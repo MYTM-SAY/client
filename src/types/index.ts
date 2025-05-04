@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 
 export type ServerResponse<T> =
   | { success: true; data: T }
-  | { success: false; message: string, statusCode?: number }
+  | { success: false; message: string; statusCode?: number }
 const Role = ['OWNER', 'MEMBER', 'MODERATOR'] as const
 export type Role = typeof Role
 export interface ServerError {
@@ -80,7 +80,7 @@ export interface Community {
 }
 
 export interface Classroom {
-  id: string
+  id: number
   name: string
   description: string
   createdAt: string
@@ -88,6 +88,43 @@ export interface Classroom {
   coverImg: string
   communityId: string
   progress: number
+  sections: Section[]
+}
+
+export interface Section {
+  id: number
+  name: string
+  description: string
+  classroomId: number
+  lessons: Lesson[]
+  createdAt: string
+  updatedAt: string
+}
+
+export interface Lesson {
+  id: number
+  name: string
+  notes: string
+  sectionId: number
+  createdAt: string
+  updatedAt: string
+  Material: Material
+}
+
+export interface Material {
+  id: number
+  materialType: MaterialType
+  fileUrl: string
+  createdAt: string
+  updatedAt: string
+}
+
+export enum MaterialType {
+  VIDEO = 'VIDEO',
+  AUDIO = 'AUDIO',
+  IMG = 'IMG',
+  DOC = 'DOC',
+  FILE = 'FILE',
 }
 
 export interface Post {
