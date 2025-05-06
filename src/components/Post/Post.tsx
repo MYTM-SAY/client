@@ -32,8 +32,8 @@ export default function PostCard({
           height={68}
         />
         <div>
-          <Link href={`/u/${post?.Authorfiltered?.username || 'ERROR'}`} className="h4">
-            {post?.Authorfiltered?.fullname || 'ERROR'}
+          <Link href={`/u/${post?.Author?.username || 'ERROR'}`} className="h4">
+            {post?.Author?.fullname || 'ERROR'}
           </Link>
           <p className="p-muted">
             {formatDateTime(post.createdAt)} in{' '}

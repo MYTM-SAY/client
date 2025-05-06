@@ -35,7 +35,7 @@ export interface PostsResponse {
   authorId: number
   createdAt: string
   updatedAt: string
-  Authorfiltered: {
+  Author: {
     id: number
     username: string
     fullname: string
@@ -49,6 +49,24 @@ export async function getPosts(
 ): Promise<ServerResponse<PostsResponse[]>> {
   try {
     const res = await axiosInstance.get(`/posts/forums/${forumId}`)
+    return res.data
+  } catch (error) {
+    const axiosError = error as AxiosError
+    const response = axiosError.response as never as ServerError
+    return {
+      success: false,
+      message: response.message || 'Internal server error',
+      statusCode: axiosError.status,
+    }
+  }
+}
+
+
+export async function getPost(
+  postId: string | number,
+): Promise<ServerResponse<PostsResponse>> {
+  try {
+    const res = await axiosInstance.get(`/posts/${postId}`)
     return res.data
   } catch (error) {
     const axiosError = error as AxiosError
