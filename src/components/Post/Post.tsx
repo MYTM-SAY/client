@@ -32,7 +32,7 @@ export default function PostCard({
           height={68}
         />
         <div>
-          <Link href={`/u/${post?.Author?.username || 'ERROR'}`} className="h4">
+          <Link href={`/profile/${post?.Author?.username || 'ERROR'}`} className="h4">
             {post?.Author?.fullname || 'ERROR'}
           </Link>
           <p className="p-muted">

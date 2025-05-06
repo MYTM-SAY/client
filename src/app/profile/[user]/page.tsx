@@ -25,6 +25,7 @@ export default async function Page() {
   }
 
   const userContributions = await getUserContributions(userReq.user.id)
+  console.log('HELLO', userContributions)
   if (!userContributions.success) {
     return 'An error has occurred (user contributions)'
   }
@@ -65,7 +66,7 @@ export default async function Page() {
         youtube={userInfoReq.data?.youtube || '#'}
         profilePic={userInfoReq.data?.profilePictureURL || '#'}
         userContributionCount={
-          userContributions.data[0].UserContributions[0].count
+          userContributions.success ? userContributions?.data[0]?.UserContributions[0]?.count : 0
         }
         joinedCommuntiesCount={userCommunities.data.length}
       />

@@ -23,6 +23,7 @@ interface ProfileInfoProps {
   userContributionCount: number
   joinedCommuntiesCount: number
 }
+
 const ProfileInfo = ({
   username,
   fullname,
@@ -33,7 +34,7 @@ const ProfileInfo = ({
   x = '#',
   youtube = '#',
   profilePic,
-  userContributionCount,
+  userContributionCount = 0,
   joinedCommuntiesCount,
 }: ProfileInfoProps) => {
   const text = bio

@@ -34,9 +34,9 @@ export default async function CommunitiesProfile({
     <div>
       <p className="h4 mb-4">Communities</p>
       <div className="p-6 flex flex-col gap-10 bg-card  rounded-lg shadow-md">
-        {communities.map((community, index) => (
+        {communities.map((community) => (
           <div
-            key={index}
+            key={community.id}
             className="flex w-full justify-between items-start msm:items-center msm:flex-col "
           >
             <div>

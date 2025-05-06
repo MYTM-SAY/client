@@ -25,6 +25,26 @@ export async function createPost(formData: FormData) {
   }
 }
 
+interface Author {
+  id: number
+  username: string
+  fullname: string
+  UserProfile: {
+    profilePictureURL: string
+  }
+}
+
+export interface Comment {
+  id: number
+  parentId: number
+  postId: number
+  authorId: number
+  content: string
+  createdAt: string
+  updatedAt: string
+  Author: Author
+}
+
 export interface PostsResponse {
   id: number
   title: string
@@ -35,13 +55,9 @@ export interface PostsResponse {
   authorId: number
   createdAt: string
   updatedAt: string
-  Author: {
-    id: number
-    username: string
-    fullname: string
-    profilePictureURL: string
-  }
+  Author: Author
   commentsCount: number
+  Comments?: Comment[]
 }
 
 export async function getPosts(
@@ -61,8 +77,24 @@ export async function getPosts(
   }
 }
 
-
 export async function getPost(
+  postId: string | number,
+): Promise<ServerResponse<PostsResponse>> {
+  try {
+    const res = await axiosInstance.get(`/posts/${postId}`)
+    return res.data
+  } catch (error) {
+    const axiosError = error as AxiosError
+    const response = axiosError.response as never as ServerError
+    return {
+      success: false,
+      message: response.message || 'Internal server error',
+      statusCode: axiosError.status,
+    }
+  }
+}
+
+export async function getPostComments(
   postId: string | number,
 ): Promise<ServerResponse<PostsResponse>> {
   try {

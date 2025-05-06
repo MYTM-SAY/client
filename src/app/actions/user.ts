@@ -2,7 +2,26 @@
 
 import type { ServerError, ServerResponse } from '@/types'
 import { axiosInstance } from './'
+import { PostsResponse } from './post'
 import { AxiosError } from 'axios'
+
+
+export async function getUserByUsername(username: string) {
+  try {
+    const res = await axiosInstance.get(`/users/${username}/communities`)
+    return res.data
+  } catch (error) {
+    const axiosError = error as AxiosError
+    const response = axiosError.response as never as ServerError
+    return {
+      success: false,
+      message: response.message || 'Internal server error',
+      statusCode: axiosError.status,
+    }
+  }
+}
+
+
 
 export async function getJoinedCommunities(id: string) {
   try {
@@ -17,25 +36,6 @@ export async function getJoinedCommunities(id: string) {
       statusCode: axiosError.status,
     }
   }
-}
-
-interface PostsResponse {
-  id: number
-  title: string
-  content: string
-  voteCounter: number
-  attachments: string[]
-  forumId: number
-  authorId: number
-  createdAt: string
-  updatedAt: string
-  Authorfiltered: {
-    id: number
-    username: string
-    fullname: string
-    profilePictureURL: string
-  }
-  commentsCount: number
 }
 
 export async function getAllPostsOfUserUsingId(id: string): Promise<ServerResponse<PostsResponse[]>> {
