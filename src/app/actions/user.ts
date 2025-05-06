@@ -1,6 +1,6 @@
 'use server'
 
-import type { ServerError } from '@/types'
+import type { ServerError, ServerResponse } from '@/types'
 import { axiosInstance } from './'
 import { AxiosError } from 'axios'
 
@@ -18,7 +18,27 @@ export async function getJoinedCommunities(id: string) {
     }
   }
 }
-export async function getAllPostsOfUserUsingId(id: string) {
+
+interface PostsResponse {
+  id: number
+  title: string
+  content: string
+  voteCounter: number
+  attachments: string[]
+  forumId: number
+  authorId: number
+  createdAt: string
+  updatedAt: string
+  Authorfiltered: {
+    id: number
+    username: string
+    fullname: string
+    profilePictureURL: string
+  }
+  commentsCount: number
+}
+
+export async function getAllPostsOfUserUsingId(id: string): Promise<ServerResponse<PostsResponse[]>> {
   try {
     const res = await axiosInstance.get(`/users/${id}/contributions`)
     return res.data

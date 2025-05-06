@@ -2,64 +2,56 @@ import React from 'react'
 import ContributionGraph from '@/components/Profile/ContributionGraph'
 import CommunitiesProfile from '@/components/Profile/CommunitiesProfile'
 import ProfileInfo from '@/components/Profile/ProfileInfo'
-import ContributionsInCommunityies from '@/components/Profile/ContributionsInCommunityies'
+import ContributionsInCommunities from '@/components/Profile/ContributionsInCommunityies'
 import { getUser } from '@/lib/actions/auth'
 import { getUserProfileInfo, getUserContributions } from '@/app/actions/profile'
 import { getJoinedCommunities } from '@/app/actions/community'
 import { getAllPostsOfUserUsingId } from '@/app/actions/user'
 
 export default async function Page() {
+  // TODO: remove this mock data and use the actual data from the API
   const contributions: number[] = Array.from({ length: 365 }, () =>
     Math.floor(Math.random() * 5),
   )
+
   const userReq = await getUser()
   if (!userReq.success) {
     return 'An error has occurred'
   }
 
   const userInfoReq = await getUserProfileInfo(userReq.user.id)
-  const userContributions = await getUserContributions(userReq.user.id)
-  const userCommunities = await getJoinedCommunities(userReq.user.id)
-  const posts = await getAllPostsOfUserUsingId(userReq.user.id)
-  if (!userCommunities.success) {
-    return 'An error has occurred'
+  if (!userInfoReq.success) {
+    console.log('An error has occurred (user info)')
   }
-  const communities = userCommunities.data.map((d) => ({
-    ...d.Community,
-    role: d.Role,
-  }))
-  const postTwo = posts.data.map((post) => {
-    const community = communities.find((c) => c.id === post.forumId)
 
-    return {
-      id: post.id,
-      title: post.title,
-      content: post.content,
-      voteCounter: null,
-      attachments: post.attachments,
-      forumId: post.forumId,
-      forumName: community?.name ?? null,
-      authorId: post.Author?.id ?? null,
-      createdAt: post.createdAt,
-      updatedAt: post.updatedAt,
-      Authorfiltered: {
-        id: post.Author?.id ?? null,
-        username: post.Author?.username ?? null,
-        fullname: post.Author?.fullname ?? null,
-        profilePictureURL: post.Author?.UserProfile?.profilePictureURL ?? null,
-      },
-      commentsCount: post.commentsCount,
-    }
-  })
+  const userContributions = await getUserContributions(userReq.user.id)
+  if (!userContributions.success) {
+    return 'An error has occurred (user contributions)'
+  }
 
-  console.log(postTwo)
+  const userCommunities = await getJoinedCommunities(userReq.user.id)
+  if (!userCommunities.success) {
+    return 'An error has occurred (user comms)'
+  }
+
+  const postsReq = await getAllPostsOfUserUsingId(userReq.user.id)
+  if (!postsReq.success) {
+    return 'An error has occurred (posts)'
+  }
+
+  console.log(postsReq.data)
 
   return (
     <div className="grid sm:grid-cols-3 gap-5">
       <div className="col-span-2">
         <ContributionGraph contributions={contributions} />
-        <CommunitiesProfile communities={communities} />
-        <ContributionsInCommunityies posts={postTwo} id={userReq.user.id} />?
+        <CommunitiesProfile
+          communities={userCommunities.data.map((d) => ({
+            ...d.Community,
+            role: d.Role,
+          }))}
+        />
+        <ContributionsInCommunities posts={postsReq.data} id={userReq.user.id} />
       </div>
 
       <ProfileInfo
@@ -75,7 +67,7 @@ export default async function Page() {
         userContributionCount={
           userContributions.data[0].UserContributions[0].count
         }
-        joinedCommuntiesCount={communities.length}
+        joinedCommuntiesCount={userCommunities.data.length}
       />
     </div>
   )

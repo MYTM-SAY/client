@@ -2,6 +2,7 @@ import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Role } from '@/types'
+
 type Community = {
   id: string | number
   name: string
@@ -21,6 +22,7 @@ type Community = {
   MembersCount: number | string
   role: Role
 }
+
 type CommunityListProps = {
   communities: Community[]
 }
