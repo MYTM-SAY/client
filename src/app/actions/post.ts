@@ -1,6 +1,6 @@
 'use server'
 
-import type { ServerResponse, ServerError } from '@/types'
+import type { ServerResponse, ServerError, Community } from '@/types'
 import { axiosInstance } from './'
 import { AxiosError } from 'axios'
 
@@ -58,6 +58,9 @@ export interface PostsResponse {
   Author: Author
   commentsCount: number
   Comments?: Comment[]
+  Forum: {
+    Community: Community
+  }
 }
 
 export async function getPosts(

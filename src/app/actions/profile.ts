@@ -2,7 +2,7 @@ import { axiosInstance } from './'
 import { AxiosError } from 'axios'
 import type { ServerError } from '@/types'
 
-export async function getUserProfileInfo(id: string) {
+export async function getUserProfileInfo(id: string | number) {
   try {
     const res = await axiosInstance.get(`/profiles/${id}`)
     return res.data
