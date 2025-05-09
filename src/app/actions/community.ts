@@ -19,6 +19,7 @@ export interface GetCommunityResponse {
   forumId: number
   membersCount: number
   role: Role
+  onlineMembers: number | string
 }
 
 export async function getCommunity(

@@ -66,3 +66,17 @@ export async function getAuthenticatedUserDetails() {
     }
   }
 }
+export async function getUserByID(id: string | number) {
+  try {
+    const res = await axiosInstance.get(`/users/${id}`)
+    return res.data
+  } catch (error) {
+    const axiosError = error as AxiosError
+    const response = axiosError.response as never as ServerError
+    return {
+      success: false,
+      message: response.message || 'Internal server error',
+      statusCode: axiosError.status,
+    }
+  }
+}
