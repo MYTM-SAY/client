@@ -5,9 +5,7 @@ import { backendBaseUrl } from '../utils'
 
 interface SuccessResponse {
   success: true
-  data: {
-    fileUrl: string
-  }[]
+  data: string[]
 }
 
 interface ErrorResponse {

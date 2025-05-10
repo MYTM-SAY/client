@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Button } from '@/components/ui/button'
-import { FileUploader } from '@/components/FileUploader'
+import { FileUploader } from '@/components/uploader'
 import { uploadMedia } from '@/lib/actions/upload'
 
 export default function UploadForm() {

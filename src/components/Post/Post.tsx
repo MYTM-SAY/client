@@ -49,6 +49,22 @@ export default function PostCard({
 
       <Link href={`/p/${post.id}`}>
         <PostContent title={post?.title || ''} content={post?.content || ''} />
+        
+        {post.attachments && post.attachments.length > 0 && (
+          <div className="mt-4 grid grid-cols-2 gap-2">
+            {post.attachments.map((url, index) => (
+              <div key={index} className="relative aspect-video">
+                <Image
+                  src={url}
+                  alt={`Attachment ${index + 1}`}
+                  fill
+                  className="object-cover rounded-lg"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                />
+              </div>
+            ))}
+          </div>
+        )}
       </Link>
 
       <PostActions

@@ -3,25 +3,27 @@
 import type { ServerResponse, ServerError, Community } from '@/types'
 import { axiosInstance } from './'
 import { AxiosError } from 'axios'
+import { revalidatePath } from 'next/cache'
 
 export async function createPost(formData: FormData) {
-  const postData = Object.fromEntries(formData.entries()) as {
-    fid: string // forum id
-    title: string
-    content: string
-    media: unknown // TODO: define file type
-  }
-
+  const title = formData.get('title') as string
+  const content = formData.get('content') as string
+  const fid = formData.get('fid') as string
+  
   try {
-    const res = await axiosInstance.post(`/posts/forums/${postData.fid}`, {
-      title: postData.title,
-      content: postData.content,
-      attachments: [], // TODO: add file upload
+    const mediaUrls = formData.getAll('mediaUrls[]')
+
+    const res = await axiosInstance.post(`/posts/forums/${fid}`, {
+      title,
+      content,
+      attachments: mediaUrls,
     })
 
-    console.log('post created', res.data)
+    revalidatePath(`/c/${fid}`)
+    return res.data
   } catch (error) {
-    console.log('error creating post', error)
+    console.error('error creating post', error)
+    throw error
   }
 }
 
