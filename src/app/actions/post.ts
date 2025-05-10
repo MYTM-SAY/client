@@ -51,7 +51,6 @@ export interface PostsResponse {
   id: number
   title: string
   content: string
-  voteCounter: number
   attachments: string[]
   forumId: number
   authorId: number
@@ -60,6 +59,7 @@ export interface PostsResponse {
   Author: Author
   commentsCount: number
   Comments?: Comment[]
+  voteScore: number
   Forum: {
     Community: Community
   }
@@ -105,6 +105,27 @@ export async function getPostComments(
   try {
     const res = await axiosInstance.get(`/posts/${postId}`)
     return res.data
+  } catch (error) {
+    const axiosError = error as AxiosError
+    const response = axiosError.response as never as ServerError
+    return {
+      success: false,
+      message: response.message || 'Internal server error',
+      statusCode: axiosError.status,
+    }
+  }
+}
+
+export async function deletePost(
+  postId: string | number
+): Promise<ServerResponse<null>> {
+  try {
+    await axiosInstance.delete(`/posts/${postId}`)
+    revalidatePath('/p/[id]')
+    return {
+      success: true,
+      data: null
+    }
   } catch (error) {
     const axiosError = error as AxiosError
     const response = axiosError.response as never as ServerError

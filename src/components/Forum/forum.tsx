@@ -23,7 +23,8 @@ export default async function Forum({
     <PostCard
       key={post.id}
       post={post}
-      community={community}
+      communityId={community.id}
+      communityName={community.name}
       isAuthor={authedUserId == post.authorId}
     />
   ))
