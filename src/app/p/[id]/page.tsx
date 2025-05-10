@@ -63,7 +63,8 @@ function CommentCard({
   )
 }
 
-export default async function Page({ params: { id } }: Props) {
+export default async function Page({ params }: Props) {
+  const { id } = await params
   const postReq = await getPost(id)
   const authenticatedUser = await getAuthenticatedUserDetails()
 
