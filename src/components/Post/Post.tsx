@@ -6,7 +6,12 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { PostsResponse } from '@/app/actions/post'
 import { formatDateTime } from '@/lib/utils'
-import { Dialog, DialogContent, DialogClose, DialogTitle } from '@/components/ui/dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogClose,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import { useState } from 'react'
 import { X } from 'lucide-react'
 import { useRouter } from 'next/navigation'
@@ -19,8 +24,8 @@ interface Props {
   isAuthor: boolean
 }
 
-// Visually hidden class that maintains accessibility
-const visuallyHidden = 'absolute w-[1px] h-[1px] p-0 -m-[1px] overflow-hidden clip-[rect(0,0,0,0)] whitespace-nowrap border-0'
+const visuallyHidden =
+  'absolute w-[1px] h-[1px] p-0 -m-[1px] overflow-hidden clip-[rect(0,0,0,0)] whitespace-nowrap border-0'
 
 export default function PostCard({
   post,
@@ -28,7 +33,9 @@ export default function PostCard({
   communityName,
   isAuthor,
 }: Props) {
-  const [selectedAttachment, setSelectedAttachment] = useState<string | null>(null)
+  const [selectedAttachment, setSelectedAttachment] = useState<string | null>(
+    null,
+  )
   const router = useRouter()
   console.log(post)
 
@@ -43,11 +50,17 @@ export default function PostCard({
 
   return (
     <>
-      <div 
+      <div
         className="relative p-6 rounded-lg bg-card text-foreground shadow cursor-pointer"
         onClick={handlePostClick}
       >
-        {isAuthor && <PostSettingsDropdown postId={post.id} forumId={post.forumId} post={post} />}
+        {isAuthor && (
+          <PostSettingsDropdown
+            postId={post.id}
+            forumId={post.forumId}
+            post={post}
+          />
+        )}
 
         <header className="flex gap-4 items-center">
           <Image
@@ -67,8 +80,8 @@ export default function PostCard({
             </Link>
             <p className="p-muted">
               {formatDateTime(post.createdAt)} in{' '}
-              <Link 
-                href={`/c/${communityId}`} 
+              <Link
+                href={`/c/${communityId}`}
                 className="font-bold underline"
                 onClick={(e) => e.stopPropagation()}
               >
@@ -79,14 +92,17 @@ export default function PostCard({
         </header>
 
         <div className="mt-4">
-          <PostContent title={post?.title || ''} content={post?.content || ''} />
+          <PostContent
+            title={post?.title || ''}
+            content={post?.content || ''}
+          />
         </div>
-        
+
         {post.attachments && post.attachments.length > 0 && (
           <div className="mt-4 grid grid-cols-2 gap-2">
             {post.attachments.map((url, index) => (
-              <div 
-                key={index} 
+              <div
+                key={index}
                 className="relative aspect-video cursor-pointer group"
                 onClick={(e) => handleAttachmentClick(e, url)}
               >
@@ -117,7 +133,10 @@ export default function PostCard({
         </div>
       </div>
 
-      <Dialog open={!!selectedAttachment} onOpenChange={() => setSelectedAttachment(null)}>
+      <Dialog
+        open={!!selectedAttachment}
+        onOpenChange={() => setSelectedAttachment(null)}
+      >
         <DialogContent className="max-w-4xl p-0 overflow-hidden">
           <DialogTitle className={visuallyHidden}>
             View attachment from post: {post.title}

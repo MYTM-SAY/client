@@ -2,65 +2,12 @@ import { getPost } from '@/app/actions/post'
 import type { Comment } from '@/app/actions/post'
 import { getAuthenticatedUserDetails } from '@/app/actions/user'
 import PostCard from '@/components/Post/Post'
-import Image from 'next/image'
-import Link from 'next/link'
+import CommentCard from '@/components/Post/CommentCard'
 
 interface Props {
   params: {
     id: string
   }
-}
-
-function CommentCard({
-  comment,
-  childrenArray,
-}: {
-  comment: Comment
-  childrenArray: Comment[]
-}) {
-  return (
-    <div className="mb-4">
-      <div className="flex gap-4 items-start p-4 rounded-lg bg-card shadow">
-        <Image
-          src={
-            comment.Author?.UserProfile?.profilePictureURL || '/pp-fallback.svg'
-          }
-          alt="Profile Image"
-          width={48}
-          height={48}
-          className="rounded-full mt-1 flex-shrink-0"
-        />
-        <div className="flex-1">
-          <div className="flex items-baseline gap-2">
-            <Link
-              href={`/u/${comment.Author.username}`}
-              className="font-medium hover:underline"
-            >
-              {comment?.Author?.fullname || 'ERROR'}
-            </Link>
-            <span className="text-sm text-muted-foreground">
-              {new Date(comment.createdAt).toLocaleDateString()}
-            </span>
-          </div>
-          <p className="mt-1 text-foreground">{comment.content}</p>
-        </div>
-      </div>
-
-      {childrenArray.filter((c) => c.parentId === comment.id).length > 0 && (
-        <div className="ml-12 mt-2 border-l-2 border-border pl-4">
-          {childrenArray
-            .filter((c) => c.parentId === comment.id)
-            .map((c) => (
-              <CommentCard
-                key={c.id}
-                comment={c}
-                childrenArray={childrenArray}
-              />
-            ))}
-        </div>
-      )}
-    </div>
-  )
 }
 
 export default async function Page({ params }: Props) {
@@ -99,6 +46,7 @@ export default async function Page({ params }: Props) {
                   key={comment.id}
                   comment={comment}
                   childrenArray={comments}
+                  isAuthor={comment.authorId === authenticatedUser.data?.id}
                 />
               ))}
           </div>

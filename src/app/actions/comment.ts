@@ -4,6 +4,7 @@ import type { ServerResponse, ServerError } from '@/types'
 import { axiosInstance } from './'
 import { AxiosError } from 'axios'
 import { z } from 'zod'
+import { revalidatePath } from 'next/cache'
 
 const CommentSchema = z.object({
   content: z.string().min(1, 'Comment cannot be empty'),
@@ -52,6 +53,7 @@ export async function createComment(
       postId,
     })
 
+    revalidatePath(`/p/${postId}`)
     return res.data
   } catch (error) {
     console.error('Error creating comment:', error)
@@ -61,6 +63,51 @@ export async function createComment(
       success: false,
       message:
         response?.message || 'Something went wrong while creating the comment.',
+      statusCode: axiosError.status || 500,
+    }
+  }
+}
+
+export async function updateComment(
+  commentId: number,
+  content: string,
+): Promise<ServerResponse<Comment>> {
+  try {
+    const res = await axiosInstance.put(`/comments/${commentId}`, {
+      content,
+    })
+
+    revalidatePath(`/p/${commentId}`)
+    return res.data
+  } catch (error) {
+    console.error('Error updating comment:', error)
+    const axiosError = error as AxiosError
+    const response = axiosError.response as never as ServerError
+    return {
+      success: false,
+      message: response?.message || 'Failed to update comment',
+      statusCode: axiosError.status || 500,
+    }
+  }
+}
+
+export async function deleteComment(
+  commentId: number,
+): Promise<ServerResponse<null>> {
+  try {
+    await axiosInstance.delete(`/comments/${commentId}`)
+    revalidatePath(`/p/${commentId}`)
+    return {
+      success: true,
+      data: null,
+    }
+  } catch (error) {
+    console.error('Error deleting comment:', error)
+    const axiosError = error as AxiosError
+    const response = axiosError.response as never as ServerError
+    return {
+      success: false,
+      message: response?.message || 'Failed to delete comment',
       statusCode: axiosError.status || 500,
     }
   }
