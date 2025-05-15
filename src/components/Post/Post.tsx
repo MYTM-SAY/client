@@ -47,7 +47,7 @@ export default function PostCard({
         className="relative p-6 rounded-lg bg-card text-foreground shadow cursor-pointer"
         onClick={handlePostClick}
       >
-        {isAuthor && <PostSettingsDropdown postId={post.id} forumId={post.forumId} />}
+        {isAuthor && <PostSettingsDropdown postId={post.id} forumId={post.forumId} post={post} />}
 
         <header className="flex gap-4 items-center">
           <Image

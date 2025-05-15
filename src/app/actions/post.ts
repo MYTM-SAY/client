@@ -9,7 +9,7 @@ export async function createPost(formData: FormData) {
   const title = formData.get('title') as string
   const content = formData.get('content') as string
   const fid = formData.get('fid') as string
-  
+
   try {
     const mediaUrls = formData.getAll('mediaUrls[]')
 
@@ -23,6 +23,29 @@ export async function createPost(formData: FormData) {
     return res.data
   } catch (error) {
     console.error('error creating post', error)
+    throw error
+  }
+}
+
+export async function updatePost(formData: FormData) {
+  const title = formData.get('title') as string
+  const content = formData.get('content') as string
+  const postId = formData.get('postId') as string
+  const forumId = formData.get('forumId') as string
+
+  try {
+    const mediaUrls = formData.getAll('mediaUrls[]')
+
+    const res = await axiosInstance.put(`/posts/${postId}`, {
+      title,
+      content,
+      attachments: mediaUrls,
+    })
+
+    revalidatePath(`/c/${forumId}`)
+    return res.data
+  } catch (error) {
+    console.error('error updating post', error)
     throw error
   }
 }
@@ -117,14 +140,14 @@ export async function getPostComments(
 }
 
 export async function deletePost(
-  postId: string | number
+  postId: string | number,
 ): Promise<ServerResponse<null>> {
   try {
     await axiosInstance.delete(`/posts/${postId}`)
     revalidatePath('/p/[id]')
     return {
       success: true,
-      data: null
+      data: null,
     }
   } catch (error) {
     const axiosError = error as AxiosError
