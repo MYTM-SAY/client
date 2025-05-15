@@ -2,6 +2,7 @@
 import Btn from '../ui/Btn'
 import { GiExitDoor } from 'react-icons/gi'
 import { Earth, GlobeLock, Users, EllipsisIcon } from 'lucide-react'
+import Link from 'next/link'
 
 import {
   DropdownMenu,
@@ -19,7 +20,13 @@ interface CommunityCardProps {
   image?: string
 }
 
-export default function JoinedCommunityCard(props: CommunityCardProps) {
+export default function JoinedCommunityCard({
+  name = 'Community Name',
+  members = 0,
+  isPublic = true,
+  creator = 'Unknown',
+  image = '/pp-fallback.svg'
+}: CommunityCardProps) {
   return (
     <div className="relative flex flex-col bg-card items-center overflow-hidden rounded-lg justify-between gap-5 min-w-[200px] pb-5">
       <DropdownMenu>
@@ -36,28 +43,28 @@ export default function JoinedCommunityCard(props: CommunityCardProps) {
 
       <div>
         <img
-          src="/pp-fallback.svg"
+          src={image}
           className="object-cover h-24 w-full"
-          alt=""
+          alt={`${name} cover image`}
         />
-        <p className="h5 px-5 pt-3 text-center">Software Engineers</p>
+        <p className="h5 px-5 pt-3 text-center">{name}</p>
       </div>
 
       <div className="flex items-center gap-3 px-5">
         <Avatar className="w-8 h-8">
-          <AvatarImage src="/Rectangle 83.png" />
-          <AvatarFallback>CN</AvatarFallback>
+          <AvatarImage src={image} />
+          <AvatarFallback>{name.charAt(0)}</AvatarFallback>
         </Avatar>
-        <p className="p-sm-muted">By Hassan Ezz</p>
+        <p className="p-sm-muted">By {creator}</p>
       </div>
 
       <div className="flex flex-col justify-between w-full p-muted px-5">
         <div className="flex justify-around w-full p-muted pb-3">
           <p className="flex gap-1 items-center">
             <Users size={20} />
-            13k{' '}
+            {members.toLocaleString()}
           </p>
-          {props.isPublic ? (
+          {isPublic ? (
             <p className="flex gap-1 items-center">
               <Earth size={20} />
               Public
@@ -69,7 +76,9 @@ export default function JoinedCommunityCard(props: CommunityCardProps) {
             </p>
           )}
         </div>
-        <Btn className="w-full p-2 text-white">View</Btn>
+        <Link href={`/c/${name}`} className="w-full">
+          <Btn className="w-full p-2 text-white">View</Btn>
+        </Link>
       </div>
     </div>
   )
