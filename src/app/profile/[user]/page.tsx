@@ -7,7 +7,6 @@ import { getUser } from '@/lib/actions/auth'
 import { getUserProfileInfo, getUserContributions } from '@/app/actions/profile'
 import { getJoinedCommunities } from '@/app/actions/community'
 import { getAllPostsOfUserUsingId } from '@/app/actions/user'
-
 export default async function Page() {
   // TODO: remove this mock data and use the actual data from the API
   const contributions: number[] = Array.from({ length: 365 }, () =>
@@ -52,7 +51,10 @@ export default async function Page() {
             role: d.Role,
           }))}
         />
-        <ContributionsInCommunities posts={postsReq.data} id={userReq.user.id} />
+        <ContributionsInCommunities
+          posts={postsReq.data}
+          id={userReq.user.id}
+        />
       </div>
 
       <ProfileInfo
@@ -66,7 +68,9 @@ export default async function Page() {
         youtube={userInfoReq.data?.youtube || '#'}
         profilePic={userInfoReq.data?.profilePictureURL || '#'}
         userContributionCount={
-          userContributions.success ? userContributions?.data[0]?.UserContributions[0]?.count : 0
+          userContributions.success
+            ? userContributions?.data[0]?.UserContributions[0]?.count
+            : 0
         }
         joinedCommuntiesCount={userCommunities.data.length}
       />
