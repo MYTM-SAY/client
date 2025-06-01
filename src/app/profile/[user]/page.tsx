@@ -7,12 +7,8 @@ import { getUser } from '@/lib/actions/auth'
 import { getUserProfileInfo, getUserContributions } from '@/app/actions/profile'
 import { getJoinedCommunities } from '@/app/actions/community'
 import { getAllPostsOfUserUsingId } from '@/app/actions/user'
-export default async function Page() {
-  // TODO: remove this mock data and use the actual data from the API
-  const contributions: number[] = Array.from({ length: 365 }, () =>
-    Math.floor(Math.random() * 5),
-  )
 
+export default async function Page() {
   const userReq = await getUser()
   if (!userReq.success) {
     return 'An error has occurred'
@@ -24,7 +20,6 @@ export default async function Page() {
   }
 
   const userContributions = await getUserContributions(userReq.user.id)
-  console.log('HELLO', userContributions)
   if (!userContributions.success) {
     return 'An error has occurred (user contributions)'
   }
@@ -39,12 +34,35 @@ export default async function Page() {
     return 'An error has occurred (posts)'
   }
 
-  console.log(postsReq.data)
+  const currentYear = new Date().getFullYear()
+  const isLeapYear =
+    (currentYear % 4 === 0 && currentYear % 100 !== 0) ||
+    currentYear % 400 === 0
+  const daysInYear = isLeapYear ? 366 : 365
+
+  const contributionsArray = new Array(daysInYear).fill(0)
+
+  if (userContributions.data[0]?.UserContributions) {
+    userContributions.data[0].UserContributions.forEach(
+      ({ dateOnly, count }: { dateOnly: string; count: number }) => {
+        const date = new Date(dateOnly)
+        if (date.getUTCFullYear() === currentYear) {
+          const startOfYear = new Date(Date.UTC(currentYear, 0, 1))
+          const diffDays = Math.floor(
+            (date.getTime() - startOfYear.getTime()) / (1000 * 60 * 60 * 24),
+          )
+          if (diffDays >= 0 && diffDays < daysInYear) {
+            contributionsArray[diffDays] = count
+          }
+        }
+      },
+    )
+  }
 
   return (
     <div className="grid sm:grid-cols-3 gap-5">
       <div className="col-span-2">
-        <ContributionGraph contributions={contributions} />
+        <ContributionGraph contributions={contributionsArray} />
         <CommunitiesProfile
           communities={userCommunities.data.map((d) => ({
             ...d.Community,

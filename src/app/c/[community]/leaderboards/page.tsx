@@ -1,23 +1,32 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { getTopTen } from '@/app/actions/leaderboard'
 
-export default async function Page() {
-  const leaderboardData = [
-    { name: 'Sara Ahmed', points: 17134 },
-    { name: 'Sara Ahmed', points: 10532 },
-    { name: 'Sara Ahmed', points: 5063 },
-    { name: 'Sara Ahmed', points: 1000 },
-    { name: 'Sara Ahmed', points: 500 },
-    { name: 'Sara Ahmed', points: 17134 },
-    { name: 'Sara Ahmed', points: 17134 },
-  ]
-
+interface Props {
+  params: {
+    id: string
+  }
+}
+interface leaderboardDataTypes {
+  id: number
+  username: string
+  fullname: string
+  score: number
+}
+export default async function Page({ params }: Props) {
+  //There is a problem in getting the ID of the community
+  const { id } = await params
+  const leaderboardReq = await getTopTen(id)
+  if (!leaderboardReq.success) {
+    return 'An error has occurred'
+  }
+  const leaderboardData = leaderboardReq.data
   return (
     <div className="">
       <h1 className="text-3xl font-bold text-center py-8">Leaderboard</h1>
 
       <ol className="">
-        {leaderboardData.map((item, index) => (
-          <li key={index} className="p-4 my-4 rounded-lg shadow-md border">
+        {leaderboardData.map((item: leaderboardDataTypes, index: number) => (
+          <li key={item.id} className="p-4 my-4 rounded-lg shadow-md border">
             <div className="flex justify-between items-center">
               <div className="flex items-center space-x-4">
                 <span className="font-medium">
@@ -44,9 +53,9 @@ export default async function Page() {
                   <AvatarImage src="/pp-fallback.svg" />
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
-                <h3 className="font-semibold">{item.name}</h3>
+                <h3 className="font-semibold">{item.username}</h3>
               </div>
-              <span className="text-green-600 p font-bold">+{item.points}</span>
+              <span className="text-green-600 p font-bold">+{item.score}</span>
             </div>
           </li>
         ))}

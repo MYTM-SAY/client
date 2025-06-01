@@ -1,119 +1,135 @@
 'use client'
-import { useState, useEffect } from 'react'
-import Btn from '@/components/ui/Btn'
+import { useState } from 'react'
+import {
+  FiVolumeX,
+  FiUserX,
+  FiShield,
+  FiUserCheck,
+  FiMail,
+  FiArchive,
+} from 'react-icons/fi'
+import ActionModal from '@/components/Community/Settings/ActionModal'
+import SettingCard from '@/components/Community/Settings/SettingCard'
+import VisibilitySetting from '@/components/Community/Settings/VisibilitySetting'
+
+type ActionType =
+  | 'mute'
+  | 'delete'
+  | 'ban'
+  | 'role'
+  | 'transfer'
+  | 'archive'
+  | null
 
 const Page = () => {
-  const [isDropdownVisible, setIsDropdownVisible] = useState(false)
-  const [selectedAction, setSelectedAction] = useState(null)
+  const [selectedAction, setSelectedAction] = useState<ActionType>(null)
   const [email, setEmail] = useState('')
+  const [role, setRole] = useState('member')
+  const [communityVisibility, setCommunityVisibility] = useState<
+    'public' | 'private'
+  >('public')
 
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      const target = e.target as HTMLElement
-      if (isDropdownVisible && !target.closest('.dropdown-container')) {
-        setIsDropdownVisible(false)
-      }
-    }
-    document.addEventListener('click', handleClickOutside)
-    return () => document.removeEventListener('click', handleClickOutside)
-  }, [isDropdownVisible])
-
-  const handleAction = (action) => {
-    setIsDropdownVisible(false)
+  const handleAction = (action: ActionType) => {
     setSelectedAction(action)
   }
 
-  const handleConfirm = () => {}
+  const handleConfirm = () => {
+    // Handle confirmation logic here
+    setSelectedAction(null)
+    setEmail('')
+  }
+
+  const handleVisibilityChange = (newVisibility: 'public' | 'private') => {
+    setCommunityVisibility(newVisibility)
+    // Here you would typically make an API call to update community visibility
+    console.log(`Community visibility changed to: ${newVisibility}`)
+  }
 
   return (
-    <div className="relateive">
+    <div className="max-w-4xl mx-auto p-4 sm:p-6">
       {selectedAction && (
-        <div className="absolute inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center h-[calc(100vh+42px)]">
-          <div className=" p-6 rounded-lg space-y-4 max-w-[400px] w-[400px]">
-            <input
-              type="email"
-              placeholder="Enter user email"
-              className="w-full p-2 border rounded-lg"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <div className="flex justify-end space-x-2">
-              <Btn className="p-4" onClick={() => setSelectedAction(null)}>
-                Cancel
-              </Btn>
-              <Btn className="p-4" onClick={handleConfirm}>
-                Confirm
-              </Btn>
-            </div>
-          </div>
-        </div>
+        <ActionModal
+          selectedAction={selectedAction}
+          onClose={() => setSelectedAction(null)}
+          onConfirm={handleConfirm}
+          email={email}
+          setEmail={setEmail}
+          role={role}
+          setRole={setRole}
+        />
       )}
 
-      <div className="flex justify-between dropdown-container mb-6">
-        <div>
-          <p className="h5">Change repository visibility</p>
-          <p className="p-muted">This repository is currently public.</p>
-        </div>
-        <div className="relative">
-          <Btn
-            className="p-4"
-            onClick={() => setIsDropdownVisible(!isDropdownVisible)}
-          >
-            Change visibility
-          </Btn>
-          {isDropdownVisible && (
-            <div className="absolute bottom-[-50px] left-[-55px] custom-dropdown-content rounded-lg p-3 custom-dropdown-item cursor-pointer bg-white shadow-lg">
-              Change to private
-            </div>
-          )}
-        </div>
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+          Community Management
+        </h1>
+        <p className="text-gray-600 dark:text-gray-400">
+          Manage your community settings and member permissions
+        </p>
       </div>
 
-      <div className="flex justify-between mb-6">
-        <div>
-          <p className="h5">Mute member in the community</p>
-          <p className="p-muted">
-            You will prevent the user from interacting in the forum
-          </p>
-        </div>
-        <Btn className="p-4" onClick={() => handleAction('mute')}>
-          Mute member
-        </Btn>
-      </div>
+      <VisibilitySetting
+        initialVisibility={communityVisibility}
+        onVisibilityChange={handleVisibilityChange}
+      />
 
-      <div className="flex justify-between mb-6">
-        <div>
-          <p className="h5">Delete member from the community</p>
-          <p className="p-muted">You will delete a user from the community</p>
-        </div>
-        <Btn className="p-4" onClick={() => handleAction('delete')}>
-          Delete member
-        </Btn>
-      </div>
+      <div className="grid gap-5">
+        <SettingCard
+          icon={<FiVolumeX size={20} />}
+          title="Mute member in the community"
+          description="Prevent the user from interacting in the forum"
+          action="mute"
+          actionText="Mute Member"
+          onAction={handleAction}
+        />
 
-      <div className="flex justify-between mb-6">
-        <div>
-          <p className="h5">Ban member in the community</p>
-          <p className="p-muted">
-            The user will be removed from the community and will not be able to
-            see it again
-          </p>
-        </div>
-        <Btn className="p-4" onClick={() => handleAction('ban')}>
-          Ban member
-        </Btn>
-      </div>
+        <SettingCard
+          icon={<FiUserX size={20} />}
+          title="Remove member from the community"
+          description="Delete a user from the community"
+          action="delete"
+          actionText="Remove Member"
+          danger
+          onAction={handleAction}
+        />
 
-      <div className="flex justify-between mb-6">
-        <div>
-          <p className="h5">Change the role of a member in the community</p>
-          <p className="p-muted">
-            You can change the role of a member in the community
-          </p>
-        </div>
-        <Btn className="p-4" onClick={() => handleAction('role')}>
-          Change role
-        </Btn>
+        <SettingCard
+          icon={<FiShield size={20} />}
+          title="Ban member from the community"
+          description="User will be removed and blocked from rejoining"
+          action="ban"
+          actionText="Ban Member"
+          danger
+          onAction={handleAction}
+        />
+
+        <SettingCard
+          icon={<FiUserCheck size={20} />}
+          title="Change member role"
+          description="Modify permissions and access levels"
+          action="role"
+          actionText="Change Role"
+          onAction={handleAction}
+        />
+
+        <SettingCard
+          icon={<FiMail size={20} />}
+          title="Transfer ownership"
+          description="Transfer community ownership to another member"
+          action="transfer"
+          actionText="Transfer"
+          onAction={handleAction}
+        />
+
+        <SettingCard
+          icon={<FiArchive size={20} />}
+          title="Archive community"
+          description="Make this community read-only"
+          action="archive"
+          actionText="Archive"
+          danger
+          onAction={handleAction}
+        />
       </div>
     </div>
   )

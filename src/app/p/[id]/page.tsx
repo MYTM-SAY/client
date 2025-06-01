@@ -12,6 +12,7 @@ interface Props {
 
 export default async function Page({ params }: Props) {
   const { id } = await params
+  console.log(id)
   const postReq = await getPost(id)
   const authenticatedUser = await getAuthenticatedUserDetails()
 
