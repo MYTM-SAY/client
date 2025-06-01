@@ -72,3 +72,35 @@ export async function getJoinedCommunities(
     }
   }
 }
+
+export async function leaveCommunity(id: string | number) {
+  try {
+    const res = await axiosInstance.delete(`/communities/${id}/leave`)
+    return res.data
+  } catch (error) {
+    const axiosError = error as AxiosError
+    const response = axiosError.response as never as ServerError
+    return {
+      success: false,
+      message: response.message || 'Internal server error',
+      statusCode: axiosError.status,
+    }
+  }
+}
+
+export async function getTheRoleOfAuth(id: string) {
+  try {
+    const res = await axiosInstance.get(
+      `/communities/${id}/user-role-in-a-community`,
+    )
+    return res.data
+  } catch (error) {
+    const axiosError = error as AxiosError
+    const response = axiosError.response as never as ServerError
+    return {
+      success: false,
+      message: response.message || 'Internal server error',
+      statusCode: axiosError.status,
+    }
+  }
+}

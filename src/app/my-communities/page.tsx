@@ -8,13 +8,16 @@ import {
 import JoinedCommunityCard from '@/components/HomePage/CommunityCardImproved'
 import { getJoinedCommunities } from '@/app/actions/community'
 import { getUser } from '@/lib/actions/auth'
-
+import { getTheRoleOfAuth } from '@/app/actions/community'
 export default async function MyCommunitiesPage() {
   const userReq = await getUser()
   if (!userReq.success) {
     return <>Internal server error</>
   }
-
+  const roleReq = await getTheRoleOfAuth(userReq.user.id)
+  if (!roleReq.success) {
+    return <>Internal server error</>
+  }
   const joinedCommunitiesReq = await getJoinedCommunities(userReq.user.id)
   if (!joinedCommunitiesReq.success) {
     return <>Internal server error</>
@@ -50,6 +53,8 @@ export default async function MyCommunitiesPage() {
               joinedCommunities.map((comm) => (
                 <JoinedCommunityCard
                   key={comm.Community.id}
+                  id={comm.Community.id}
+                  userRole={roleReq.data}
                   name={comm.Community.name}
                   members={Number(comm.Community.MembersCount)}
                   isPublic={comm.Community.isPublic}
