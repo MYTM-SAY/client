@@ -104,3 +104,18 @@ export async function getTheRoleOfAuth(id: string) {
     }
   }
 }
+
+export async function getMods(id: string) {
+  try {
+    const res = await axiosInstance.get(`/communities/${id}/mods`)
+    return res.data
+  } catch (error) {
+    const axiosError = error as AxiosError
+    const response = axiosError.response as never as ServerError
+    return {
+      success: false,
+      message: response.message || 'Internal server error',
+      statusCode: axiosError.status,
+    }
+  }
+}

@@ -7,6 +7,7 @@ import Btn from '@/components/ui/Btn'
 import { getCommunity } from '../../../actions/community'
 import { getUserProfileInfo } from '@/app/actions/profile'
 import { getUserByID } from '@/app/actions/user'
+import { getMods } from '../../../actions/community'
 interface Props {
   params: {
     community: string
@@ -19,7 +20,10 @@ export default async function Page({ params }: Props) {
   if (!communityInfo.success) {
     return 'An error has occurred'
   }
-
+  const modsReq = await getMods(communityId)
+  if (!modsReq.success) {
+    return 'An error has occurred'
+  }
   const bio = communityInfo.data.bio
   const text = communityInfo.data.description
   const ownerImg = await getUserProfileInfo(communityInfo.data.ownerId)
@@ -117,10 +121,10 @@ export default async function Page({ params }: Props) {
               </div>
               <div className="group">
                 <p className="text-2xl font-semibold group-hover:text-accent transition-colors duration-300">
-                  Wait for API
+                  {modsReq.data}
                 </p>
                 <p className="text-sm text-muted-foreground group-hover:text-accent/80 transition-colors duration-300">
-                  Admins
+                  Moderators
                 </p>
               </div>
             </div>
