@@ -351,10 +351,10 @@ const ClassroomManagement = ({
                               ID: {lesson.id}
                             </p>
                             <p className="text-sm text-gray-600 mt-1">
-                              Material Type: {lesson.Material.materialType}
+                              Material Type: {lesson.Materials.materialType}
                             </p>
                             <p className="text-sm text-gray-600 mt-1">
-                              File URL: {lesson.Material.fileUrl}
+                              File URL: {lesson.Materials.fileUrl}
                             </p>
                             <p className="text-sm text-gray-600 mt-1">
                               Created at: {lesson.createdAt}
@@ -366,17 +366,17 @@ const ClassroomManagement = ({
                               Section ID: {lesson.sectionId}
                             </p>
                             
-                            {lesson.Material.materialType ===
+                            {lesson.Materials.materialType ===
                               MaterialType.DOC && (
                               <p className="text-sm text-gray-600 mt-1">
                                 {lesson.notes?.substring(0, 50)}
                                 {(lesson.notes?.length || 0) > 50 ? '...' : ''}
                               </p>
                             )}
-                            {lesson.Material.materialType !==
+                            {lesson.Materials.materialType !==
                               MaterialType.DOC && (
                               <a
-                                href={lesson.Material.fileUrl}
+                                href={lesson.Materials.fileUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="text-sm text-blue-500 hover:underline mt-1 block"

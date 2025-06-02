@@ -122,7 +122,7 @@ export interface Lesson {
   sectionId: number
   createdAt: string
   updatedAt: string
-  Material: Material
+  Materials: Material
 }
 
 export interface Material {
