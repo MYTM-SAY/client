@@ -175,7 +175,7 @@ export default function JoinedCommunityCard({
             </p>
           )}
         </div>
-        <Link href={`/c/${name}`} className="w-full">
+        <Link href={`/c/${id}`} className="w-full">
           <Btn className="w-full p-2 text-white">View</Btn>
         </Link>
       </div>
