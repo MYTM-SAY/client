@@ -1,6 +1,7 @@
 import { getCommunity } from '@/app/actions/community'
 import Forum from '@/components/Forum/forum'
 import { getUser } from '@/lib/actions/auth'
+import { redirect } from 'next/navigation'
 
 interface Props {
   params: {
@@ -22,6 +23,10 @@ export default async function Page({ params }: Props) {
       return <>Page not found</>
     }
     return <>Internal server error</>
+  }
+
+  if (!res.data.role) {
+    redirect(`/c/${communityId}/about`)
   }
 
   return <Forum forumId={res.data.forumId} community={res.data} authedUserId={userReq.user.id} />
