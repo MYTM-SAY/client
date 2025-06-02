@@ -11,9 +11,7 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion'
 
-const ContentSection = ({ courseContent, setCourseContent }: any) => {
-  const [isCourseContentOpen, setIsCourseContentOpen] = useState(true)
-  // const [openSection, setOpenSection] = useState("section-3"); // Initially open section 3
+const ContentSection = ({ courseContent, setCourseContent, selectedLesson, setSelectedLesson }: any) => {
   return (
     <Accordion type="single" collapsible defaultValue="section-3">
       {courseContent.map((section: any) => {
@@ -46,6 +44,8 @@ const ContentSection = ({ courseContent, setCourseContent }: any) => {
                     lesson={lesson}
                     setCourseContent={setCourseContent}
                     courseContent={courseContent}
+                    onSelect={() => setSelectedLesson(lesson)}
+                    selected={selectedLesson?.id === lesson.id}
                   />
                 ))}
               </div>

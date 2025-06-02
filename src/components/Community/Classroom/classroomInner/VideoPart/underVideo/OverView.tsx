@@ -1,10 +1,10 @@
 import React from "react";
 import { FaStar } from "react-icons/fa";
 
-const OverView = () => {
+const OverView = ({ description }: { description?: string }) => {
   return (
     <div className="">
-      <p>Build Efficient software by understanding how the OS kernel works</p>
+      <p>{description || "No description provided."}</p>
       <div className="flex gap-16 flex-wrap pt-8">
         <div className="flex flex-col items-start gap-1">
           <div className="flex items-center justify-center gap-4">
@@ -26,7 +26,6 @@ const OverView = () => {
           <p className="p-muted">total</p>
         </div>
       </div>
-      <div className="py-16 p-lg-muted">Descripton</div>
     </div>
   );
 };

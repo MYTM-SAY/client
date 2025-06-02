@@ -83,4 +83,129 @@ const useClassrooms = (communityId: string) => {
   }
 }
 
+export const useClassroomDetails = (classroomId: string) => {
+  // Type for courseContent array
+  type CourseContentSection = {
+    section: number
+    title: string
+    completed: number
+    total: number
+    duration: number
+    lessons: {
+      id: number
+      title: string
+      duration: number
+      completed: boolean
+      notes: string
+      materials: {
+        id: number
+        materialType: string
+        fileUrl: string
+        createdAt: string
+        updatedAt: string
+        lessonId: number
+      }[]
+    }[]
+  }
+
+  interface Material {
+    id: number
+    materialType: string
+    fileUrl: string
+    createdAt: string
+    updatedAt: string
+    lessonId: number
+  }
+
+  interface Lesson {
+    id: number
+    name: string
+    notes: string
+    sectionId: number
+    createdAt: string
+    updatedAt: string
+    Materials: Material[]
+    isCompleted: boolean
+    duration: number
+  }
+
+  interface Section {
+    id: number
+    name: string
+    description: string
+    classroomId: number
+    Lessons: Lesson[]
+    createdAt: string
+    updatedAt: string
+  }
+
+  const [classroom, setClassroom] = useState<Classroom | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [courseContent, setCourseContent] = useState<CourseContentSection[]>([])
+
+  useEffect(() => {
+    if (!classroomId) return
+    const fetchClassroom = async () => {
+      setIsLoading(true)
+      try {
+        const response = await instance.get(`/classrooms/${classroomId}?section=true&lesson=true`)
+        const apiData = response.data.data
+        // Map API response to CourseContentSection[]
+        const sections: CourseContentSection[] = Array.isArray(apiData.Sections)
+          ? apiData.Sections.map((section: Section, idx: number) => {
+              const lessonsArr = Array.isArray(section.Lessons) ? section.Lessons : []
+              const completedCount = lessonsArr.filter((lesson: Lesson) => lesson.isCompleted).length
+              const totalDuration = lessonsArr.reduce((acc: number, lesson: Lesson) => acc + (lesson.duration || 0), 0)
+              return {
+                section: idx + 1,
+                title: section.name || '',
+                completed: completedCount,
+                total: lessonsArr.length,
+                duration: totalDuration,
+                lessons: lessonsArr.map((lesson: Lesson) => ({
+                  id: lesson.id,
+                  title: lesson.name || '',
+                  duration: lesson.duration || 0,
+                  completed: !!lesson.isCompleted,
+                  notes: lesson.notes || '',
+                  materials: Array.isArray(lesson.Materials) ? lesson.Materials.map((mat: Material) => ({
+                    id: mat.id,
+                    materialType: mat.materialType,
+                    fileUrl: mat.fileUrl,
+                    createdAt: mat.createdAt,
+                    updatedAt: mat.updatedAt,
+                    lessonId: mat.lessonId,
+                  })) : [],
+                })),
+              }
+            })
+          : []
+        setClassroom({
+          id: apiData.id,
+          name: apiData.name,
+          description: apiData.description,
+          createdAt: apiData.createdAt,
+          updatedAt: apiData.updatedAt,
+          coverImg: apiData.coverImg,
+          communityId: String(apiData.communityId),
+          progress: 0, // You can calculate progress if needed
+          sections: Array.isArray(apiData.Sections) ? apiData.Sections : [],
+        })
+        setCourseContent(sections)
+      } catch (err) {
+        const error = err as ApiResponseError
+        setError(error.response?.data?.message)
+        setClassroom(null)
+        setCourseContent([])
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    fetchClassroom()
+  }, [classroomId])
+
+  return { classroom, courseContent, isLoading, error }
+}
+
 export default useClassrooms

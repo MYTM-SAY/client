@@ -1,96 +1,34 @@
 import React from 'react'
 import { Checkbox } from '@/components/ui/checkbox'
 import { MdOutlineScreenshotMonitor } from 'react-icons/md'
-const courseContentStructure = [
-  {
-    section: 1,
-    title: 'Before we start',
-    completed: 4,
-    total: 4,
-    duration: 30,
-    lessons: [
-      {
-        id: 22,
-        title: 'Inside the CPU Section Intro',
-        duration: 4,
-        completed: true,
-      },
-      { id: 23, title: 'CPU Components', duration: 56, completed: true },
-      {
-        id: 24,
-        title: 'Instruction Life Cycle',
-        duration: 20,
-        completed: true,
-      },
-      { id: 25, title: 'Demo', duration: 18, completed: true },
-      {
-        id: 26,
-        title: 'Quiz 3: Inside the CPU Quiz',
-        duration: 0,
-        completed: false,
-      }, // Quiz, no duration
-    ],
-  },
-  {
-    section: 2,
-    title: 'Why an OS?',
-    completed: 8,
-    total: 8,
-    duration: 98,
-    lessons: [
-      {
-        id: 22,
-        title: 'Inside the CPU Section Intro',
-        duration: 4,
-        completed: true,
-      },
-      { id: 23, title: 'CPU Components', duration: 56, completed: true },
-      {
-        id: 24,
-        title: 'Instruction Life Cycle',
-        duration: 20,
-        completed: true,
-      },
-      { id: 25, title: 'Demo', duration: 18, completed: true },
-      {
-        id: 26,
-        title: 'Quiz 3: Inside the CPU Quiz',
-        duration: 0,
-        completed: false,
-      }, // Quiz, no duration
-    ],
-  },
-  {
-    section: 3,
-    title: 'Inside the CPU',
-    completed: 4,
-    total: 5,
-    duration: 98,
-    lessons: [
-      {
-        id: 22,
-        title: 'Inside the CPU Section Intro',
-        duration: 4,
-        completed: true,
-      },
-      { id: 23, title: 'CPU Components', duration: 56, completed: true },
-      {
-        id: 24,
-        title: 'Instruction Life Cycle',
-        duration: 20,
-        completed: true,
-      },
-      { id: 25, title: 'Demo', duration: 18, completed: true },
-      {
-        id: 26,
-        title: 'Quiz 3: Inside the CPU Quiz',
-        duration: 0,
-        completed: false,
-      }, // Quiz, no duration
-    ],
-  },
-]
-const Lesson = ({ lesson, setCourseContent, courseContent }: any) => {
+
+interface Material {
+  id: number
+  materialType: string
+  fileUrl: string
+  createdAt: string
+  updatedAt: string
+  lessonId: number
+}
+
+interface LessonType {
+  id: number
+  title: string
+  duration: number
+  completed: boolean
+  notes: string
+  materials: Material[]
+}
+
+interface LessonProps {
+  lesson: LessonType
+  setCourseContent: (content: any) => void
+  courseContent: any
+  onSelect: () => void
+  selected: boolean
+}
+
+const Lesson = ({ lesson, setCourseContent, courseContent, onSelect, selected }: LessonProps) => {
   const handleCheckboxChange = () => {
     const updatedStatus = !lesson.completed
 
@@ -109,13 +47,20 @@ const Lesson = ({ lesson, setCourseContent, courseContent }: any) => {
   }
 
   return (
-    <div className="flex gap-2">
+    <div
+      className={`flex gap-2 cursor-pointer rounded px-2 py-1 ${selected ? 'bg-accent/20 border border-accent' : ''}`}
+      onClick={onSelect}
+    >
       <Checkbox
         checked={lesson.completed}
         className={` border-white mt-1 ${
           lesson.completed ? '!bg-green-500 border-0' : ''
         }`}
-        onCheckedChange={handleCheckboxChange}
+        onCheckedChange={e => {
+          e?.stopPropagation?.();
+          handleCheckboxChange();
+        }}
+        onClick={e => e.stopPropagation()}
       />
       <div className="flex flex-col ">
         <span>

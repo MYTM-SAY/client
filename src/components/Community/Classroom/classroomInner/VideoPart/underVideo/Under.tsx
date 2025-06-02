@@ -3,7 +3,13 @@ import React, { useState, useEffect, useCallback } from 'react'
 import OverView from './OverView'
 import Notes from './Notes'
 import { CourseReviews } from './reviews/CourseReviews'
-const Under = ({ setShowContent }: any) => {
+
+interface UnderProps {
+  setShowContent: (show: boolean) => void;
+  description?: string;
+}
+
+const Under = ({ setShowContent, description }: UnderProps) => {
   const [under, setUnder] = useState(1)
   const [isMobile, setIsMobile] = useState(false)
 
@@ -68,7 +74,7 @@ const Under = ({ setShowContent }: any) => {
           <span>Reviews</span>
         </li>
       </ul>
-      {under === 1 ? <OverView /> : under === 2 ? <Notes /> : <CourseReviews />}
+      {under === 1 ? <OverView description={description} /> : under === 2 ? <Notes /> : <CourseReviews />}
     </div>
   )
 }

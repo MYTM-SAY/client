@@ -6,6 +6,8 @@ const CourseContent = ({
   setHideContent,
   courseContent,
   setCourseContent,
+  selectedLesson,
+  setSelectedLesson,
 }: any) => {
   return (
     <div className="w-[400px] mlg:w-full pb-16 pt-4 rounded-lg px-4 mt-6 bg-card">
@@ -20,6 +22,8 @@ const CourseContent = ({
       <ContentSection
         courseContent={courseContent}
         setCourseContent={setCourseContent}
+        selectedLesson={selectedLesson}
+        setSelectedLesson={setSelectedLesson}
       />
     </div>
   )
