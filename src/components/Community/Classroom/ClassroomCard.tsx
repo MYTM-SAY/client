@@ -9,7 +9,7 @@ interface ClassroomCardProps {
 
 export default function ClassroomCard({ classroom }: ClassroomCardProps) {
   return (
-    <Link href={`/c/${classroom.communityId}/classroom/vid`}>
+    <Link href={`/c/${classroom.communityId}/classroom/${classroom.id}`}>
       <div className="flex flex-col justify-between relative overflow-hidden rounded-lg bg-card">
         <div className="relative flex-1 ">
           <Image
