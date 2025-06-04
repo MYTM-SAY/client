@@ -4,7 +4,7 @@ import { GiExitDoor } from 'react-icons/gi'
 import { Earth, GlobeLock, Users, EllipsisIcon } from 'lucide-react'
 import Link from 'next/link'
 import { leaveCommunity } from '@/app/actions/community'
-import { useState } from 'react'
+import { useState, useEffect } from 'react' // Added useEffect
 import { useToast } from '@/hooks/use-toast'
 import { useRouter } from 'next/navigation'
 import {
@@ -22,7 +22,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button' // Make sure to import Button
+import { Button } from '@/components/ui/button'
+import { FaRegHeart, FaHeart } from 'react-icons/fa' // Combined import
+import { toggleFav } from '@/app/actions/community'
 
 interface CommunityCardProps {
   name?: string
@@ -32,6 +34,7 @@ interface CommunityCardProps {
   isPublic?: boolean
   creator?: string
   image?: string
+  isFavorite?: boolean // Added new prop for initial favorite state
 }
 
 export default function JoinedCommunityCard({
@@ -42,13 +45,64 @@ export default function JoinedCommunityCard({
   isPublic = true,
   creator = 'Unknown',
   image = '/pp-fallback.svg',
+  isFavorite = false, // Default to false
 }: CommunityCardProps) {
   const { toast } = useToast()
   const router = useRouter()
   const [showLeaveDialog, setShowLeaveDialog] = useState(false)
   const [isLeaving, setIsLeaving] = useState(false)
 
+  // Favorite state management
+  const [isFav, setIsFav] = useState(isFavorite)
+  const [isFavLoading, setIsFavLoading] = useState(false)
+
   const isOwner = userRole === 'OWNER'
+
+  // Sync with prop changes
+  useEffect(() => {
+    setIsFav(isFavorite)
+  }, [isFavorite])
+
+  const handleToggleFavorite = async () => {
+    if (isFavLoading) return
+
+    setIsFavLoading(true)
+    const prevFavState = isFav // Store previous state for rollback
+
+    try {
+      // Optimistic UI update
+      setIsFav(!isFav)
+
+      const result = await toggleFav(id)
+
+      if (!result.success) {
+        // Revert on error
+        setIsFav(prevFavState)
+        toast({
+          variant: 'destructive',
+          title: 'Favorite Error',
+          description: result.message || 'Failed to update favorite status',
+        })
+      } else {
+        toast({
+          title: isFav ? 'Removed from Favorites' : 'Added to Favorites',
+          description: `"${name}" ${
+            isFav ? 'removed from' : 'added to'
+          } your favorites`,
+        })
+      }
+    } catch (error) {
+      // Revert on exception
+      setIsFav(prevFavState)
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Failed to update favorite status',
+      })
+    } finally {
+      setIsFavLoading(false)
+    }
+  }
 
   const handleLeave = async () => {
     setIsLeaving(true)
@@ -83,6 +137,20 @@ export default function JoinedCommunityCard({
 
   return (
     <div className="relative flex flex-col bg-card items-center overflow-hidden rounded-lg justify-between gap-5 min-w-[200px] pb-5">
+      {/* Favorite Button */}
+      <button
+        className="absolute top-2 left-2 z-10 bg-foreground/70 text-background rounded-sm cursor-pointer h-8 w-8 flex items-center justify-center"
+        onClick={handleToggleFavorite}
+        disabled={isFavLoading}
+        aria-label={isFav ? 'Remove from favorites' : 'Add to favorites'}
+      >
+        {isFav ? (
+          <FaHeart className="text-red-500" size={20} />
+        ) : (
+          <FaRegHeart size={20} />
+        )}
+      </button>
+
       <DropdownMenu>
         <DropdownMenuTrigger
           className="absolute top-2 right-2 z-10 bg-foreground/70 text-background rounded-sm cursor-pointer h-8 w-8 flex items-center justify-center"

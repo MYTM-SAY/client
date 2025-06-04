@@ -154,3 +154,32 @@ export async function getUsersOfCommunity(communityId: string | number) {
     }
   }
 }
+
+export async function toggleFav(communityId: string | number) {
+  try {
+    const res = await axiosInstance.patch(`/favorites/${communityId}/toggle`)
+    return res.data
+  } catch (error) {
+    const axiosError = error as AxiosError
+    const response = axiosError.response as never as ServerError
+    return {
+      success: false,
+      message: response.message || 'Internal server error',
+      statusCode: axiosError.status,
+    }
+  }
+}
+export async function getFav() {
+  try {
+    const res = await axiosInstance.get(`/favorites`)
+    return res.data
+  } catch (error) {
+    const axiosError = error as AxiosError
+    const response = axiosError.response as never as ServerError
+    return {
+      success: false,
+      message: response.message || 'Internal server error',
+      statusCode: axiosError.status,
+    }
+  }
+}

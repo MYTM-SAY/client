@@ -9,21 +9,30 @@ import JoinedCommunityCard from '@/components/HomePage/CommunityCardImproved'
 import { getJoinedCommunities } from '@/app/actions/community'
 import { getUser } from '@/lib/actions/auth'
 import { getTheRoleOfAuth } from '@/app/actions/community'
+import { getFav } from '@/app/actions/community'
 export default async function MyCommunitiesPage() {
   const userReq = await getUser()
-  if (!userReq.success) {
+  if (!userReq.success) return <>Internal server error</>
+
+  const [roleReq, joinedCommunitiesReq, favReq] = await Promise.all([
+    getTheRoleOfAuth(userReq.user.id),
+    getJoinedCommunities(userReq.user.id),
+    getFav(),
+  ])
+
+  if (!roleReq.success || !joinedCommunitiesReq.success)
     return <>Internal server error</>
-  }
-  const roleReq = await getTheRoleOfAuth(userReq.user.id)
-  if (!roleReq.success) {
-    return <>Internal server error</>
-  }
-  const joinedCommunitiesReq = await getJoinedCommunities(userReq.user.id)
-  if (!joinedCommunitiesReq.success) {
-    return <>Internal server error</>
-  }
 
   const joinedCommunities = joinedCommunitiesReq.data
+  const favoriteCommunities = favReq.success ? favReq.data : []
+
+  const getCommunityDetails = (communityId: number) => {
+    const joined = joinedCommunities.find((j) => j.Community.id === communityId)
+    return {
+      members: joined ? Number(joined.Community.MembersCount) : 0,
+      creator: joined?.Community.Owner?.fullname || 'Unknown',
+    }
+  }
 
   return (
     <div className="overflow-y-auto no-scrollbar w-full mx-auto max-w-[1000px]">
@@ -39,8 +48,33 @@ export default async function MyCommunitiesPage() {
         <AccordionItem value="item-2">
           <AccordionTrigger className="h4">Favorite</AccordionTrigger>
           <AccordionContent className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-5">
-            {/* TODO: Add favorite communities when API is available */}
-            <p className="text-muted-foreground">No favorite communities</p>
+            {!favReq.success ? (
+              <p className="text-muted-foreground">Error loading favorites</p>
+            ) : favoriteCommunities.length === 0 ? (
+              <div className="flex flex-col items-center gap-4 py-4">
+                <p className="text-muted-foreground text-center">
+                  You haven't added any communities to favorites yet.
+                </p>
+              </div>
+            ) : (
+              favoriteCommunities.map((fav) => {
+                const { members, creator } = getCommunityDetails(
+                  fav.communityId,
+                )
+                return (
+                  <JoinedCommunityCard
+                    key={fav.Community.id}
+                    id={fav.Community.id}
+                    userRole={roleReq.data}
+                    name={fav.Community.name}
+                    members={members}
+                    isPublic={fav.Community.isPublic}
+                    creator={creator}
+                    image={fav.Community.logoImgURL}
+                  />
+                )
+              })
+            )}
           </AccordionContent>
         </AccordionItem>
 
