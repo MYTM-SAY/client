@@ -119,3 +119,38 @@ export async function getMods(id: string) {
     }
   }
 }
+
+export async function deleteMember(
+  communityId: string | number,
+  userId: string | number,
+) {
+  try {
+    const res = await axiosInstance.delete(
+      `/communities/${communityId}/users/${userId}`,
+    )
+    return res.data
+  } catch (error) {
+    const axiosError = error as AxiosError
+    const response = axiosError.response as never as ServerError
+    return {
+      success: false,
+      message: response.message || 'Internal server error',
+      statusCode: axiosError.status,
+    }
+  }
+}
+
+export async function getUsersOfCommunity(communityId: string | number) {
+  try {
+    const res = await axiosInstance.get(`/communities/${communityId}/users`)
+    return res.data
+  } catch (error) {
+    const axiosError = error as AxiosError
+    const response = axiosError.response as never as ServerError
+    return {
+      success: false,
+      message: response.message || 'Internal server error',
+      statusCode: axiosError.status,
+    }
+  }
+}
