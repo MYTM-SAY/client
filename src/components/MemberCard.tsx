@@ -1,36 +1,51 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { SlCalender } from 'react-icons/sl'
 
-const MemberCard = () => {
+interface User {
+  id: number
+  fullname: string
+  email: string
+  profilePictureURL: string | null
+  role: string
+  createdAt: string // Assuming API returns this
+}
+
+const MemberCard = ({ user }: { user: User }) => {
+  // Format join date
+  const joinDate = new Date(user.createdAt).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  })
+
   return (
     <div className="rounded-lg p-5 shadow-md space-y-4 border">
-      <div className="flex justify-end">
-        <div className="flex items-center gap-1">
+      <div className="flex justify-between items-start">
+        <div className="bg-gray-100 px-3 py-1 rounded-full text-sm">
+          {user.role}
+        </div>
+        <div className="flex items-center gap-1 text-sm text-gray-500">
           <div className="w-2 h-2 rounded-full bg-green-500"></div>
-          <span className="">Online Now</span>
+          <span>Online</span>
         </div>
       </div>
 
       <Avatar className="rounded-full w-[150px] h-[150px] mx-auto">
-        <AvatarImage src="/pp-fallback.svg" />
-        <AvatarFallback>CN</AvatarFallback>
+        <AvatarImage src={user.profilePictureURL || '/pp-fallback.svg'} />
+        <AvatarFallback>{user.fullname[0]}</AvatarFallback>
       </Avatar>
 
-      <h2 className="text-center h4">Sara Ahmed</h2>
+      <h2 className="text-center h4">{user.fullname}</h2>
 
-      <div className="space-y-1 p">
-        <p>Earned 6-Figure in Affiliate Marketing.</p>
-        <p>Community manager for 8-Figure marketer.</p>
+      <div className="text-center text-gray-600">
+        <p>{user.email}</p>
       </div>
 
-      <div className="flex justify-between items-center">
-        <div className="flex gap-2 items-center p-sm-muted">
-          <SlCalender />
-          <span className="">Joined Feb 19, 2024</span>
-        </div>
+      <div className="flex justify-center items-center text-sm text-gray-500">
+        <SlCalender className="mr-2" />
+        <span>Joined {joinDate}</span>
       </div>
     </div>
   )
 }
-
 export default MemberCard
