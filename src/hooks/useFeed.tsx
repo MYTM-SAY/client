@@ -1,0 +1,84 @@
+import { useState, useEffect } from 'react'
+import { instance } from '@/lib/utils/axios'
+import { ApiResponseError } from '@/types'
+
+interface FeedAuthor {
+  id: number
+  username: string
+  fullname: string
+  profilePictureURL: string
+}
+
+export interface FeedPost {
+  id: number
+  title: string
+  content: string
+  voteCounter: number
+  attachments: string[]
+  forumId: number
+  createdAt: string
+  updatedAt: string
+  commentCount: number
+  author: FeedAuthor
+  voteType: 'UPVOTE' | 'DOWNVOTE' | null
+}
+
+interface FeedResponse {
+  success: boolean
+  message: string
+  data: FeedPost[]
+}
+
+const useFeed = () => {
+  const [posts, setPosts] = useState<FeedPost[]>([])
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const fetchFeed = async () => {
+      try {
+        setIsLoading(true)
+        setError(null)
+        const response = await instance.get<FeedResponse>('/posts/me/feed')
+        
+        if (response.data.success) {
+          setPosts(response.data.data)
+        } else {
+          setError(response.data.message || 'Failed to fetch feed')
+        }
+      } catch (err) {
+        const error = err as ApiResponseError
+        setError(error.response?.data?.message || 'An error occurred while fetching the feed')
+        setPosts([])
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchFeed()
+  }, [])
+
+  const refetchFeed = async () => {
+    try {
+      setIsLoading(true)
+      setError(null)
+      const response = await instance.get<FeedResponse>('/posts/me/feed')
+      
+      if (response.data.success) {
+        setPosts(response.data.data)
+      } else {
+        setError(response.data.message || 'Failed to fetch feed')
+      }
+    } catch (err) {
+      const error = err as ApiResponseError
+      setError(error.response?.data?.message || 'An error occurred while fetching the feed')
+      setPosts([])
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  return { posts, isLoading, error, refetchFeed }
+}
+
+export default useFeed 
