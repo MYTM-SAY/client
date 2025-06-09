@@ -1,8 +1,6 @@
 'use client'
-import { useState } from 'react'
 import React from 'react'
 import Lesson from './Lesson'
-import { Checkbox } from '@/components/ui/checkbox'
 
 import {
   Accordion,
@@ -11,13 +9,47 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion'
 
-const ContentSection = ({ courseContent, setCourseContent, selectedLesson, setSelectedLesson }: any) => {
+interface Material {
+  id: number
+  materialType: string
+  fileUrl: string
+  createdAt: string
+  updatedAt: string
+  lessonId: number
+}
+
+interface LessonType {
+  id: number
+  title: string
+  duration: number
+  completed: boolean
+  notes: string
+  materials: Material[]
+}
+
+interface CourseContentSection {
+  section: number
+  title: string
+  completed: number
+  total: number
+  duration: number
+  lessons: LessonType[]
+}
+
+interface ContentSectionProps {
+  courseContent: CourseContentSection[]
+  selectedLesson: LessonType | null
+  setSelectedLesson: (lesson: LessonType) => void
+  toggleLessonCompletion: (lessonId: number) => Promise<boolean>
+}
+
+const ContentSection = ({ courseContent, selectedLesson, setSelectedLesson, toggleLessonCompletion }: ContentSectionProps) => {
   return (
     <Accordion type="single" collapsible defaultValue="section-3">
-      {courseContent.map((section: any) => {
+      {courseContent.map((section: CourseContentSection) => {
         // Calculate the number of completed lessons dynamically
         const completedLessons = section.lessons.filter(
-          (lesson: any) => lesson.completed,
+          (lesson: LessonType) => lesson.completed,
         ).length
 
         return (
@@ -38,14 +70,13 @@ const ContentSection = ({ courseContent, setCourseContent, selectedLesson, setSe
             </AccordionTrigger>
             <AccordionContent>
               <div className="flex flex-col gap-4">
-                {section.lessons.map((lesson: any) => (
+                {section.lessons.map((lesson: LessonType) => (
                   <Lesson
                     key={lesson.id}
                     lesson={lesson}
-                    setCourseContent={setCourseContent}
-                    courseContent={courseContent}
                     onSelect={() => setSelectedLesson(lesson)}
                     selected={selectedLesson?.id === lesson.id}
+                    toggleLessonCompletion={toggleLessonCompletion}
                   />
                 ))}
               </div>

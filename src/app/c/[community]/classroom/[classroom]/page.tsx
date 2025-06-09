@@ -27,7 +27,7 @@ interface LessonType {
 
 export default function Page() {
   const { classroom: classroomId } = useParams() as { classroom: string }
-  const { courseContent: initialCourseContent, isLoading, classroom } = useClassroomDetails(classroomId)
+  const { courseContent: initialCourseContent, isLoading, classroom, toggleLessonCompletion } = useClassroomDetails(classroomId)
   const [showContent, setShowContent] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const [hideContent, setHideContent] = useState(false)
@@ -83,9 +83,9 @@ export default function Page() {
           <CourseContent
             setHideContent={setHideContent}
             courseContent={courseContent}
-            setCourseContent={setCourseContent}
             selectedLesson={selectedLesson}
             setSelectedLesson={setSelectedLesson}
+            toggleLessonCompletion={toggleLessonCompletion}
           />
         </div>
       )}

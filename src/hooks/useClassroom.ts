@@ -205,7 +205,37 @@ export const useClassroomDetails = (classroomId: string) => {
     fetchClassroom()
   }, [classroomId])
 
-  return { classroom, courseContent, isLoading, error }
+  // Add the toggle lesson completion function
+  const toggleLessonCompletion = async (lessonId: number) => {
+    try {
+      const response = await instance.patch(`/lessons/${lessonId}/toggle-completed`)
+      const { isCompleted } = response.data.data
+      
+      // Update the courseContent state with the new completion status
+      setCourseContent(prevContent => 
+        prevContent.map(section => ({
+          ...section,
+          lessons: section.lessons.map(lesson => 
+            lesson.id === lessonId 
+              ? { ...lesson, completed: isCompleted }
+              : lesson
+          ),
+          // Recalculate completed count for the section
+          completed: section.lessons.filter(lesson => 
+            lesson.id === lessonId ? isCompleted : lesson.completed
+          ).length
+        }))
+      )
+      
+      return isCompleted
+    } catch (err) {
+      const error = err as ApiResponseError
+      setError(error.response?.data?.message || 'Failed to toggle lesson completion')
+      throw error
+    }
+  }
+
+  return { classroom, courseContent, isLoading, error, toggleLessonCompletion }
 }
 
 export default useClassrooms

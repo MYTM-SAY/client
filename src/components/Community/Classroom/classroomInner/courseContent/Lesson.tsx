@@ -22,28 +22,19 @@ interface LessonType {
 
 interface LessonProps {
   lesson: LessonType
-  setCourseContent: (content: any) => void
-  courseContent: any
   onSelect: () => void
   selected: boolean
+  toggleLessonCompletion: (lessonId: number) => Promise<boolean>
 }
 
-const Lesson = ({ lesson, setCourseContent, courseContent, onSelect, selected }: LessonProps) => {
-  const handleCheckboxChange = () => {
-    const updatedStatus = !lesson.completed
-
-    // Create a new courseContent array with updated lessons
-    const updatedCourseContent = courseContent.map((section: any) => {
-      return {
-        ...section,
-        lessons: section.lessons.map((l: any) =>
-          l.id === lesson.id ? { ...l, completed: updatedStatus } : l,
-        ),
-      }
-    })
-
-    // Update the state with the modified courseContent
-    setCourseContent([...updatedCourseContent]) // Ensure a new array reference
+const Lesson = ({ lesson, onSelect, selected, toggleLessonCompletion }: LessonProps) => {
+  const handleCheckboxChange = async () => {
+    try {
+      await toggleLessonCompletion(lesson.id)
+    } catch (error) {
+      // If the API call fails, revert the optimistic update or show an error
+      console.error('Failed to toggle lesson completion:', error)
+    }
   }
 
   return (
@@ -56,9 +47,10 @@ const Lesson = ({ lesson, setCourseContent, courseContent, onSelect, selected }:
         className={` border-white mt-1 ${
           lesson.completed ? '!bg-green-500 border-0' : ''
         }`}
-        onCheckedChange={e => {
-          e?.stopPropagation?.();
-          handleCheckboxChange();
+        onCheckedChange={(checked) => {
+          if (typeof checked === 'boolean') {
+            handleCheckboxChange();
+          }
         }}
         onClick={e => e.stopPropagation()}
       />
