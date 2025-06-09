@@ -14,7 +14,7 @@ export default function CommunityNavBar() {
     { name: 'Leaderboards', path: 'leaderboards' },
     { name: 'Members', path: 'members' },
     { name: 'About', path: 'about' },
-    { name: 'Settings', path: 'settings' },
+    // { name: 'Settings', path: 'settings' },
     { name: 'Admin', path: 'admin' },
   ]
 
