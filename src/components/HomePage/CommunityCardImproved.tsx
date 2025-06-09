@@ -4,7 +4,7 @@ import { GiExitDoor } from 'react-icons/gi'
 import { Earth, GlobeLock, Users, EllipsisIcon } from 'lucide-react'
 import Link from 'next/link'
 import { leaveCommunity } from '@/app/actions/community'
-import { useState, useEffect } from 'react' // Added useEffect
+import { useState, useOptimistic } from 'react'
 import { useToast } from '@/hooks/use-toast'
 import { useRouter } from 'next/navigation'
 import {
@@ -23,7 +23,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
-import { FaRegHeart, FaHeart } from 'react-icons/fa' // Combined import
+import { FaRegHeart, FaHeart } from 'react-icons/fa'
 import { toggleFav } from '@/app/actions/community'
 
 interface CommunityCardProps {
@@ -34,7 +34,7 @@ interface CommunityCardProps {
   isPublic?: boolean
   creator?: string
   image?: string
-  isFavorite?: boolean // Added new prop for initial favorite state
+  isFavorite?: boolean
 }
 
 export default function JoinedCommunityCard({
@@ -45,39 +45,37 @@ export default function JoinedCommunityCard({
   isPublic = true,
   creator = 'Unknown',
   image = '/pp-fallback.svg',
-  isFavorite = false, // Default to false
+  isFavorite = false,
 }: CommunityCardProps) {
   const { toast } = useToast()
   const router = useRouter()
   const [showLeaveDialog, setShowLeaveDialog] = useState(false)
   const [isLeaving, setIsLeaving] = useState(false)
 
-  // Favorite state management
-  const [isFav, setIsFav] = useState(isFavorite)
+  // Optimistic favorite state
+  const [optimisticFavorite, setOptimisticFavorite] = useOptimistic(
+    isFavorite,
+    (state, newValue: boolean) => newValue,
+  )
   const [isFavLoading, setIsFavLoading] = useState(false)
 
   const isOwner = userRole === 'OWNER'
-
-  // Sync with prop changes
-  useEffect(() => {
-    setIsFav(isFavorite)
-  }, [isFavorite])
 
   const handleToggleFavorite = async () => {
     if (isFavLoading) return
 
     setIsFavLoading(true)
-    const prevFavState = isFav // Store previous state for rollback
+    const prevFavState = optimisticFavorite
 
     try {
       // Optimistic UI update
-      setIsFav(!isFav)
+      setOptimisticFavorite(!optimisticFavorite)
 
       const result = await toggleFav(id)
 
       if (!result.success) {
         // Revert on error
-        setIsFav(prevFavState)
+        setOptimisticFavorite(prevFavState)
         toast({
           variant: 'destructive',
           title: 'Favorite Error',
@@ -85,15 +83,18 @@ export default function JoinedCommunityCard({
         })
       } else {
         toast({
-          title: isFav ? 'Removed from Favorites' : 'Added to Favorites',
+          title: !optimisticFavorite
+            ? 'Added to Favorites'
+            : 'Removed from Favorites',
           description: `"${name}" ${
-            isFav ? 'removed from' : 'added to'
+            !optimisticFavorite ? 'added to' : 'removed from'
           } your favorites`,
         })
+        // Refresh data without reloading page
+        router.refresh()
       }
     } catch (error) {
-      // Revert on exception
-      setIsFav(prevFavState)
+      setOptimisticFavorite(prevFavState)
       toast({
         variant: 'destructive',
         title: 'Error',
@@ -142,9 +143,11 @@ export default function JoinedCommunityCard({
         className="absolute top-2 left-2 z-10 bg-foreground/70 text-background rounded-sm cursor-pointer h-8 w-8 flex items-center justify-center"
         onClick={handleToggleFavorite}
         disabled={isFavLoading}
-        aria-label={isFav ? 'Remove from favorites' : 'Add to favorites'}
+        aria-label={
+          optimisticFavorite ? 'Remove from favorites' : 'Add to favorites'
+        }
       >
-        {isFav ? (
+        {optimisticFavorite ? (
           <FaHeart className="text-red-500" size={20} />
         ) : (
           <FaRegHeart size={20} />

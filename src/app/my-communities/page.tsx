@@ -10,6 +10,7 @@ import { getJoinedCommunities } from '@/app/actions/community'
 import { getUser } from '@/lib/actions/auth'
 import { getTheRoleOfAuth } from '@/app/actions/community'
 import { getFav } from '@/app/actions/community'
+
 export default async function MyCommunitiesPage() {
   const userReq = await getUser()
   if (!userReq.success) return <>Internal server error</>
@@ -26,6 +27,11 @@ export default async function MyCommunitiesPage() {
   const joinedCommunities = joinedCommunitiesReq.data
   const favoriteCommunities = favReq.success ? favReq.data : []
 
+  // Create a Set of favorite community IDs for quick lookup
+  const favoriteCommunityIds = new Set(
+    favoriteCommunities.map((fav) => fav.communityId),
+  )
+
   const getCommunityDetails = (communityId: number) => {
     const joined = joinedCommunities.find((j) => j.Community.id === communityId)
     return {
@@ -40,7 +46,6 @@ export default async function MyCommunitiesPage() {
         <AccordionItem value="item-1">
           <AccordionTrigger className="h4">Pending</AccordionTrigger>
           <AccordionContent className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-5">
-            {/* TODO: Add pending communities when API is available */}
             <p className="text-muted-foreground">No pending communities</p>
           </AccordionContent>
         </AccordionItem>
@@ -71,6 +76,7 @@ export default async function MyCommunitiesPage() {
                     isPublic={fav.Community.isPublic}
                     creator={creator}
                     image={fav.Community.logoImgURL}
+                    isFavorite={true} // Explicitly mark as favorite
                   />
                 )
               })
@@ -94,6 +100,7 @@ export default async function MyCommunitiesPage() {
                   isPublic={comm.Community.isPublic}
                   creator={comm.Community.Owner.fullname}
                   image={comm.Community.logoImgURL}
+                  isFavorite={favoriteCommunityIds.has(comm.Community.id)} // Check if favorited
                 />
               ))
             )}
