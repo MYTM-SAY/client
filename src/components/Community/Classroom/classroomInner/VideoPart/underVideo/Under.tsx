@@ -13,68 +13,69 @@ const Under = ({ setShowContent, description }: UnderProps) => {
   const [under, setUnder] = useState(1)
   const [isMobile, setIsMobile] = useState(false)
 
-  // Function to check screen width
   const handleResize = useCallback(() => {
     setIsMobile(window.innerWidth < 1024)
   }, [])
 
   useEffect(() => {
-    handleResize() // Check on initial render
-    window.addEventListener('resize', handleResize) // Add resize listener
-    return () => window.removeEventListener('resize', handleResize) // Cleanup listener
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
   }, [handleResize])
 
+  const handleTabClick = (tabNumber: number, showContent: boolean) => {
+    setUnder(tabNumber)
+    setShowContent(showContent)
+  }
+
+  const tabs = [
+    ...(isMobile ? [{ id: 4, label: 'Course Content', showContent: true }] : []),
+    { id: 1, label: 'Overview', showContent: false },
+    { id: 2, label: 'Notes', showContent: false },
+    // { id: 3, label: 'Reviews', showContent: false },
+  ]
+
   return (
-    <div>
-      <ul className="flex gap-4 text-gray-500 h5 font-semibold pb-4">
-        {isMobile && (
-          <li
-            className={`cursor-pointer ${
-              under === 4 ? 'text-accent underline' : ''
-            }`}
-            onClick={() => {
-              setUnder(4)
-              setShowContent(true)
-            }}
-          >
-            <span>Course Content</span>
-          </li>
+    <div className="w-full">
+      <div className="w-full border-b border-gray-200 mb-4">
+        <nav className="-mb-px">
+          <ul className={`flex ${isMobile ? 'flex-wrap gap-2' : 'gap-6'} text-gray-500 font-semibold`}>
+            {tabs.map((tab) => (
+              <li
+                key={tab.id}
+                className={`
+                  cursor-pointer transition-all duration-200 ease-in-out
+                  ${isMobile 
+                    ? 'flex-1 min-w-0 text-center py-3 px-2 rounded-t-lg text-sm' 
+                    : 'py-4 px-2 text-base'
+                  }
+                  ${under === tab.id 
+                    ? 'text-accent border-b-2 border-accent bg-accent/5' 
+                    : 'hover:text-gray-700 hover:border-b-2 hover:border-gray-300'
+                  }
+                  ${isMobile ? 'min-h-[44px] flex items-center justify-center' : ''}
+                `}
+                onClick={() => handleTabClick(tab.id, tab.showContent)}
+              >
+                <span className={`${isMobile ? 'truncate' : ''}`}>
+                  {tab.label}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
+
+      <div className="w-full">
+        {under === 1 && <OverView description={description} />}
+        {under === 2 && <Notes />}
+        {under === 3 && <CourseReviews />}
+        {under === 4 && isMobile && (
+          <div className="text-center text-gray-500 py-8">
+            <p>Course content is now visible in the sidebar</p>
+          </div>
         )}
-        <li
-          className={`cursor-pointer ${
-            under === 1 ? 'text-accent underline' : ''
-          }`}
-          onClick={() => {
-            setUnder(1)
-            setShowContent(false)
-          }}
-        >
-          <span>OverView</span>
-        </li>
-        <li
-          className={`cursor-pointer ${
-            under === 2 ? 'text-accent underline' : ''
-          }`}
-          onClick={() => {
-            setUnder(2)
-            setShowContent(false)
-          }}
-        >
-          <span>Notes</span>
-        </li>
-        <li
-          className={`cursor-pointer ${
-            under === 3 ? 'text-accent underline' : ''
-          }`}
-          onClick={() => {
-            setUnder(3)
-            setShowContent(false)
-          }}
-        >
-          <span>Reviews</span>
-        </li>
-      </ul>
-      {under === 1 ? <OverView description={description} /> : under === 2 ? <Notes /> : <CourseReviews />}
+      </div>
     </div>
   )
 }
