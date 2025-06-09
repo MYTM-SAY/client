@@ -19,6 +19,7 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
+import ProfileImageUploader from '@/components/ProfileImageUploader'
 
 const profileFormSchema = z.object({
   bio: z.string().optional(),
@@ -47,10 +48,7 @@ const profileFormSchema = z.object({
     .url({ message: 'Please enter a valid URL' })
     .optional()
     .or(z.literal('')),
-  profilePictureURL: z
-    .string()
-    .url({ message: 'Please enter a valid image URL' })
-    .optional(),
+  profilePictureURL: z.string().optional(),
 })
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>
@@ -58,6 +56,7 @@ type ProfileFormValues = z.infer<typeof profileFormSchema>
 const Page = () => {
   const [tags, setTags] = useState<string[]>([])
   const [inputTag, setInputTag] = useState('')
+  const [profileImageUrl, setProfileImageUrl] = useState<string>('')
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const form = useForm<ProfileFormValues>({
@@ -78,6 +77,7 @@ const Page = () => {
     try {
       const res = await instance.put('/profiles', {
         ...data,
+        profilePictureURL: profileImageUrl,
         tags,
       })
       console.log(res)
@@ -115,22 +115,15 @@ const Page = () => {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <FormField
-            control={form.control}
-            name="profilePictureURL"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Profile Image URL</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="https://example.com/profile.jpg"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="space-y-4">
+            <Label>Profile Image</Label>
+            <ProfileImageUploader
+              currentImageUrl={profileImageUrl}
+              onImageUpload={setProfileImageUrl}
+              onImageRemove={() => setProfileImageUrl('')}
+              disabled={isLoading}
+            />
+          </div>
 
           <FormField
             control={form.control}

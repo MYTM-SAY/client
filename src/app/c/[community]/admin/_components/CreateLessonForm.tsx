@@ -24,6 +24,8 @@ import {
 
 import { instance } from '@/lib/utils/axios'
 import { Lesson, MaterialType } from '@/types'
+import { useState } from 'react'
+import LessonFileUploader from '@/components/LessonFileUploader'
 
 interface CreateLessonFormProps {
   sectionId: number
@@ -35,7 +37,6 @@ const createLessonSchema = z.object({
   name: z.string().min(1),
   notes: z.string().min(1),
   materialType: z.nativeEnum(MaterialType),
-  fileUrl: z.string().min(1),
 })
 
 export default function CreateLessonForm({
@@ -43,17 +44,27 @@ export default function CreateLessonForm({
   setShowLessonForm,
   handleNewLesson,
 }: CreateLessonFormProps) {
+  const [fileUrl, setFileUrl] = useState<string>('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  
   const form = useForm<z.infer<typeof createLessonSchema>>({
     resolver: zodResolver(createLessonSchema),
     defaultValues: {
       name: '',
       notes: '',
       materialType: MaterialType.DOC,
-      fileUrl: '',
     },
   })
 
+  const materialType = form.watch('materialType')
+
   const onSubmit = async (data: z.infer<typeof createLessonSchema>) => {
+    if (!fileUrl) {
+      form.setError('root', { message: 'Please upload a file for the lesson material' })
+      return
+    }
+
+    setIsSubmitting(true)
     try {
       const res = await instance.post(`/lessons`, {
         lesson: {
@@ -64,7 +75,7 @@ export default function CreateLessonForm({
         materials: [
           {
             materialType: data.materialType,
-            fileUrl: data.fileUrl,
+            fileUrl: fileUrl,
           },
         ],
       })
@@ -81,10 +92,30 @@ export default function CreateLessonForm({
             fileUrl: res.data.data.Materials[0].fileUrl,
           },
         })
+        
+        // Reset form
+        form.reset()
+        setFileUrl('')
+        setShowLessonForm(false)
       }
     } catch (error) {
       console.error(error)
+      form.setError('root', { message: 'Failed to create lesson. Please try again.' })
+    } finally {
+      setIsSubmitting(false)
     }
+  }
+
+  const handleFileUpload = (uploadedFileUrl: string) => {
+    setFileUrl(uploadedFileUrl)
+    // Clear any previous file upload errors
+    if (form.formState.errors.root) {
+      form.clearErrors('root')
+    }
+  }
+
+  const handleFileRemove = () => {
+    setFileUrl('')
   }
 
   return (
@@ -137,7 +168,11 @@ export default function CreateLessonForm({
                 <FormLabel>Material Type</FormLabel>
                 <FormControl>
                   <Select
-                    onValueChange={field.onChange}
+                    onValueChange={(value) => {
+                      field.onChange(value)
+                      // Reset file when material type changes
+                      setFileUrl('')
+                    }}
                     defaultValue={field.value}
                   >
                     <SelectTrigger className="w-full">
@@ -158,29 +193,34 @@ export default function CreateLessonForm({
           />
         </div>
         <div className="mb-4">
-          <FormField
-            control={form.control}
-            name="fileUrl"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>File URL</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <FormLabel>Lesson Material</FormLabel>
+          <div className="mt-2">
+            <LessonFileUploader
+              materialType={materialType}
+              currentFileUrl={fileUrl}
+              onFileUpload={handleFileUpload}
+              onFileRemove={handleFileRemove}
+              disabled={isSubmitting}
+            />
+          </div>
+          {form.formState.errors.root && (
+            <p className="text-sm text-red-500 mt-2">
+              {form.formState.errors.root.message}
+            </p>
+          )}
         </div>
         <div className="flex justify-end space-x-2">
           <Button
             type="button"
             onClick={() => setShowLessonForm(false)}
             variant="outline"
+            disabled={isSubmitting}
           >
             Cancel
           </Button>
-          <Button type="submit">Create Lesson</Button>
+          <Button type="submit" disabled={isSubmitting || !fileUrl}>
+            {isSubmitting ? 'Creating...' : 'Create Lesson'}
+          </Button>
         </div>
       </form>
     </Form>
