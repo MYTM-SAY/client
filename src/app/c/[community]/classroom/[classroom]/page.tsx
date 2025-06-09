@@ -2,7 +2,7 @@
 import CourseContent from '@/components/Community/Classroom/classroomInner/courseContent/CourseContent'
 import CourseProgress from '@/components/Community/Classroom/classroomInner/courseContent/CourseProgress'
 import Under from '@/components/Community/Classroom/classroomInner/VideoPart/underVideo/Under'
-import VideoPart from '@/components/Community/Classroom/classroomInner/VideoPart/VideoPart'
+import MediaViewer from '@/components/Community/Classroom/classroomInner/VideoPart/MediaViewer'
 import React, { useState, useEffect, useCallback } from 'react'
 import { FaArrowLeftLong } from 'react-icons/fa6'
 import { useParams } from 'next/navigation'
@@ -65,7 +65,7 @@ export default function Page() {
   return (
     <div className="flex gap-4 mlg:flex-col relative">
       <div className="flex flex-1 flex-col gap-4 ">
-        <VideoPart selectedLesson={selectedLesson} />
+        <MediaViewer selectedLesson={selectedLesson} />
         <Under setShowContent={setShowContent} description={classroom?.description} />
       </div>
       {hideContent && (
