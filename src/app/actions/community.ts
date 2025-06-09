@@ -169,9 +169,64 @@ export async function toggleFav(communityId: string | number) {
     }
   }
 }
+
 export async function getFav() {
   try {
     const res = await axiosInstance.get(`/favorites`)
+    return res.data
+  } catch (error) {
+    const axiosError = error as AxiosError
+    const response = axiosError.response as never as ServerError
+    return {
+      success: false,
+      message: response.message || 'Internal server error',
+      statusCode: axiosError.status,
+    }
+  }
+}
+
+export interface JoinRequest {
+  id: number
+  userId: number
+  communityId: number
+  createdAt: string
+  updatedAt: string
+  status: 'PENDING' | 'APPROVED' | 'REJECTED'
+  User?: {
+    id: number
+    fullname: string
+    username: string
+    email: string
+    profileImgURL?: string
+  }
+}
+
+export async function getCommunityJoinRequests(
+  communityId: string | number,
+): Promise<ServerResponse<JoinRequest[]>> {
+  try {
+    const res = await axiosInstance.get(`/communities/${communityId}/join-requests`)
+    return res.data
+  } catch (error) {
+    const axiosError = error as AxiosError
+    const response = axiosError.response as never as ServerError
+    return {
+      success: false,
+      message: response.message || 'Internal server error',
+      statusCode: axiosError.status,
+    }
+  }
+}
+
+export async function updateJoinRequestStatus(
+  requestId: number,
+  status: 'APPROVED' | 'REJECTED',
+): Promise<ServerResponse<JoinRequest>> {
+  try {
+    const res = await axiosInstance.patch(
+      `/communities/join-requests/status/${requestId}`,
+      { status }
+    )
     return res.data
   } catch (error) {
     const axiosError = error as AxiosError

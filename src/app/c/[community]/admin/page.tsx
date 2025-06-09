@@ -6,6 +6,7 @@
 // import Analytics from "./_components/Analytics";
 import { getCommunityClassrooms } from '@/app/actions/classroom'
 import ClassroomManagement from './_components/ClassroomManagement'
+import JoinRequestManagement from './_components/JoinRequestManagement'
 
 export default async function AdminDashboard({
   params,
@@ -23,16 +24,19 @@ export default async function AdminDashboard({
       <div className="flex-1 p-8">
         <h1 className="text-3xl font-bold mb-6">Community Admin Dashboard</h1>
 
-        <div className="bg-white rounded-lg shadow p-6">
-          {/* {activeTab === "users" && <UserManagement />} */}
-          {/* {activeTab === "content" && <ContentModeration />} */}
-          {/* {activeTab === "settings" && <CommunitySettings />} */}
-          {/* {activeTab === "analytics" && <Analytics />} */}
-          {/* {activeTab === "classroom" && <ClassroomManagement />} */}
-          <ClassroomManagement
-            communityId={communityId}
-            classrooms={classrooms.success ? classrooms.data : []}
-          />
+        <div className="space-y-8">
+          {/* Join Request Management Section */}
+          <div className="bg-white rounded-lg shadow p-6">
+            <JoinRequestManagement communityId={communityId} />
+          </div>
+
+          {/* Classroom Management Section */}
+          <div className="bg-white rounded-lg shadow p-6">
+            <ClassroomManagement
+              communityId={communityId}
+              classrooms={classrooms.success ? classrooms.data : []}
+            />
+          </div>
         </div>
       </div>
     </div>
