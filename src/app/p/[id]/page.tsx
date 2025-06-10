@@ -1,13 +1,13 @@
 import { getPost } from '@/app/actions/post'
-import type { Comment } from '@/app/actions/post'
+// import type { Comment } from '@/app/actions/post'
 import { getAuthenticatedUserDetails } from '@/app/actions/user'
 import PostCard from '@/components/Post/Post'
 import CommentCard from '@/components/Post/CommentCard'
 
 interface Props {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 
 export default async function Page({ params }: Props) {

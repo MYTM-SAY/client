@@ -51,7 +51,15 @@ const JoinedGroups = () => {
           className="flex overflow-x-auto no-scrollbar gap-6 p-6"
         >
           {Array.from({ length: 20 }).map((_, index) => (
-            <JoinedCommunityCard key={index} />
+            <JoinedCommunityCard 
+              key={index} 
+              id={index + 1}
+              userRole="MEMBER"
+              name={`Community ${index + 1}`}
+              members={Math.floor(Math.random() * 1000) + 10}
+              isPublic={index % 2 === 0}
+              creator={`Creator ${index + 1}`}
+            />
           ))}
         </div>
       </div>

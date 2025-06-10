@@ -9,7 +9,7 @@ import JoinedCommunityCard from '@/components/HomePage/CommunityCardImproved'
 import { getJoinedCommunities } from '@/app/actions/community'
 import { getUser } from '@/lib/actions/auth'
 import { getTheRoleOfAuth } from '@/app/actions/community'
-import { getFav } from '@/app/actions/community'
+import { getFav, type FavoriteResponse } from '@/app/actions/community'
 
 export default async function MyCommunitiesPage() {
   const userReq = await getUser()
@@ -25,14 +25,14 @@ export default async function MyCommunitiesPage() {
     return <>Internal server error</>
 
   const joinedCommunities = joinedCommunitiesReq.data
-  const favoriteCommunities = favReq.success ? favReq.data : []
+  const favoriteCommunities: FavoriteResponse[] = favReq.success ? favReq.data : []
 
   // Create a Set of favorite community IDs for quick lookup
-  const favoriteCommunityIds = new Set(
-    favoriteCommunities.map((fav) => fav.communityId),
+  const favoriteCommunityIds = new Set<string | number>(
+    favoriteCommunities.map((fav: FavoriteResponse) => fav.communityId),
   )
 
-  const getCommunityDetails = (communityId: number) => {
+  const getCommunityDetails = (communityId: string | number) => {
     const joined = joinedCommunities.find((j) => j.Community.id === communityId)
     return {
       members: joined ? Number(joined.Community.MembersCount) : 0,
@@ -58,7 +58,7 @@ export default async function MyCommunitiesPage() {
             ) : favoriteCommunities.length === 0 ? (
               <div className="flex flex-col items-center gap-4 py-4">
                 <p className="text-muted-foreground text-center">
-                  You haven't added any communities to favorites yet.
+                  You haven&apos;t added any communities to favorites yet.
                 </p>
               </div>
             ) : (

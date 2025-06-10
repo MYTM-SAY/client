@@ -3,9 +3,9 @@ import CommunityNavBar from '@/components/Community/CommunityNavBar'
 import { getCommunity } from '@/app/actions/community'
 
 interface Props {
-  params: {
+  params: Promise<{
     community: string
-  }
+  }>
   children: React.ReactNode
 }
 

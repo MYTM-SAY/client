@@ -3,7 +3,7 @@ import { getUsersOfCommunity } from '@/app/actions/community'
 import AdminDashboardClient from './_components/AdminDashboardClient'
 
 interface AdminDashboardProps {
-  params: { community: string }
+  params: Promise<{ community: string }>
 }
 
 export default async function AdminDashboard({

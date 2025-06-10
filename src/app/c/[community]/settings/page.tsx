@@ -1,13 +1,13 @@
 import SettingsClient from './_components/SettingsClient'
 
 interface Props {
-  params: {
+  params: Promise<{
     community: string
-  }
+  }>
 }
 
-const Page = ({ params }: Props) => {
-  const { community: communityId } = params
+const Page = async ({ params }: Props) => {
+  const { community: communityId } = await params
 
   return <SettingsClient communityId={communityId} />
 }

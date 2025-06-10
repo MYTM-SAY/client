@@ -2,9 +2,9 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { getTopTen } from '@/app/actions/leaderboard'
 
 interface Props {
-  params: {
-    id: string
-  }
+  params: Promise<{
+    community: string
+  }>
 }
 
 interface leaderboardDataTypes {
@@ -15,7 +15,7 @@ interface leaderboardDataTypes {
 }
 
 export default async function Page({ params }: Props) {
-  const { community: communityId } = params
+  const { community: communityId } = await params
   const leaderboardReq = await getTopTen(communityId)
 
   if (!leaderboardReq.success) {

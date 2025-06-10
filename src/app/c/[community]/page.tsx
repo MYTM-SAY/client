@@ -4,9 +4,9 @@ import { getUser } from '@/lib/actions/auth'
 import { redirect } from 'next/navigation'
 
 interface Props {
-  params: {
+  params: Promise<{
     community: string
-  }
+  }>
 }
 
 export default async function Page({ params }: Props) {

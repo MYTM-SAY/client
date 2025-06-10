@@ -47,7 +47,7 @@ const usePosts = (communityId: string) => {
     }
   }
 
-  async function deletePost(postId: string) {
+  async function deletePost(postId: number) {
     try {
       const response: ApiResponse<Post> = await instance.delete(
         `/posts/${postId}`,

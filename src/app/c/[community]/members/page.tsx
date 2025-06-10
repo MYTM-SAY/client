@@ -4,15 +4,24 @@ import Btn from '@/components/ui/Btn'
 import MemberCard from '@/components/MemberCard'
 
 interface Props {
-  params: { id: string }
-  searchParams: { [key: string]: string | string[] | undefined }
+  params: Promise<{ community: string }>
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}
+
+interface User {
+  id: number
+  fullname: string
+  email: string
+  profilePictureURL: string | null
+  role: string
+  createdAt: string // Assuming API returns this
 }
 
 export const dynamic = 'force-dynamic'
 
 export default async function Page({ params, searchParams }: Props) {
-  const { community: communityId } = params
-  const filter = searchParams?.filter || 'all'
+  const { community: communityId } = await params
+  const filter = (await searchParams)?.filter || 'all'
   const usersResponse = await getUsersOfCommunity(communityId)
 
   if (!usersResponse.success) {
@@ -23,7 +32,7 @@ export default async function Page({ params, searchParams }: Props) {
   const filteredUsers =
     filter === 'admins'
       ? allUsers.filter(
-          (user) => user.role === 'OWNER' || user.role === 'MODERATOR',
+          (user: { role: string }) => user.role === 'OWNER' || user.role === 'MODERATOR',
         )
       : allUsers
 
@@ -53,7 +62,7 @@ export default async function Page({ params, searchParams }: Props) {
         <Btn className="px-10 py-3 bg-accent text-white">Invite</Btn>
       </div>
       <div className="grid md:grid-cols-3 gap-5">
-        {filteredUsers.map((user) => (
+        {filteredUsers.map((user: User) => (
           <MemberCard key={user.id} user={user} />
         ))}
       </div>

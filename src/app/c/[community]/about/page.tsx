@@ -9,13 +9,13 @@ import { getUserProfileInfo } from '@/app/actions/profile'
 import { getUserByID } from '@/app/actions/user'
 import { getMods } from '../../../actions/community'
 interface Props {
-  params: {
+  params: Promise<{
     community: string
-  }
+  }>
 }
 
 export default async function Page({ params }: Props) {
-  const communityId = params.community
+  const { community: communityId } = await params
   const communityInfo = await getCommunity(communityId)
   if (!communityInfo.success) {
     return 'An error has occurred'
