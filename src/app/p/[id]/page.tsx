@@ -31,6 +31,7 @@ export default async function Page({ params }: Props) {
         communityId={post.Forum.Community.id}
         communityName={post.Forum.Community.name}
         isAuthor={isAuthor}
+        initialVoteStatus={post.voteType}
       />
 
       <section className="mt-8">

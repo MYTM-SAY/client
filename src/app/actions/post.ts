@@ -82,10 +82,11 @@ export interface PostsResponse {
   Author: Author
   commentsCount: number
   Comments?: Comment[]
-  voteScore: number
+  voteCounter: number
   Forum: {
     Community: Community
   }
+  voteType: 'UPVOTE' | 'DOWNVOTE' | null
 }
 
 export async function getPosts(
@@ -144,6 +145,44 @@ export async function deletePost(
 ): Promise<ServerResponse<null>> {
   try {
     await axiosInstance.delete(`/posts/${postId}`)
+    revalidatePath('/p/[id]')
+    return {
+      success: true,
+      data: null,
+    }
+  } catch (error) {
+    const axiosError = error as AxiosError
+    const response = axiosError.response as never as ServerError
+    return {
+      success: false,
+      message: response.message || 'Internal server error',
+      statusCode: axiosError.status,
+    }
+  }
+}
+
+export async function upVote(postId: string | number) {
+  try {
+    await axiosInstance.put(`/posts/upvote/${postId}`)
+    revalidatePath('/p/[id]')
+    return {
+      success: true,
+      data: null,
+    }
+  } catch (error) {
+    const axiosError = error as AxiosError
+    const response = axiosError.response as never as ServerError
+    return {
+      success: false,
+      message: response.message || 'Internal server error',
+      statusCode: axiosError.status,
+    }
+  }
+}
+
+export async function downVote(postId: string | number) {
+  try {
+    await axiosInstance.put(`/posts/downvote/${postId}`)
     revalidatePath('/p/[id]')
     return {
       success: true,

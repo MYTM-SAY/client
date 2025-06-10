@@ -22,6 +22,7 @@ interface Props {
   communityId: number | string
   communityName: string
   isAuthor: boolean
+  initialVoteStatus: 'UPVOTE' | 'DOWNVOTE' | null
 }
 
 const visuallyHidden =
@@ -32,6 +33,7 @@ export default function PostCard({
   communityId,
   communityName,
   isAuthor,
+  initialVoteStatus,
 }: Props) {
   const [selectedAttachment, setSelectedAttachment] = useState<string | null>(
     null,
@@ -47,7 +49,6 @@ export default function PostCard({
   const handlePostClick = () => {
     router.push(`/p/${post.id}`)
   }
-
   return (
     <>
       <div
@@ -122,9 +123,10 @@ export default function PostCard({
         <div className="mt-4">
           <PostActions
             id={post.id}
-            votes={post?.voteScore || 0}
+            votes={post?.voteCounter || 0}
             commentCount={post?.commentsCount || 0}
             title={post.title}
+            initialVoteStatus={initialVoteStatus}
           />
         </div>
 
