@@ -100,6 +100,7 @@ export default function FeedPostCard({ post }: Props) {
             votes={post.voteCounter}
             commentCount={post.commentCount}
             title={post.title}
+            initialVoteStatus={post.voteType}
           />
         </div>
 

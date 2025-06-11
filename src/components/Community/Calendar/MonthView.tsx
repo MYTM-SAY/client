@@ -1,5 +1,4 @@
 import {
-  format,
   startOfMonth,
   endOfMonth,
   eachDayOfInterval,

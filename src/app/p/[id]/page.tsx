@@ -2,23 +2,24 @@
 
 import { useState, useEffect } from 'react'
 import { use } from 'react'
-import { getPost } from '@/app/actions/post'
-import { getAuthenticatedUserDetails } from '@/app/actions/user'
+import { getPost, PostsResponse, Comment } from '@/app/actions/post'
 import PostCard from '@/components/Post/Post'
 import { Button } from '@/components/ui/button'
 import { getComments } from '@/app/actions/comment'
 import { CommentItem } from '@/components/Post/CommentItem'
+import { useUser } from '@/hooks/useUser'
+
 interface PageParams {
   id: string
 }
 
-export default function Page({ params }: { params: PageParams }) {
-  const unwrappedParams = use(params)
-  const { id } = unwrappedParams
 
-  const [post, setPost] = useState<any>(null)
-  const [comments, setComments] = useState<any[]>([])
-  const [authenticatedUser, setAuthenticatedUser] = useState<any>(null)
+export default function Page({ params }: { params: Promise<PageParams> }) {
+  const { id } = use(params)
+
+  const [post, setPost] = useState<PostsResponse | null>(null)
+  const [comments, setComments] = useState<Comment[]>([])
+  const { user: authenticatedUser } = useUser()
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -35,17 +36,13 @@ export default function Page({ params }: { params: PageParams }) {
     const fetchData = async () => {
       try {
         setIsLoading(true)
-        const [postReq, user] = await Promise.all([
-          getPost(id),
-          getAuthenticatedUserDetails(),
-        ])
+        const postReq = await getPost(id)
 
         if (!postReq.success) {
           throw new Error(postReq.message || 'Error loading post')
         }
 
         setPost(postReq.data)
-        setAuthenticatedUser(user.data)
         await fetchComments()
       } catch (err) {
         console.error('Error fetching data:', err)
@@ -93,8 +90,8 @@ export default function Page({ params }: { params: PageParams }) {
     )
   }
 
-  const isAuthor = post.Author.id === authenticatedUser?.id
-  const currentUserId = authenticatedUser?.id || null
+  const isAuthor = post.Author.id === Number(authenticatedUser?.id)
+  const currentUserId = authenticatedUser?.id?.toString() || null
   const topLevelComments = comments.filter((c) => c.parentId === null)
   console.log(topLevelComments)
   return (

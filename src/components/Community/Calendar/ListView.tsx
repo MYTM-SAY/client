@@ -1,21 +1,18 @@
-import { format, isSameDay } from 'date-fns'
+import { useState } from 'react'
+import { format, isSameDay, startOfWeek, endOfWeek, eachDayOfInterval } from 'date-fns'
 import { Button } from '@/components/ui/button'
 import { Plus, Edit } from 'lucide-react'
 import { Event } from '@/types/index'
 
 interface ListViewProps {
-  currentDate: Date
   events: Event[]
+  date: Date
   onEventClick: (event: Event) => void
   onAddEvent: () => void
 }
 
-export const ListView = ({
-  currentDate,
-  events,
-  onEventClick,
-  onAddEvent,
-}: ListViewProps) => {
+export function ListView({ events, date, onEventClick, onAddEvent }: ListViewProps) {
+
   // Group events by date
   const groupEventsByDate = () => {
     const eventsByDate: { [key: string]: Event[] } = {}

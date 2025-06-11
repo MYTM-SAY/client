@@ -2,11 +2,12 @@
 import { useState } from 'react'
 import {
   format,
+  isToday,
+  isSameMonth,
+  getDaysInMonth,
+  getDay,
   addMonths,
   subMonths,
-  startOfMonth,
-  endOfMonth,
-  isSameMonth,
 } from 'date-fns'
 import {
   ChevronLeft,
@@ -164,7 +165,7 @@ export const CalendarContainer = () => {
           />
         ) : (
           <ListView
-            currentDate={currentDate}
+            date={currentDate}
             events={events.filter((event) =>
               isSameMonth(new Date(event.date), currentDate),
             )}

@@ -26,6 +26,7 @@ export default async function Forum({
       communityId={community.id}
       communityName={community.name}
       isAuthor={authedUserId == post.authorId}
+      initialVoteStatus={post.voteType}
     />
   ))
 

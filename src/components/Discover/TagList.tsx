@@ -1,5 +1,4 @@
 'use client'
-import { useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { cn } from '@/lib/utils'

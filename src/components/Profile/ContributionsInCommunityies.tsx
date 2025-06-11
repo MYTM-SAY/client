@@ -49,6 +49,7 @@ export default function ContributionsInCommunities({ posts, id }: Props) {
           communityId={post.forumId}
           communityName={"Temp"}
           isAuthor={post.authorId === id}
+          initialVoteStatus={post.voteType}
         />
       ))}
     </div>
