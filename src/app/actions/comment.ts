@@ -35,7 +35,7 @@ export interface Comment {
 export async function createComment(data: CommentFormData) {
   try {
     const validatedFields = CommentSchema.safeParse(data)
-
+    console.log(validatedFields)
     if (!validatedFields.success) {
       return {
         success: false,
@@ -45,13 +45,11 @@ export async function createComment(data: CommentFormData) {
     }
 
     const { content, postId } = validatedFields.data
-
-    const res = await axiosInstance.post(`/comments`, {
+    console.log(content, postId)
+    const res = await axiosInstance.post(`/comments/${postId}`, {
       content,
-      postId,
     })
 
-    revalidatePath(`/p/${postId}`)
     return res.data
   } catch (error) {
     console.error('Error creating comment:', error)
@@ -113,7 +111,7 @@ export async function updateComment(commentId: number, content: string) {
 export async function deleteComment(commentId: number) {
   try {
     await axiosInstance.delete(`/comments/${commentId}`)
-    revalidatePath(`/p/${commentId}`)
+    // Remove revalidatePath since we're client-side
     return {
       success: true,
       data: null,
@@ -157,6 +155,21 @@ export async function downVote(commentId: string | number) {
       success: true,
       data: null,
     }
+  } catch (error) {
+    const axiosError = error as AxiosError
+    const response = axiosError.response as never as ServerError
+    return {
+      success: false,
+      message: response.message || 'Internal server error',
+      statusCode: axiosError.status,
+    }
+  }
+}
+
+export async function getComments(id: string | number) {
+  try {
+    const res = await axiosInstance.get(`/comments/${id}`)
+    return res.data
   } catch (error) {
     const axiosError = error as AxiosError
     const response = axiosError.response as never as ServerError

@@ -22,9 +22,10 @@ export default function CommentForm({ postId, onCommentAdded }: Props) {
 
     setIsSubmitting(true)
     try {
+      console.log(postId, content)
       const result = await createComment({
         content: content.trim(),
-        postId,
+        postId: postId,
       })
 
       if (!result.success) {
