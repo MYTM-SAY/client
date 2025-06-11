@@ -1,28 +1,98 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import { use } from 'react' // Import the use hook
 import { getPost } from '@/app/actions/post'
-// import type { Comment } from '@/app/actions/post'
 import { getAuthenticatedUserDetails } from '@/app/actions/user'
 import PostCard from '@/components/Post/Post'
 import CommentCard from '@/components/Post/CommentCard'
+import { type Comment } from '@/app/actions/comment'
+import { Button } from '@/components/ui/button' // Make sure to import your Button component
 
-interface Props {
-  params: Promise<{
-    id: string
-  }>
+interface PageParams {
+  id: string
 }
 
-export default async function Page({ params }: Props) {
-  const { id } = await params
-  console.log(id)
-  const postReq = await getPost(id)
-  const authenticatedUser = await getAuthenticatedUserDetails()
+export default function Page({ params }: { params: PageParams }) {
+  const unwrappedParams = use(params)
+  const { id } = unwrappedParams
 
-  if (!postReq.success) {
-    return <div className="text-red-500">Error loading post</div>
+  const [post, setPost] = useState<any>(null)
+  const [authenticatedUser, setAuthenticatedUser] = useState<any>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true)
+        const postReq = await getPost(id)
+        const user = await getAuthenticatedUserDetails()
+
+        if (!postReq.success) {
+          throw new Error(postReq.message || 'Error loading post')
+        }
+
+        setPost(postReq.data)
+        setAuthenticatedUser(user.data)
+      } catch (err) {
+        console.error('Error fetching data:', err)
+        setError(
+          err instanceof Error ? err.message : 'An unknown error occurred',
+        )
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchData()
+  }, [id])
+
+  const handleNewReply = (newReply: Comment & { parentId?: number }) => {
+    if (!post) return
+
+    setPost({
+      ...post,
+      Comments: [...post.Comments, newReply],
+    })
   }
 
-  const post = postReq.data
-  const isAuthor = post.Author.id === authenticatedUser.data?.id
+  if (isLoading) {
+    return (
+      <main className="max-w-3xl mx-auto px-4 py-8">
+        <div className="text-center py-12">
+          <p>Loading post...</p>
+        </div>
+      </main>
+    )
+  }
+
+  if (error) {
+    return (
+      <main className="max-w-3xl mx-auto px-4 py-8">
+        <div className="text-red-500 text-center py-12">
+          <p>Error: {error}</p>
+          <Button onClick={() => window.location.reload()} className="mt-4">
+            Try Again
+          </Button>
+        </div>
+      </main>
+    )
+  }
+
+  if (!post) {
+    return (
+      <main className="max-w-3xl mx-auto px-4 py-8">
+        <div className="text-center py-12">
+          <p>Post not found</p>
+        </div>
+      </main>
+    )
+  }
+
   const comments = post?.Comments || []
+  const isAuthor = post.Author.id === authenticatedUser?.id
+  const currentUserId = authenticatedUser?.id || null
 
   return (
     <main className="max-w-3xl mx-auto px-4 py-8">
@@ -48,7 +118,9 @@ export default async function Page({ params }: Props) {
                   key={comment.id}
                   comment={comment}
                   childrenArray={comments}
-                  isAuthor={comment.authorId === authenticatedUser.data?.id}
+                  isAuthor={comment.authorId === currentUserId}
+                  currentUserId={currentUserId}
+                  onNewReply={handleNewReply}
                 />
               ))}
           </div>

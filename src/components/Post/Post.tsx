@@ -65,7 +65,7 @@ export default function PostCard({
 
         <header className="flex gap-4 items-center">
           <Image
-            src="/pp-fallback.svg"
+            src={post.Author.UserProfile.profilePictureURL}
             className="rounded-full"
             alt="Profile Image"
             width={68}

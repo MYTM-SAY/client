@@ -3,7 +3,12 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Comment, updateComment, deleteComment } from '@/app/actions/comment'
+import {
+  Comment,
+  updateComment,
+  deleteComment,
+  replyComment,
+} from '@/app/actions/comment'
 import { useToast } from '@/hooks/use-toast'
 import {
   DropdownMenu,
@@ -27,18 +32,25 @@ interface Props {
   comment: Comment & { parentId?: number }
   childrenArray: (Comment & { parentId?: number })[]
   isAuthor: boolean
+  currentUserId: string | number
+  onNewReply: (newComment: Comment & { parentId?: number }) => void
 }
 
 export default function CommentCard({
   comment,
   childrenArray,
   isAuthor,
+  currentUserId,
+  onNewReply,
 }: Props) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
   const [showEditDialog, setShowEditDialog] = useState(false)
+  const [showReplyDialog, setShowReplyDialog] = useState(false)
   const [editedContent, setEditedContent] = useState(comment.content)
+  const [replyContent, setReplyContent] = useState('')
   const [isDeleting, setIsDeleting] = useState(false)
   const [isUpdating, setIsUpdating] = useState(false)
+  const [isReplying, setIsReplying] = useState(false)
   const [localComment, setLocalComment] = useState(comment)
   const [isDeleted, setIsDeleted] = useState(false)
   const { toast } = useToast()
@@ -114,6 +126,52 @@ export default function CommentCard({
     }
   }
 
+  const handleReply = async () => {
+    setIsReplying(true)
+    try {
+      const result = await replyComment({
+        content: replyContent,
+        postId: localComment.postId,
+        parentId: localComment.id,
+      })
+      console.log(replyContent, localComment.postId, localComment.id)
+      if (result.success && result.data) {
+        toast({
+          title: 'Success',
+          description: 'Reply posted successfully',
+        })
+        setShowReplyDialog(false)
+        setReplyContent('')
+
+        onNewReply({
+          ...result.data,
+          parentId: localComment.id,
+          Author: result.data.Author
+            ? {
+                ...result.data.Author,
+                UserProfile: result.data.Author.UserProfile || null,
+              }
+            : null,
+        })
+      } else {
+        toast({
+          variant: 'destructive',
+          title: 'Error',
+          description: result.message || 'Failed to post reply',
+        })
+      }
+    } catch (error) {
+      console.error('Error replying to comment:', error)
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Failed to post reply. Please try again.',
+      })
+    } finally {
+      setIsReplying(false)
+    }
+  }
+
   if (isDeleted) {
     return null
   }
@@ -123,7 +181,8 @@ export default function CommentCard({
       <div className="flex gap-4 items-start p-4 rounded-lg bg-card shadow">
         <Image
           src={
-            localComment.Author?.UserProfile?.profilePictureURL || '/pp-fallback.svg'
+            localComment.Author?.UserProfile?.profilePictureURL ||
+            '/pp-fallback.svg'
           }
           alt="Profile Image"
           width={48}
@@ -168,10 +227,23 @@ export default function CommentCard({
             )}
           </div>
           <p className="mt-1 text-foreground">{localComment.content}</p>
+
+          {/* Reply button - text only */}
+          <div className="mt-2">
+            <Button
+              variant="link"
+              size="sm"
+              onClick={() => setShowReplyDialog(true)}
+              className="text-muted-foreground hover:text-primary p-0 h-auto"
+            >
+              Reply
+            </Button>
+          </div>
         </div>
       </div>
 
-      {childrenArray.filter((c) => c.parentId === localComment.id).length > 0 && (
+      {childrenArray.filter((c) => c.parentId === localComment.id).length >
+        0 && (
         <div className="ml-12 mt-2 border-l-2 border-border pl-4">
           {childrenArray
             .filter((c) => c.parentId === localComment.id)
@@ -180,7 +252,9 @@ export default function CommentCard({
                 key={c.id}
                 comment={c}
                 childrenArray={childrenArray}
-                isAuthor={isAuthor}
+                isAuthor={c.authorId === currentUserId}
+                currentUserId={currentUserId}
+                onNewReply={onNewReply}
               />
             ))}
         </div>
@@ -217,13 +291,14 @@ export default function CommentCard({
         </DialogContent>
       </Dialog>
 
+      {/* Delete Dialog */}
       <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>Delete Comment</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete this comment? This action cannot be
-              undone.
+              Are you sure you want to delete this comment? This action cannot
+              be undone.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="flex gap-2 mt-4">
@@ -244,6 +319,41 @@ export default function CommentCard({
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Reply Dialog */}
+      <Dialog open={showReplyDialog} onOpenChange={setShowReplyDialog}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Reply to Comment</DialogTitle>
+            <DialogDescription>
+              Replying to {localComment.Author?.fullname}'s comment
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <Textarea
+              value={replyContent}
+              onChange={(e) => setReplyContent(e.target.value)}
+              className="min-h-[100px]"
+              placeholder="Write your reply..."
+            />
+          </div>
+          <DialogFooter className="flex gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setShowReplyDialog(false)}
+              disabled={isReplying}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleReply}
+              disabled={isReplying || !replyContent.trim()}
+            >
+              {isReplying ? 'Posting...' : 'Post Reply'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
-} 
+}

@@ -1,6 +1,6 @@
 'use server'
 
-import type { ServerResponse, ServerError } from '@/types'
+import type { ServerError } from '@/types'
 import { axiosInstance } from './'
 import { AxiosError } from 'axios'
 import { z } from 'zod'
@@ -32,9 +32,7 @@ export interface Comment {
   Author: Author
 }
 
-export async function createComment(
-  data: CommentFormData,
-): Promise<ServerResponse<Comment>> {
+export async function createComment(data: CommentFormData) {
   try {
     const validatedFields = CommentSchema.safeParse(data)
 
@@ -68,10 +66,31 @@ export async function createComment(
   }
 }
 
-export async function updateComment(
-  commentId: number,
-  content: string,
-): Promise<ServerResponse<Comment>> {
+export interface CommentData {
+  content: string
+  postId: number | string
+  parentId: number | string
+}
+
+export async function replyComment(formData: CommentData) {
+  try {
+    const res = await axiosInstance.post(`/comments/${formData.postId}`, {
+      content: formData.content,
+      parentId: formData.parentId,
+    })
+    return res.data
+  } catch (error) {
+    const axiosError = error as AxiosError
+    const response = axiosError.response as never as ServerError
+    return {
+      success: false,
+      message: response.message || 'Internal server error',
+      statusCode: axiosError.status,
+    }
+  }
+}
+
+export async function updateComment(commentId: number, content: string) {
   try {
     const res = await axiosInstance.put(`/comments/${commentId}`, {
       content,
@@ -91,9 +110,7 @@ export async function updateComment(
   }
 }
 
-export async function deleteComment(
-  commentId: number,
-): Promise<ServerResponse<null>> {
+export async function deleteComment(commentId: number) {
   try {
     await axiosInstance.delete(`/comments/${commentId}`)
     revalidatePath(`/p/${commentId}`)
@@ -109,6 +126,44 @@ export async function deleteComment(
       success: false,
       message: response?.message || 'Failed to delete comment',
       statusCode: axiosError.status || 500,
+    }
+  }
+}
+
+export async function upVote(commentId: string | number) {
+  try {
+    await axiosInstance.put(`/comments/upvote/${commentId}`)
+    revalidatePath('/p/[id]')
+    return {
+      success: true,
+      data: null,
+    }
+  } catch (error) {
+    const axiosError = error as AxiosError
+    const response = axiosError.response as never as ServerError
+    return {
+      success: false,
+      message: response.message || 'Internal server error',
+      statusCode: axiosError.status,
+    }
+  }
+}
+
+export async function downVote(commentId: string | number) {
+  try {
+    await axiosInstance.put(`/comments/downvote/${commentId}`)
+    revalidatePath('/p/[id]')
+    return {
+      success: true,
+      data: null,
+    }
+  } catch (error) {
+    const axiosError = error as AxiosError
+    const response = axiosError.response as never as ServerError
+    return {
+      success: false,
+      message: response.message || 'Internal server error',
+      statusCode: axiosError.status,
     }
   }
 }
