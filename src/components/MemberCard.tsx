@@ -21,7 +21,7 @@ const MemberCard = ({ user }: { user: User }) => {
   return (
     <div className="rounded-lg p-5 shadow-md space-y-4 border">
       <div className="flex justify-between items-start">
-        <div className="bg-gray-100 px-3 py-1 rounded-full text-sm">
+        <div className="bg-gray-100 dark:bg-gray-700 dark:text-gray-200 px-3 py-1 rounded-full text-sm">
           {user.role}
         </div>
         <div className="flex items-center gap-1 text-sm text-gray-500">
