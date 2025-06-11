@@ -210,7 +210,9 @@ export async function getCommunityJoinRequests(
   communityId: string | number,
 ): Promise<ServerResponse<JoinRequest[]>> {
   try {
-    const res = await axiosInstance.get(`/communities/${communityId}/join-requests`)
+    const res = await axiosInstance.get(
+      `/communities/${communityId}/join-requests`,
+    )
     return res.data
   } catch (error) {
     const axiosError = error as AxiosError
@@ -230,7 +232,7 @@ export async function updateJoinRequestStatus(
   try {
     const res = await axiosInstance.patch(
       `/communities/join-requests/status/${requestId}`,
-      { status }
+      { status },
     )
     return res.data
   } catch (error) {

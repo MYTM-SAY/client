@@ -96,7 +96,7 @@ export default function Page({ params }: { params: PageParams }) {
   const isAuthor = post.Author.id === authenticatedUser?.id
   const currentUserId = authenticatedUser?.id || null
   const topLevelComments = comments.filter((c) => c.parentId === null)
-
+  console.log(topLevelComments)
   return (
     <main className="max-w-3xl mx-auto px-4 py-8">
       <PostCard

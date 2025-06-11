@@ -4,7 +4,7 @@ import { useState } from 'react'
 
 import { Button } from '@/components/ui/button'
 import {
-  getComments,
+  replyComment,
   deleteComment,
   upVote,
   downVote,
@@ -17,20 +17,19 @@ export function CommentItem({
   comment,
   depth = 0,
   currentUserId,
-  onCommentChange, // RENAMED: More generic name
+  onCommentChange,
 }: {
   comment: any
   depth?: number
   currentUserId: string | null
-  onCommentChange: () => void // RENAMED: For both delete and edit updates
+  onCommentChange: () => void
 }) {
   const maxDepth = 5
   const indentClass = depth > 0 ? `ml-${Math.min(depth * 4, maxDepth * 4)}` : ''
   const [isDeleting, setIsDeleting] = useState(false)
   const [deleteError, setDeleteError] = useState<string | null>(null)
-  const [editError, setEditError] = useState<string | null>(null) // ADDED: Edit error state
+  const [editError, setEditError] = useState<string | null>(null)
 
-  // ADDED: Edit state management
   const [isEditing, setIsEditing] = useState(false)
   const [editedContent, setEditedContent] = useState(comment.content)
   const [isSaving, setIsSaving] = useState(false)
@@ -38,6 +37,11 @@ export function CommentItem({
   const [voteCount, setVoteCount] = useState(comment.voteCount || 0)
   const [currentVote, setCurrentVote] = useState(comment.voteType || null)
   const [isVoting, setIsVoting] = useState(false)
+
+  const [isReplying, setIsReplying] = useState(false)
+  const [replyContent, setReplyContent] = useState('')
+  const [isReplyingLoading, setIsReplyingLoading] = useState(false)
+  const [replyError, setReplyError] = useState<string | null>(null)
 
   // ADDED: Handle comment edit
   const handleEdit = async () => {
@@ -116,6 +120,32 @@ export function CommentItem({
       setDeleteError(error instanceof Error ? error.message : 'Vote failed')
     } finally {
       setIsVoting(false)
+    }
+  }
+
+  const handleReplySubmit = async () => {
+    if (!currentUserId) return
+    setIsReplyingLoading(true)
+    setReplyError(null)
+
+    try {
+      const result = await replyComment({
+        postId: comment.postId,
+        content: replyContent,
+        parentId: comment.id,
+      })
+
+      if (result.success) {
+        setIsReplying(false)
+        setReplyContent('')
+        onCommentChange() // Refresh comments
+      } else {
+        setReplyError(result.message || 'Failed to post reply')
+      }
+    } catch (err) {
+      setReplyError('An unexpected error occurred')
+    } finally {
+      setIsReplyingLoading(false)
     }
   }
 
@@ -218,7 +248,17 @@ export function CommentItem({
                   </button>
                 </div>
 
-                <button className="mr-3 hover:text-blue-600">Reply</button>
+                <button
+                  onClick={() => setIsReplying(true)}
+                  disabled={!currentUserId || depth >= maxDepth}
+                  className={`mr-3 hover:text-blue-600 ${
+                    !currentUserId || depth >= maxDepth
+                      ? 'opacity-50 cursor-not-allowed'
+                      : ''
+                  }`}
+                >
+                  Reply
+                </button>
                 {currentUserId === comment.authorId && (
                   <div className="flex">
                     <button
@@ -236,6 +276,42 @@ export function CommentItem({
                     >
                       {isDeleting ? 'Deleting...' : 'Delete'}
                     </button>
+                  </div>
+                )}
+                {isReplying && (
+                  <div className="mt-3">
+                    <textarea
+                      value={replyContent}
+                      onChange={(e) => setReplyContent(e.target.value)}
+                      rows={3}
+                      className="w-full p-2 border rounded-md"
+                      placeholder="Write your reply..."
+                      disabled={isReplyingLoading}
+                    />
+                    <div className="flex justify-end space-x-2 mt-2">
+                      <Button
+                        onClick={() => {
+                          setIsReplying(false)
+                          setReplyContent('')
+                          setReplyError(null)
+                        }}
+                        variant="outline"
+                        disabled={isReplyingLoading}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        onClick={handleReplySubmit}
+                        disabled={
+                          isReplyingLoading || replyContent.trim() === ''
+                        }
+                      >
+                        {isReplyingLoading ? 'Replying...' : 'Reply'}
+                      </Button>
+                    </div>
+                    {replyError && (
+                      <p className="text-red-500 text-xs mt-1">{replyError}</p>
+                    )}
                   </div>
                 )}
               </div>
