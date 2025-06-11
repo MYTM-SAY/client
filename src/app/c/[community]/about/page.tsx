@@ -3,11 +3,12 @@ import Image from 'next/image'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
-import Btn from '@/components/ui/Btn'
 import { getCommunity } from '../../../actions/community'
 import { getUserProfileInfo } from '@/app/actions/profile'
 import { getUserByID } from '@/app/actions/user'
 import { getMods } from '../../../actions/community'
+import JoinCommunityButton from './_components/JoinCommunityButton'
+
 interface Props {
   params: Promise<{
     community: string
@@ -128,9 +129,16 @@ export default async function Page({ params }: Props) {
                 </p>
               </div>
             </div>
-            <Btn className="w-full py-3 text-base bg-accent hover:bg-accent/90 text-white transition-all duration-300 hover:scale-[1.02]">
-              Settings
-            </Btn>
+            <JoinCommunityButton
+              communityId={communityId}
+              userRole={
+                communityInfo.data.role as unknown as
+                  | 'OWNER'
+                  | 'MEMBER'
+                  | 'MODERATOR'
+                  | null
+              }
+            />
           </div>
         </div>
       </div>
