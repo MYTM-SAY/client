@@ -21,6 +21,7 @@ import { signUpAction } from '@/lib/actions/auth'
 import { useToast } from '@/hooks/use-toast'
 import { AxiosError } from 'axios'
 import { useRouter } from 'next/navigation'
+import { BookOpen, Users, GraduationCap, Lightbulb, Target } from 'lucide-react'
 
 const formSchema = z
   .object({
@@ -99,31 +100,87 @@ export default function RegisterPage() {
     <main className="w-screen min-h-screen fixed top-0 left-0 bg-background z-50">
       <div className="container relative min-h-screen flex-col items-center justify-center grid lg:max-w-none lg:grid-cols-2 lg:px-0">
         <div className="relative hidden h-full flex-col bg-muted p-10 text-white lg:flex dark:border-r">
-          <div className="absolute inset-0 bg-[#1C2533]" />
-          <div className="relative z-20 flex items-center text-lg font-medium">
-            <Icons.logo className="mr-2 h-6 w-6 text-amber-500" />
-            Learnverse
+          <div className="absolute inset-0 bg-gradient-to-br from-[#1C2533] to-[#2A3441]" />
+          
+          {/* Decorative elements */}
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute top-16 left-8">
+              <Target className="h-14 w-14 text-amber-500" />
+            </div>
+            <div className="absolute top-32 right-16">
+              <Lightbulb className="h-12 w-12 text-amber-400" />
+            </div>
+            <div className="absolute bottom-32 left-16">
+              <BookOpen className="h-16 w-16 text-amber-300" />
+            </div>
+            <div className="absolute bottom-48 right-12">
+              <GraduationCap className="h-12 w-12 text-amber-500" />
+            </div>
+            <div className="absolute top-60 left-4">
+              <Users className="h-10 w-10 text-amber-400" />
+            </div>
           </div>
+
+          <div className="relative z-20 flex items-center text-lg font-medium">
+            <Icons.logo className="mr-2 h-8 w-8 text-amber-500" />
+            <span className="text-2xl font-bold bg-gradient-to-r from-amber-400 to-amber-600 bg-clip-text text-transparent">
+              Learnverse
+            </span>
+          </div>
+          
           <div className="relative z-20 mt-auto">
-            <blockquote className="space-y-2">
-              <p className="text-lg">
-                &quot;Join thousands of users who have transformed their
-                productivity with our task management platform.&quot;
-              </p>
-              <footer className="text-sm">John Cooper</footer>
-            </blockquote>
+            <div className="space-y-6">
+              <div className="space-y-4">
+                <h2 className="text-3xl font-bold leading-tight">
+                  Start your learning adventure
+                </h2>
+                <p className="text-lg text-gray-300">
+                  Connect with educators and learners worldwide. Create, share, and discover knowledge in interactive learning environments.
+                </p>
+              </div>
+              
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="flex-shrink-0 w-2 h-2 bg-amber-500 rounded-full"></div>
+                  <span className="text-sm">Join vibrant learning communities</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="flex-shrink-0 w-2 h-2 bg-amber-500 rounded-full"></div>
+                  <span className="text-sm">Create and share educational content</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="flex-shrink-0 w-2 h-2 bg-amber-500 rounded-full"></div>
+                  <span className="text-sm">Track your learning progress</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="flex-shrink-0 w-2 h-2 bg-amber-500 rounded-full"></div>
+                  <span className="text-sm">Access personalized recommendations</span>
+                </div>
+              </div>
+
+              <blockquote className="space-y-2 pt-6 border-t border-white/20">
+                <p className="text-lg italic">
+                  &quot;Since joining Learnverse, I&apos;ve been able to connect with amazing educators and students. The platform makes collaborative learning feel natural and engaging.&quot;
+                </p>
+                <footer className="text-sm text-amber-400 font-medium">
+                  Maria Rodriguez, Graduate Student
+                </footer>
+              </blockquote>
+            </div>
           </div>
         </div>
-        <div className="lg:p-8">
-          <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
+        
+        <div className="lg:p-8 overflow-y-auto max-h-screen">
+          <div className="mx-auto flex w-full flex-col justify-start space-y-6 sm:w-[350px] min-h-screen lg:min-h-0 py-8 lg:py-0">
             <div className="flex flex-col space-y-2 text-center">
-              <h1 className="text-2xl font-semibold tracking-tight">
-                Create an account
+              <h1 className="text-3xl font-bold tracking-tight">
+                Join Learnverse
               </h1>
               <p className="text-sm text-muted-foreground">
-                Enter your details below to create your account
+                Create your account and unlock unlimited learning possibilities
               </p>
             </div>
+            
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
@@ -134,9 +191,13 @@ export default function RegisterPage() {
                   name="fullname"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Name</FormLabel>
+                      <FormLabel>Full Name</FormLabel>
                       <FormControl>
-                        <Input placeholder="John Doe" {...field} />
+                        <Input 
+                          placeholder="Enter your full name" 
+                          className="h-11"
+                          {...field} 
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -149,7 +210,11 @@ export default function RegisterPage() {
                     <FormItem>
                       <FormLabel>Username</FormLabel>
                       <FormControl>
-                        <Input placeholder="johndoe" {...field} />
+                        <Input 
+                          placeholder="Choose a unique username" 
+                          className="h-11"
+                          {...field} 
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -162,7 +227,11 @@ export default function RegisterPage() {
                     <FormItem>
                       <FormLabel>Email</FormLabel>
                       <FormControl>
-                        <Input placeholder="name@example.com" {...field} />
+                        <Input 
+                          placeholder="name@example.com" 
+                          className="h-11"
+                          {...field} 
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -177,7 +246,8 @@ export default function RegisterPage() {
                       <FormControl>
                         <Input
                           type="password"
-                          placeholder="Create a password"
+                          placeholder="Create a strong password"
+                          className="h-11"
                           {...field}
                         />
                       </FormControl>
@@ -195,6 +265,7 @@ export default function RegisterPage() {
                         <Input
                           type="password"
                           placeholder="Confirm your password"
+                          className="h-11"
                           {...field}
                         />
                       </FormControl>
@@ -209,20 +280,26 @@ export default function RegisterPage() {
                     <FormItem>
                       <FormLabel>Date of Birth</FormLabel>
                       <FormControl>
-                        <Input type="date" {...field} />
+                        <Input 
+                          type="date" 
+                          className="h-11"
+                          {...field} 
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                <Button className="w-full" type="submit" disabled={isLoading}>
+                
+                <Button className="w-full h-11 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-medium" type="submit" disabled={isLoading}>
                   {isLoading && (
                     <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
                   )}
-                  Sign Up
+                  Create Your Learnverse Account
                 </Button>
               </form>
             </Form>
+            
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
                 <Separator />
@@ -233,9 +310,11 @@ export default function RegisterPage() {
                 </span>
               </div>
             </div>
+            
             <Button
               variant="outline"
               type="button"
+              className="h-11"
               disabled={isLoading}
               onClick={async () => {
                 // TODO: Implement Google OAuth
@@ -246,14 +325,15 @@ export default function RegisterPage() {
               ) : (
                 <Icons.google className="mr-2 h-4 w-4" />
               )}
-              Google
+              Sign up with Google
             </Button>
+            
             <p className="px-8 text-center text-sm text-muted-foreground">
               <Link
                 href="/sign-in"
-                className="hover:text-brand underline underline-offset-4"
+                className="hover:text-amber-600 underline underline-offset-4 font-medium"
               >
-                Already have an account? Sign In
+                Already have an account? Sign in here
               </Link>
             </p>
           </div>
