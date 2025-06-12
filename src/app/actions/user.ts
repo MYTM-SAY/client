@@ -7,15 +7,17 @@ import { AxiosError } from 'axios'
 
 export async function getUserByUsername(username: string) {
   try {
-    const res = await axiosInstance.get(`/users/${username}/communities`)
+    const res = await axiosInstance.post('/users/getUserIdByUsername', {
+      username: username,
+    })
     return res.data
   } catch (error) {
     const axiosError = error as AxiosError
-    const response = axiosError.response as never as ServerError
+    const response = axiosError.response as unknown as ServerError
     return {
       success: false,
-      message: response.message || 'Internal server error',
-      statusCode: axiosError.status,
+      message: response?.message || 'Internal server error',
+      statusCode: axiosError.response?.status,
     }
   }
 }

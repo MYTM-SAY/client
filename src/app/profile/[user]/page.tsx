@@ -3,33 +3,35 @@ import ContributionGraph from '@/components/Profile/ContributionGraph'
 import CommunitiesProfile from '@/components/Profile/CommunitiesProfile'
 import ProfileInfo from '@/components/Profile/ProfileInfo'
 import ContributionsInCommunities from '@/components/Profile/ContributionsInCommunityies'
-import { getUser } from '@/lib/actions/auth'
 import { getUserProfileInfo, getUserContributions } from '@/app/actions/profile'
 import { getJoinedCommunities } from '@/app/actions/community'
 import { getAllPostsOfUserUsingId } from '@/app/actions/user'
+import {
+  getAuthenticatedUserDetails,
+  getUserByUsername,
+} from '@/app/actions/user'
 
-export default async function Page() {
-  const userReq = await getUser()
-  if (!userReq.success) {
-    return 'An error has occurred'
-  }
-
-  const userInfoReq = await getUserProfileInfo(userReq.user.id)
+export default async function Page({ params }: { params: { user: string } }) {
+  const username = params.user
+  const userId = await getUserByUsername(username)
+  const authenticatedUserReq = await getAuthenticatedUserDetails()
+  const isAuthor = authenticatedUserReq.data.id === userId.data.id
+  const userInfoReq = await getUserProfileInfo(userId.data.id)
   if (!userInfoReq.success) {
     console.log('An error has occurred (user info)')
   }
 
-  const userContributions = await getUserContributions(userReq.user.id)
+  const userContributions = await getUserContributions(userId.data.id)
   if (!userContributions.success) {
     return 'An error has occurred (user contributions)'
   }
 
-  const userCommunities = await getJoinedCommunities(userReq.user.id)
+  const userCommunities = await getJoinedCommunities(userId.data.id)
   if (!userCommunities.success) {
     return 'An error has occurred (user comms)'
   }
 
-  const postsReq = await getAllPostsOfUserUsingId(userReq.user.id)
+  const postsReq = await getAllPostsOfUserUsingId(userId.data.id)
   if (!postsReq.success) {
     return 'An error has occurred (posts)'
   }
@@ -70,14 +72,19 @@ export default async function Page() {
           }))}
         />
         <ContributionsInCommunities
+          communities={userCommunities.data.map((d) => ({
+            communityName: d.Community.name,
+            communityId: d.Community.id,
+          }))}
           posts={postsReq.data}
-          id={userReq.user.id}
+          id={userId.data.id}
         />
       </div>
 
       <ProfileInfo
-        username={userReq.user.username}
-        fullname={userReq.user.fullname}
+        isAuthor={isAuthor}
+        username={username}
+        fullname={userInfoReq.data.User.fullname}
         bio={userInfoReq.data?.bio || ''}
         facebook={userInfoReq.data?.facebook || '#'}
         instagram={userInfoReq.data?.instagram || '#'}

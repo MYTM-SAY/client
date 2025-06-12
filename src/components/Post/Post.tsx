@@ -17,6 +17,9 @@ import { X } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import Comments from './Comments'
 
+// Define fallback image path
+const IMG_FALLBACK = '/imgFallBack.581a9fe3.png'
+
 interface Props {
   post: PostsResponse
   communityId: number | string
@@ -28,6 +31,22 @@ interface Props {
 const visuallyHidden =
   'absolute w-[1px] h-[1px] p-0 -m-[1px] overflow-hidden clip-[rect(0,0,0,0)] whitespace-nowrap border-0'
 
+// Helper function to determine file type
+function getFileInfo(url: string): {
+  type: 'image' | 'pdf' | 'other'
+  extension: string
+} {
+  const base = url.split('?')[0]
+  const extension = base.split('.').pop()?.toLowerCase() || 'file'
+
+  if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(extension)) {
+    return { type: 'image', extension }
+  } else if (extension === 'pdf') {
+    return { type: 'pdf', extension }
+  }
+  return { type: 'other', extension }
+}
+
 export default function PostCard({
   post,
   communityId,
@@ -35,20 +54,24 @@ export default function PostCard({
   isAuthor,
   initialVoteStatus,
 }: Props) {
-  const [selectedAttachment, setSelectedAttachment] = useState<string | null>(
-    null,
-  )
+  const [selectedAttachment, setSelectedAttachment] = useState<{
+    url: string
+    type: 'image' | 'pdf' | 'other'
+  } | null>(null)
   const router = useRouter()
-  console.log(post)
+  // State to handle broken profile images
+  const [profileImageError, setProfileImageError] = useState(false)
 
   const handleAttachmentClick = (e: React.MouseEvent, url: string) => {
     e.stopPropagation()
-    setSelectedAttachment(url)
+    const { type } = getFileInfo(url)
+    setSelectedAttachment({ url, type })
   }
 
   const handlePostClick = () => {
     router.push(`/p/${post.id}`)
   }
+
   return (
     <>
       <div
@@ -64,13 +87,19 @@ export default function PostCard({
         )}
 
         <header className="flex gap-4 items-center">
-          <Image
-            src={post.Author.UserProfile.profilePictureURL}
-            className="rounded-full"
-            alt="Profile Image"
-            width={68}
-            height={68}
-          />
+          <div className="relative w-[68px] h-[68px]">
+            <Image
+              src={
+                !profileImageError && post.Author.UserProfile.profilePictureURL
+                  ? post.Author.UserProfile.profilePictureURL
+                  : IMG_FALLBACK
+              }
+              className="rounded-full"
+              alt="Profile Image"
+              fill
+              onError={() => setProfileImageError(true)}
+            />
+          </div>
           <div>
             <Link
               href={`/profile/${post?.Author?.username || 'ERROR'}`}
@@ -101,22 +130,33 @@ export default function PostCard({
 
         {post.attachments && post.attachments.length > 0 && (
           <div className="mt-4 grid grid-cols-2 gap-2">
-            {post.attachments.map((url, index) => (
-              <div
-                key={index}
-                className="relative aspect-video cursor-pointer group"
-                onClick={(e) => handleAttachmentClick(e, url)}
-              >
-                <Image
-                  src={url}
-                  alt={`Attachment ${index + 1}`}
-                  fill
-                  className="object-cover rounded-lg transition-transform group-hover:scale-[1.02]"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                />
-                <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg" />
-              </div>
-            ))}
+            {post.attachments.map((url, index) => {
+              const { type, extension } = getFileInfo(url)
+              return (
+                <div
+                  key={index}
+                  className="relative aspect-video cursor-pointer group"
+                  onClick={(e) => handleAttachmentClick(e, url)}
+                >
+                  {type === 'image' ? (
+                    <Image
+                      src={url}
+                      alt={`Attachment ${index + 1}`}
+                      fill
+                      className="object-cover rounded-lg transition-transform group-hover:scale-[1.02]"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    />
+                  ) : (
+                    <div className="relative w-full h-full bg-gray-100 rounded-lg border flex items-center justify-center">
+                      <span className="text-lg font-bold">
+                        {extension.toUpperCase()}
+                      </span>
+                    </div>
+                  )}
+                  <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg" />
+                </div>
+              )
+            })}
           </div>
         )}
 
@@ -139,7 +179,7 @@ export default function PostCard({
         open={!!selectedAttachment}
         onOpenChange={() => setSelectedAttachment(null)}
       >
-        <DialogContent className="max-w-4xl p-0 overflow-hidden">
+        <DialogContent className="max-w-4xl max-h-[90vh] p-0 overflow-hidden">
           <DialogTitle className={visuallyHidden}>
             View attachment from post: {post.title}
           </DialogTitle>
@@ -148,14 +188,38 @@ export default function PostCard({
             <span className="sr-only">Close</span>
           </DialogClose>
           {selectedAttachment && (
-            <div className="relative w-full aspect-[16/9]">
-              <Image
-                src={selectedAttachment}
-                alt="Attachment preview"
-                fill
-                className="object-contain"
-                sizes="100vw"
-              />
+            <div className="relative w-full max-h-[80vh] overflow-auto">
+              {selectedAttachment.type === 'image' ? (
+                <div className="relative w-full h-full">
+                  <Image
+                    src={selectedAttachment.url}
+                    alt="Attachment preview"
+                    fill
+                    className="object-contain"
+                    sizes="100vw"
+                  />
+                </div>
+              ) : selectedAttachment.type === 'pdf' ? (
+                <iframe
+                  src={selectedAttachment.url}
+                  className="w-full h-full min-h-[50vh]"
+                  title="PDF Preview"
+                />
+              ) : (
+                <div className="flex items-center justify-center w-full h-full p-6">
+                  <div className="text-center">
+                    <p className="mb-4">This file type cannot be previewed.</p>
+                    <a
+                      href={selectedAttachment.url}
+                      download={selectedAttachment.url.split('/').pop()}
+                      className="text-blue-500 underline"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      Download File
+                    </a>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </DialogContent>

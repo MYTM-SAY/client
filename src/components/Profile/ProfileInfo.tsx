@@ -9,8 +9,8 @@ import { FiInstagram } from 'react-icons/fi'
 import { useRouter } from 'next/navigation'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import Link from 'next/link'
-
 interface ProfileInfoProps {
+  isAuthor: boolean
   username: string
   fullname: string
   bio: string
@@ -25,6 +25,7 @@ interface ProfileInfoProps {
 }
 
 const ProfileInfo = ({
+  isAuthor,
   username,
   fullname,
   bio,
@@ -47,7 +48,7 @@ const ProfileInfo = ({
       <div className="flex flex-col items-center justify-center gap-4">
         <Avatar className="rounded-full border border-gray-300 dark:border-gray-700 w-[150px] h-[150px]">
           <AvatarImage src={profilePic} />
-          <AvatarFallback>CN</AvatarFallback>
+          <AvatarFallback>UserPic</AvatarFallback>
         </Avatar>
 
         <h1 className="h4">{fullname}</h1>
@@ -59,9 +60,14 @@ const ProfileInfo = ({
         </div>
       </div>
       <div>
-        <Btn onClick={handleClick} className="px-10 py-3 bg-accent text-white">
-          Edit Profile
-        </Btn>
+        {isAuthor && (
+          <Btn
+            onClick={handleClick}
+            className="px-10 py-3 bg-accent text-white"
+          >
+            Edit Profile
+          </Btn>
+        )}
       </div>
       <div className="flex justify-between gap-16 ">
         <div className="flex flex-col items-center p-muted">
