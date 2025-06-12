@@ -1,11 +1,27 @@
 'use client'
+
 import Link from 'next/link'
 import { usePathname, useParams } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { getTheRoleOfAuth } from '@/app/actions/community'
 
 export default function CommunityNavBar() {
   const { community } = useParams()
   const pathname = usePathname()
   const currentPage = pathname.split('/').pop() || ''
+  const [role, setRole] = useState<string | null>(null)
+
+  useEffect(() => {
+    async function fetchRole() {
+      if (typeof community === 'string') {
+        const res = await getTheRoleOfAuth(community)
+        if (res.success) {
+          setRole(res.data)
+        }
+      }
+    }
+    fetchRole()
+  }, [community])
 
   const navItems = [
     { name: 'Forum', path: '' },
@@ -14,8 +30,9 @@ export default function CommunityNavBar() {
     { name: 'Leaderboards', path: 'leaderboards' },
     { name: 'Members', path: 'members' },
     { name: 'About', path: 'about' },
-    // { name: 'Settings', path: 'settings' },
-    { name: 'Admin', path: 'admin' },
+    ...(role === 'OWNER' || role === 'MODERATOR'
+      ? [{ name: 'Admin', path: 'admin' }]
+      : []),
   ]
 
   return (
