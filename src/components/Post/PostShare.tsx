@@ -30,7 +30,7 @@ const PostShare = ({
       name: 'Facebook',
       icon: <FaFacebook className="w-6 h-6" />,
       href: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
-        url
+        url,
       )}`,
       color: 'hover:bg-blue-600/10 hover:text-blue-600',
     },
@@ -38,7 +38,7 @@ const PostShare = ({
       name: 'Twitter',
       icon: <FaTwitter className="w-6 h-6" />,
       href: `https://twitter.com/intent/tweet?url=${encodeURIComponent(
-        url
+        url,
       )}&text=${encodeURIComponent(title)}`,
       color: 'hover:bg-blue-400/10 hover:text-blue-400',
     },
@@ -46,7 +46,7 @@ const PostShare = ({
       name: 'LinkedIn',
       icon: <FaLinkedin className="w-6 h-6" />,
       href: `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(
-        url
+        url,
       )}&title=${encodeURIComponent(title)}`,
       color: 'hover:bg-blue-700/10 hover:text-blue-700',
     },
@@ -60,7 +60,7 @@ const PostShare = ({
       name: 'Telegram',
       icon: <FaTelegram className="w-6 h-6" />,
       href: `https://t.me/share/url?url=${encodeURIComponent(
-        url
+        url,
       )}&text=${encodeURIComponent(title)}`,
       color: 'hover:bg-blue-500/10 hover:text-blue-500',
     },

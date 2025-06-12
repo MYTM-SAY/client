@@ -339,44 +339,44 @@ export function CommentItem({
                     </button>
                   </div>
                 )}
-                {isReplying && (
-                  <div className="mt-3">
-                    <textarea
-                      value={replyContent}
-                      onChange={(e) => setReplyContent(e.target.value)}
-                      rows={3}
-                      className="w-full p-2 border rounded-md"
-                      placeholder="Write your reply..."
-                      disabled={isReplyingLoading}
-                    />
-                    <div className="flex justify-end space-x-2 mt-2">
-                      <Button
-                        onClick={() => {
-                          setIsReplying(false)
-                          setReplyContent('')
-                          setReplyError(null)
-                        }}
-                        variant="outline"
-                        disabled={isReplyingLoading}
-                      >
-                        Cancel
-                      </Button>
-                      <Button
-                        onClick={handleReplySubmit}
-                        disabled={
-                          isReplyingLoading || replyContent.trim() === ''
-                        }
-                      >
-                        {isReplyingLoading ? 'Replying...' : 'Reply'}
-                      </Button>
-                    </div>
-                    {replyError && (
-                      <p className="text-red-500 text-xs mt-1">{replyError}</p>
-                    )}
-                  </div>
-                )}
               </div>
             </>
+          )}
+
+          {/* Reply form - now positioned directly under the comment actions */}
+          {!isEditing && isReplying && (
+            <div className="mt-3">
+              <textarea
+                value={replyContent}
+                onChange={(e) => setReplyContent(e.target.value)}
+                rows={3}
+                className="w-full p-2 border rounded-md"
+                placeholder="Write your reply..."
+                disabled={isReplyingLoading}
+              />
+              <div className="flex justify-end space-x-2 mt-2">
+                <Button
+                  onClick={() => {
+                    setIsReplying(false)
+                    setReplyContent('')
+                    setReplyError(null)
+                  }}
+                  variant="outline"
+                  disabled={isReplyingLoading}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleReplySubmit}
+                  disabled={isReplyingLoading || replyContent.trim() === ''}
+                >
+                  {isReplyingLoading ? 'Replying...' : 'Reply'}
+                </Button>
+              </div>
+              {replyError && (
+                <p className="text-red-500 text-xs mt-1">{replyError}</p>
+              )}
+            </div>
           )}
 
           {!isEditing && deleteError && (

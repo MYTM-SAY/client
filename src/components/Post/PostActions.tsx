@@ -1,5 +1,7 @@
 'use client'
 import React, { useState, useTransition } from 'react'
+import { useRouter } from 'next/navigation'
+
 import {
   BiUpvote,
   BiDownvote,
@@ -33,7 +35,10 @@ export default function PostActions({
   )
   const [voteCount, setVoteCount] = useState(votes)
   const [isPending, startTransition] = useTransition()
-  const pathname = usePathname()
+  const router = useRouter()
+  const handlePostClick = () => {
+    router.push(`/p/${id}`)
+  }
 
   const handleVote = async (
     voteType: 'up' | 'down',
@@ -46,37 +51,30 @@ export default function PostActions({
 
     let newCount = voteCount
     if (voteType === 'up') {
-      if (currentUp) {
-        newCount = voteCount - 1
-      } else {
-        newCount = voteCount + 1
-        if (currentDown) newCount += 1
-      }
-      setVoteCount(newCount)
+      newCount = currentUp
+        ? voteCount - 1
+        : voteCount + 1 + (currentDown ? 1 : 0)
       setIsUpvoted(!currentUp)
       setIsDownvoted(false)
     } else {
-      if (currentDown) {
-        newCount = voteCount + 1
-      } else {
-        newCount = voteCount - 1
-        if (currentUp) newCount -= 1
-      }
-      setVoteCount(newCount)
+      newCount = currentDown
+        ? voteCount + 1
+        : voteCount - 1 - (currentUp ? 1 : 0)
       setIsUpvoted(false)
       setIsDownvoted(!currentDown)
     }
 
+    setVoteCount(newCount)
+
     startTransition(async () => {
       try {
         const result = voteType === 'up' ? await upVote(id) : await downVote(id)
-
         if (!result.success) {
           setVoteCount(originalVoteCount)
           setIsUpvoted(originalIsUpvoted)
           setIsDownvoted(originalIsDownvoted)
         }
-      } catch (error) {
+      } catch {
         setVoteCount(originalVoteCount)
         setIsUpvoted(originalIsUpvoted)
         setIsDownvoted(originalIsDownvoted)
@@ -85,48 +83,58 @@ export default function PostActions({
   }
 
   const handleUpvote = () => {
-    if (isPending) return
-    handleVote('up', isUpvoted, isDownvoted)
+    if (!isPending) handleVote('up', isUpvoted, isDownvoted)
   }
 
   const handleDownvote = () => {
-    if (isPending) return
-    handleVote('down', isUpvoted, isDownvoted)
+    if (!isPending) handleVote('down', isUpvoted, isDownvoted)
   }
 
   return (
-    <div className="flex gap-4 items-center flex-wrap mt-6">
-      <div className="flex items-center gap-2 px-4 py-2 text-foreground p-lg bg-card cursor-pointer">
-        {isUpvoted ? (
-          <BiSolidUpvote
-            className="!w-6 !h-6 text-green-500"
-            onClick={handleUpvote}
-          />
-        ) : (
-          <BiUpvote
-            className="!w-6 !h-6 text-green-500"
-            onClick={handleUpvote}
-          />
-        )}
-        {voteCount}
-        {isDownvoted ? (
-          <BiSolidDownvote
-            className="!w-6 !h-6 text-red-500"
-            onClick={handleDownvote}
-          />
-        ) : (
-          <BiDownvote
-            className="!w-6 !h-6 text-red-500"
-            onClick={handleDownvote}
-          />
-        )}
+    <div className="flex flex-wrap items-center gap-3 mt-6">
+      <div className="flex items-center gap-3 px-4 py-2 rounded-xl bg-card shadow-md transition-all">
+        <button
+          aria-label="Upvote"
+          title="Upvote"
+          onClick={handleUpvote}
+          disabled={isPending}
+          className={`transition-colors ${
+            isUpvoted
+              ? 'text-green-500'
+              : 'text-foreground hover:text-green-500'
+          }`}
+        >
+          {isUpvoted ? (
+            <BiSolidUpvote className="w-6 h-6" />
+          ) : (
+            <BiUpvote className="w-6 h-6" />
+          )}
+        </button>
+        <span className="text-lg font-medium">{voteCount}</span>
+        <button
+          aria-label="Downvote"
+          title="Downvote"
+          onClick={handleDownvote}
+          disabled={isPending}
+          className={`transition-colors ${
+            isDownvoted ? 'text-red-500' : 'text-foreground hover:text-red-500'
+          }`}
+        >
+          {isDownvoted ? (
+            <BiSolidDownvote className="w-6 h-6" />
+          ) : (
+            <BiDownvote className="w-6 h-6" />
+          )}
+        </button>
       </div>
 
       <Link
         href={`/p/${id}`}
-        className="flex items-center gap-2 px-4 py-2 text-foreground p-lg bg-card hover:text-white"
+        className="flex items-center gap-2 px-4 py-2 rounded-xl bg-card hover:bg-primary/90 text-foreground hover:text-white shadow-md transition-all"
+        title="View comments"
+        onClick={handlePostClick}
       >
-        <FaRegComment className="!w-6 !h-6" /> {commentCount}
+        <FaRegComment className="w-5 h-5" /> <span>{commentCount}</span>
       </Link>
 
       <PostShare url={`${window.location.origin}/p/${id}`} title={title} />

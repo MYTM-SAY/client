@@ -12,7 +12,7 @@ interface Props {
 export default async function Page({ params }: Props) {
   const userReq = await getUser()
   if (!userReq.success) {
-    return <>Internal server error</> // TODO: replace with 500 erorr component
+    return <>Internal server error</>
   }
 
   const { community: communityId } = await params
@@ -29,5 +29,11 @@ export default async function Page({ params }: Props) {
     redirect(`/c/${communityId}/about`)
   }
 
-  return <Forum forumId={res.data.forumId} community={res.data} authedUserId={userReq.user.id} />
+  return (
+    <Forum
+      forumId={res.data.forumId}
+      community={res.data}
+      authedUserId={userReq.user.id}
+    />
+  )
 }

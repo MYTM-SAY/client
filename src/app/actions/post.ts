@@ -87,6 +87,9 @@ export interface PostsResponse {
     Community: Community
   }
   voteType: 'UPVOTE' | 'DOWNVOTE' | null
+  _count: {
+    Comments: number
+  }
 }
 
 export async function getPosts(

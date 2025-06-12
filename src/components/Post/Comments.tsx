@@ -2,9 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { Comment } from '@/app/actions/comment'
-import { formatDateTime } from '@/lib/utils'
-import Image from 'next/image'
-import Link from 'next/link'
+
 import CommentForm from './CommentForm'
 interface Props {
   postId: number
