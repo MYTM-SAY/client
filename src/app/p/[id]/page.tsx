@@ -13,7 +13,6 @@ interface PageParams {
   id: string
 }
 
-
 export default function Page({ params }: { params: Promise<PageParams> }) {
   const { id } = use(params)
 
@@ -92,8 +91,7 @@ export default function Page({ params }: { params: Promise<PageParams> }) {
 
   const isAuthor = post.Author.id === Number(authenticatedUser?.id)
   const currentUserId = authenticatedUser?.id?.toString() || null
-  const topLevelComments = comments.filter((c) => c.parentId === null)
-  console.log(topLevelComments)
+  console.log(comments)
   return (
     <main className="max-w-3xl mx-auto px-4 py-8">
       <PostCard
@@ -107,13 +105,13 @@ export default function Page({ params }: { params: Promise<PageParams> }) {
       <div className="mt-10 pt-6 border-t">
         <h2 className="text-xl font-bold mb-6">Comments ({comments.length})</h2>
 
-        {topLevelComments.length === 0 ? (
+        {comments.length === 0 ? (
           <div className="text-center py-8 text-gray-500">
             No comments yet. Be the first to comment!
           </div>
         ) : (
           <div className="space-y-6">
-            {topLevelComments.map((comment) => (
+            {comments.map((comment) => (
               <CommentItem
                 key={comment.id}
                 comment={comment}

@@ -1,54 +1,152 @@
 'use client'
 
-import { useState } from 'react'
-
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import {
   replyComment,
   deleteComment,
   upVote,
   downVote,
-  updateComment, // ADDED: Import update function
+  updateComment,
+  getChildsOfComment,
 } from '@/app/actions/comment'
 import { Comment } from '@/app/actions/post'
 import Image from 'next/image'
 import { formatDistanceToNow } from 'date-fns'
+import fallbackImg from '../../../public/imgFallBack.581a9fe3.png'
+
+// Define extended comment type with vote info
+type CommentWithVotes = Comment & {
+  voteCount?: number
+  voteType?: 'UPVOTE' | 'DOWNVOTE' | 'NONE'
+}
 
 export function CommentItem({
   comment,
-  depth = 0,
   currentUserId,
   onCommentChange,
 }: {
-  comment: Comment & { 
-    voteCount?: number; 
-    voteType?: 'UPVOTE' | 'DOWNVOTE' | null; 
-    replies?: (Comment & { voteCount?: number; voteType?: 'UPVOTE' | 'DOWNVOTE' | null })[]
-  }
-  depth?: number
+  comment: CommentWithVotes
   currentUserId: string | null
   onCommentChange: () => void
 }) {
-  const maxDepth = 5
-  const indentClass = depth > 0 ? `ml-${Math.min(depth * 4, maxDepth * 4)}` : ''
+  // Comment management states
   const [isDeleting, setIsDeleting] = useState(false)
   const [deleteError, setDeleteError] = useState<string | null>(null)
   const [editError, setEditError] = useState<string | null>(null)
 
+  // Editing states
   const [isEditing, setIsEditing] = useState(false)
   const [editedContent, setEditedContent] = useState(comment.content)
   const [isSaving, setIsSaving] = useState(false)
 
+  // Voting states
   const [voteCount, setVoteCount] = useState(comment.voteCount || 0)
-  const [currentVote, setCurrentVote] = useState(comment.voteType || null)
+  const [currentVote, setCurrentVote] = useState(comment.voteType)
   const [isVoting, setIsVoting] = useState(false)
 
+  // Replying states
   const [isReplying, setIsReplying] = useState(false)
   const [replyContent, setReplyContent] = useState('')
   const [isReplyingLoading, setIsReplyingLoading] = useState(false)
   const [replyError, setReplyError] = useState<string | null>(null)
 
-  // ADDED: Handle comment edit
+  // Replies management states
+  const [showReplies, setShowReplies] = useState(false)
+  const [childComments, setChildComments] = useState<CommentWithVotes[]>([])
+  const [loadingReplies, setLoadingReplies] = useState(false)
+  const [repliesError, setRepliesError] = useState<string | null>(null)
+  const [hasReplies, setHasReplies] = useState(false)
+
+  // Check if comment has replies
+  useEffect(() => {
+    const checkForReplies = async () => {
+      try {
+        const result = await getChildsOfComment(comment.id)
+        setHasReplies(result.success && result.data.length > 0)
+      } catch {
+        setHasReplies(false)
+      }
+    }
+
+    // Only check if we haven't already loaded replies
+    if (!childComments.length) {
+      checkForReplies()
+    } else {
+      setHasReplies(childComments.length > 0)
+    }
+  }, [comment.id, childComments])
+
+  // Fetch child comments
+  const fetchReplies = async () => {
+    setLoadingReplies(true)
+    setRepliesError(null)
+    try {
+      const result = await getChildsOfComment(comment.id)
+      if (result.success) {
+        setChildComments(result.data)
+        setHasReplies(result.data.length > 0)
+      } else {
+        setRepliesError(result.message || 'Failed to load replies')
+        setHasReplies(false)
+      }
+    } catch (error) {
+      setRepliesError('An unexpected error occurred')
+      setHasReplies(false)
+    } finally {
+      setLoadingReplies(false)
+    }
+  }
+
+  // Toggle replies visibility
+  const toggleReplies = () => {
+    if (!showReplies && childComments.length === 0) {
+      fetchReplies()
+    }
+    setShowReplies(!showReplies)
+  }
+
+  // Handle child comment changes
+  const handleChildChange = () => {
+    // Refresh child comments
+    fetchReplies()
+    // Propagate change to parent
+    onCommentChange()
+  }
+
+  // Handle reply submission
+  const handleReplySubmit = async () => {
+    if (!currentUserId) return
+    setIsReplyingLoading(true)
+    setReplyError(null)
+
+    try {
+      const result = await replyComment({
+        postId: comment.postId,
+        content: replyContent,
+        parentId: comment.id,
+      })
+
+      if (result.success) {
+        setIsReplying(false)
+        setReplyContent('')
+        // Refresh child comments if shown
+        if (showReplies) {
+          fetchReplies()
+        } else {
+          // Update hasReplies state
+          setHasReplies(true)
+        }
+      } else {
+        setReplyError(result.message || 'Failed to post reply')
+      }
+    } catch (_) {
+      setReplyError('An unexpected error occurred')
+    } finally {
+      setIsReplyingLoading(false)
+    }
+  }
+
   const handleEdit = async () => {
     if (!currentUserId || currentUserId !== comment.authorId.toString()) return
     setIsSaving(true)
@@ -58,7 +156,7 @@ export function CommentItem({
       const result = await updateComment(comment.id, editedContent)
       if (result.success) {
         setIsEditing(false)
-        onCommentChange() // Refresh comments
+        onCommentChange()
       } else {
         setEditError(result.message || 'Failed to update comment')
       }
@@ -77,7 +175,7 @@ export function CommentItem({
     try {
       const result = await deleteComment(comment.id)
       if (result.success) {
-        onCommentChange() // RENAMED: More generic
+        onCommentChange()
       } else {
         setDeleteError(result.message || 'Failed to delete comment')
       }
@@ -97,11 +195,11 @@ export function CommentItem({
 
     try {
       let newCount = voteCount
-      let newVote: 'UPVOTE' | 'DOWNVOTE' | null = type
-      if (currentVote === null) {
+      let newVote: 'UPVOTE' | 'DOWNVOTE' | 'NONE' = type
+      if (currentVote === 'NONE') {
         newCount = type === 'UPVOTE' ? voteCount + 1 : voteCount - 1
       } else if (currentVote === type) {
-        newVote = null
+        newVote = 'NONE'
         newCount = type === 'UPVOTE' ? voteCount - 1 : voteCount + 1
       } else if (currentVote) {
         newCount = type === 'UPVOTE' ? voteCount + 2 : voteCount - 2
@@ -114,8 +212,6 @@ export function CommentItem({
       const result = await action(comment.id)
 
       if (!result.success) throw new Error(result.message || 'Vote failed')
-
-      // Vote was successful, state is already updated optimistically
     } catch (error) {
       setVoteCount(originalCount)
       setCurrentVote(originalVote)
@@ -125,33 +221,6 @@ export function CommentItem({
     }
   }
 
-  const handleReplySubmit = async () => {
-    if (!currentUserId) return
-    setIsReplyingLoading(true)
-    setReplyError(null)
-
-    try {
-      const result = await replyComment({
-        postId: comment.postId,
-        content: replyContent,
-        parentId: comment.id,
-      })
-
-      if (result.success) {
-        setIsReplying(false)
-        setReplyContent('')
-        onCommentChange() // Refresh comments
-      } else {
-        setReplyError(result.message || 'Failed to post reply')
-      }
-    } catch (_) {
-      setReplyError('An unexpected error occurred')
-    } finally {
-      setIsReplyingLoading(false)
-    }
-  }
-
-  // ADDED: Cancel edit and reset content
   const cancelEdit = () => {
     setIsEditing(false)
     setEditedContent(comment.content)
@@ -159,14 +228,11 @@ export function CommentItem({
   }
 
   return (
-    <div className={`mb-4 ${depth > 0 ? 'pt-3' : ''}`}>
-      <div className={`flex ${indentClass}`}>
+    <div className={`mb-4`}>
+      <div className={`flex`}>
         <div className="flex-shrink-0 mr-3">
           <Image
-            src={
-              comment.Author?.UserProfile?.profilePictureURL ||
-              '/default-avatar.png'
-            }
+            src={comment.Author.UserProfile.profilePictureURL || fallbackImg}
             alt={comment.Author?.fullname || 'User'}
             width={40}
             height={40}
@@ -185,7 +251,6 @@ export function CommentItem({
             </span>
           </div>
 
-          {/* EDIT MODE */}
           {isEditing ? (
             <div className="mt-2">
               <textarea
@@ -215,7 +280,6 @@ export function CommentItem({
               )}
             </div>
           ) : (
-            /* VIEW MODE */
             <>
               <p className="">{comment.content}</p>
 
@@ -252,12 +316,7 @@ export function CommentItem({
 
                 <button
                   onClick={() => setIsReplying(true)}
-                  disabled={!currentUserId || depth >= maxDepth}
-                  className={`mr-3 hover:text-blue-600 ${
-                    !currentUserId || depth >= maxDepth
-                      ? 'opacity-50 cursor-not-allowed'
-                      : ''
-                  }`}
+                  className={`mr-3 hover:text-blue-600 `}
                 >
                   Reply
                 </button>
@@ -326,26 +385,50 @@ export function CommentItem({
         </div>
       </div>
 
-      {/* Recursively render replies */}
-      {/* TODO: Fix Comment interface to include Children property
-      {comment.Children && comment.Children.length > 0 && (
-        <div
-          className={`${
-            depth > 0 ? 'ml-10' : 'ml-14'
-          } mt-2 border-l-2 border-gray-200 pl-4`}
-        >
-          {comment.Children.map((child: Comment & { voteCount?: number; voteType?: 'UPVOTE' | 'DOWNVOTE' | null; Children?: any[] }) => (
-            <CommentItem
-              key={child.id}
-              comment={child}
-              depth={depth + 1}
-              currentUserId={currentUserId}
-              onCommentChange={onCommentChange}
-            />
-          ))}
-        </div>
-      )}
-      */}
+      {/* Replies section */}
+      <div className="mt-2 ml-10 pl-4 border-l-2 border-gray-200">
+        {/* View Replies button - only show if has replies or we're showing replies */}
+        {(hasReplies || showReplies) && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={toggleReplies}
+            disabled={loadingReplies}
+            className="text-blue-600 hover:text-blue-800 px-0"
+          >
+            {loadingReplies
+              ? 'Loading...'
+              : showReplies
+              ? 'Hide Replies'
+              : 'View Replies'}
+          </Button>
+        )}
+
+        {/* Error message */}
+        {repliesError && (
+          <p className="text-red-500 text-sm mt-1">{repliesError}</p>
+        )}
+
+        {/* Child comments */}
+        {showReplies && (
+          <div>
+            {loadingReplies ? (
+              <p className="text-gray-500 text-sm">Loading replies...</p>
+            ) : childComments.length > 0 ? (
+              childComments.map((child) => (
+                <CommentItem
+                  key={child.id}
+                  comment={child}
+                  currentUserId={currentUserId}
+                  onCommentChange={handleChildChange}
+                />
+              ))
+            ) : (
+              <p className="text-gray-500 text-sm">No replies yet</p>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   )
 }

@@ -180,3 +180,18 @@ export async function getComments(id: string | number) {
     }
   }
 }
+
+export async function getChildsOfComment(parentId: string | number) {
+  try {
+    const res = await axiosInstance.get(`/comments/get-children/${parentId}`)
+    return res.data
+  } catch (error) {
+    const axiosError = error as AxiosError
+    const response = axiosError.response as never as ServerError
+    return {
+      success: false,
+      message: response.message || 'Internal server error',
+      statusCode: axiosError.status,
+    }
+  }
+}
