@@ -11,14 +11,27 @@ import {
   getUserByUsername,
 } from '@/app/actions/user'
 
-export default async function Page({ params }: { params: { user: string } }) {
-  const username = params.user
-  const userId = await getUserByUsername(username)
+interface PageProps {
+  params: Promise<{
+    user: string
+  }>
+}
+
+export default async function Page({ params }: PageProps) {
+  const { user } = await params
+  const userId = await getUserByUsername(user)
+  console.log(user)
+  // Handle user not found
+  if (!userId.success) return 'User not found'
+
   const authenticatedUserReq = await getAuthenticatedUserDetails()
-  const isAuthor = authenticatedUserReq.data.id === userId.data.id
+  const isAuthor =
+    authenticatedUserReq.success &&
+    authenticatedUserReq.data?.id === userId.data.id
+
   const userInfoReq = await getUserProfileInfo(userId.data.id)
   if (!userInfoReq.success) {
-    console.log('An error has occurred (user info)')
+    return 'An error has occurred (user info)'
   }
 
   const userContributions = await getUserContributions(userId.data.id)
@@ -32,11 +45,10 @@ export default async function Page({ params }: { params: { user: string } }) {
   }
 
   const postsReq = await getAllPostsOfUserUsingId(userId.data.id)
-  console.log(postsReq)
-
   if (!postsReq.success) {
     return 'An error has occurred (posts)'
   }
+
   const currentYear = new Date().getFullYear()
   const isLeapYear =
     (currentYear % 4 === 0 && currentYear % 100 !== 0) ||
@@ -62,6 +74,12 @@ export default async function Page({ params }: { params: { user: string } }) {
     )
   }
 
+  // Calculate total contributions
+  const totalContributions = contributionsArray.reduce(
+    (sum, count) => sum + count,
+    0,
+  )
+
   return (
     <div className="grid sm:grid-cols-3 gap-5">
       <div className="col-span-2">
@@ -84,8 +102,8 @@ export default async function Page({ params }: { params: { user: string } }) {
 
       <ProfileInfo
         isAuthor={isAuthor}
-        username={username}
-        fullname={userInfoReq.data.User.fullname}
+        username={user}
+        fullname={userInfoReq.data?.User?.fullname || ''}
         bio={userInfoReq.data?.bio || ''}
         facebook={userInfoReq.data?.facebook || '#'}
         instagram={userInfoReq.data?.instagram || '#'}
@@ -93,11 +111,7 @@ export default async function Page({ params }: { params: { user: string } }) {
         x={userInfoReq.data?.twitter || '#'}
         youtube={userInfoReq.data?.youtube || '#'}
         profilePic={userInfoReq.data?.profilePictureURL || '#'}
-        userContributionCount={
-          userContributions.success
-            ? userContributions?.data[0]?.UserContributions[0]?.count
-            : 0
-        }
+        userContributionCount={totalContributions}
         joinedCommuntiesCount={userCommunities.data.length}
       />
     </div>
