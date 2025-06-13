@@ -10,11 +10,9 @@ import { getJoinedCommunities } from '@/app/actions/community'
 import { getUser } from '@/lib/actions/auth'
 import { getTheRoleOfAuth } from '@/app/actions/community'
 import { getFav, type FavoriteResponse } from '@/app/actions/community'
-
 export default async function MyCommunitiesPage() {
   const userReq = await getUser()
   if (!userReq.success) return <>Internal server error</>
-
   const [roleReq, joinedCommunitiesReq, favReq] = await Promise.all([
     getTheRoleOfAuth(userReq.user.id),
     getJoinedCommunities(userReq.user.id),
@@ -25,9 +23,10 @@ export default async function MyCommunitiesPage() {
     return <>Internal server error</>
 
   const joinedCommunities = joinedCommunitiesReq.data
-  const favoriteCommunities: FavoriteResponse[] = favReq.success ? favReq.data : []
+  const favoriteCommunities: FavoriteResponse[] = favReq.success
+    ? favReq.data
+    : []
 
-  // Create a Set of favorite community IDs for quick lookup
   const favoriteCommunityIds = new Set<string | number>(
     favoriteCommunities.map((fav: FavoriteResponse) => fav.communityId),
   )
@@ -39,7 +38,7 @@ export default async function MyCommunitiesPage() {
       creator: joined?.Community.Owner?.fullname || 'Unknown',
     }
   }
-
+  console.log(favoriteCommunities)
   return (
     <div className="overflow-y-auto no-scrollbar w-full mx-auto max-w-[1000px]">
       <Accordion type="single" collapsible>
@@ -68,15 +67,15 @@ export default async function MyCommunitiesPage() {
                 )
                 return (
                   <JoinedCommunityCard
-                    key={fav.Community.id}
-                    id={fav.Community.id}
+                    key={fav.communityId}
+                    id={fav.communityId}
                     userRole={roleReq.data}
-                    name={fav.Community.name}
+                    name={fav.name}
                     members={members}
-                    isPublic={fav.Community.isPublic}
+                    isPublic={fav.isPublic}
                     creator={creator}
-                    image={fav.Community.logoImgURL}
-                    isFavorite={true} // Explicitly mark as favorite
+                    image={fav.logoImgURL}
+                    isFavorite={true}
                   />
                 )
               })
@@ -100,7 +99,7 @@ export default async function MyCommunitiesPage() {
                   isPublic={comm.Community.isPublic}
                   creator={comm.Community.Owner.fullname}
                   image={comm.Community.logoImgURL}
-                  isFavorite={favoriteCommunityIds.has(comm.Community.id)} // Check if favorited
+                  isFavorite={favoriteCommunityIds.has(comm.Community.id)}
                 />
               ))
             )}

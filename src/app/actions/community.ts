@@ -192,17 +192,16 @@ export interface FavoriteResponse {
   communityId: string | number
   createdAt: string
   updatedAt: string
-  Community: {
+  name: string
+  logoImgURL: string
+  isPublic: boolean
+  description?: string
+  bio?: string
+  coverImgURL?: string
+  Owner?: {
     id: string | number
-    name: string
-    logoImgURL: string
-    isPublic: boolean
-    description?: string
-    Owner?: {
-      id: string | number
-      fullname: string
-      username: string
-    }
+    fullname: string
+    username: string
   }
 }
 

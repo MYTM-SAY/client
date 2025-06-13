@@ -30,9 +30,7 @@ export default function CommunityNavBar() {
     { name: 'Leaderboards', path: 'leaderboards' },
     { name: 'Members', path: 'members' },
     { name: 'About', path: 'about' },
-    ...(role === 'OWNER' || role === 'MODERATOR'
-      ? [{ name: 'Admin', path: 'admin' }]
-      : []),
+    ...(role === 'OWNER' ? [{ name: 'Admin', path: 'admin' }] : []),
   ]
 
   return (
