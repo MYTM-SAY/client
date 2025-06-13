@@ -32,10 +32,11 @@ export default async function Page({ params }: { params: { user: string } }) {
   }
 
   const postsReq = await getAllPostsOfUserUsingId(userId.data.id)
+  console.log(postsReq)
+
   if (!postsReq.success) {
     return 'An error has occurred (posts)'
   }
-
   const currentYear = new Date().getFullYear()
   const isLeapYear =
     (currentYear % 4 === 0 && currentYear % 100 !== 0) ||

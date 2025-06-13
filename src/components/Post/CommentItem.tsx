@@ -389,19 +389,17 @@ export function CommentItem({
       <div className="mt-2 ml-10 pl-4 border-l-2 border-gray-200">
         {/* View Replies button - only show if has replies or we're showing replies */}
         {(hasReplies || showReplies) && (
-          <Button
-            variant="ghost"
-            size="sm"
+          <button
             onClick={toggleReplies}
             disabled={loadingReplies}
-            className="text-blue-600 hover:text-blue-800 px-0"
+            className={`mr-3 hover:text-blue-600 p-2 text-gray-500 text-sm`}
           >
             {loadingReplies
               ? 'Loading...'
               : showReplies
               ? 'Hide Replies'
               : 'View Replies'}
-          </Button>
+          </button>
         )}
 
         {/* Error message */}

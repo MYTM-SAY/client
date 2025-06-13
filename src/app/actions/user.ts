@@ -37,11 +37,9 @@ export async function getJoinedCommunities(id: string) {
   }
 }
 
-export async function getAllPostsOfUserUsingId(
-  id: string,
-): Promise<ServerResponse<PostsResponse[]>> {
+export async function getAllPostsOfUserUsingId(id: string) {
   try {
-    const res = await axiosInstance.get(`/users/${id}/contributions`)
+    const res = await axiosInstance.get(`/posts/user/${id}`)
     return res.data
   } catch (error) {
     const axiosError = error as AxiosError

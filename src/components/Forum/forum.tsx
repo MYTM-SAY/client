@@ -18,7 +18,7 @@ export default async function Forum({
   if (!postsReq.success) {
     return <>Internal Server Error</> // TODO: put the 500 page
   }
-
+  console.log(postsReq.data)
   const rposts = postsReq.data.map((post) => (
     <PostCard
       key={post.id}

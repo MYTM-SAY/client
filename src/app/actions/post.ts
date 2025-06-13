@@ -74,21 +74,18 @@ export interface PostsResponse {
   id: number
   title: string
   content: string
+  voteCounter: number
   attachments: string[]
   forumId: number
-  authorId: number
   createdAt: string
   updatedAt: string
-  Author: Author
-  commentsCount: number
-  Comments?: Comment[]
-  voteCounter: number
-  Forum: {
-    Community: Community
-  }
+  commentCount: number
   voteType: 'UPVOTE' | 'DOWNVOTE' | null
-  _count: {
-    Comments: number
+  Author: {
+    id: number
+    username: string
+    fullname: string
+    profilePictureURL: string
   }
 }
 

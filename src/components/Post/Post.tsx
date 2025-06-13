@@ -56,7 +56,6 @@ export default function PostCard({
   isAuthor,
   initialVoteStatus,
 }: Props) {
-  console.log(post)
   const [selectedAttachment, setSelectedAttachment] =
     useState<AttachmentType | null>(null)
 
@@ -67,7 +66,6 @@ export default function PostCard({
     const fileInfo = getFileInfo(url)
     setSelectedAttachment({ url, ...fileInfo })
   }
-
   return (
     <>
       <div className="relative p-5 rounded-xl bg-card border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
@@ -85,8 +83,8 @@ export default function PostCard({
           <div className="relative w-12 h-12 flex-shrink-0">
             <Image
               src={
-                !profileImageError && post.Author.UserProfile.profilePictureURL
-                  ? post.Author.UserProfile.profilePictureURL
+                !profileImageError && post.Author.profilePictureURL
+                  ? post.Author.profilePictureURL
                   : IMG_FALLBACK
               }
               className="rounded-full object-cover border-2 border-white dark:border-gray-800"
@@ -177,7 +175,7 @@ export default function PostCard({
           <PostActions
             id={post.id}
             votes={post?.voteCounter || 0}
-            commentCount={post?.commentsCount || post?._count.Comments || 0}
+            commentCount={post.commentCount}
             title={post.title}
             initialVoteStatus={initialVoteStatus}
           />

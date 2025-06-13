@@ -8,6 +8,8 @@ import { Button } from '@/components/ui/button'
 import { getComments } from '@/app/actions/comment'
 import { CommentItem } from '@/components/Post/CommentItem'
 import { useUser } from '@/hooks/useUser'
+import { getCommunity } from '@/app/actions/community'
+import { Community } from '@/types'
 
 interface PageParams {
   id: string
@@ -17,6 +19,7 @@ export default function Page({ params }: { params: Promise<PageParams> }) {
   const { id } = use(params)
 
   const [post, setPost] = useState<PostsResponse | null>(null)
+  const [community, setCommunity] = useState<Community | null>(null)
   const [comments, setComments] = useState<Comment[]>([])
   const { user: authenticatedUser } = useUser()
   const [isLoading, setIsLoading] = useState(true)
@@ -35,13 +38,17 @@ export default function Page({ params }: { params: Promise<PageParams> }) {
     const fetchData = async () => {
       try {
         setIsLoading(true)
-        const postReq = await getPost(id)
 
-        if (!postReq.success) {
-          throw new Error(postReq.message || 'Error loading post')
-        }
+        const postReq = await getPost(id)
+        if (!postReq.success) throw new Error(postReq.message)
 
         setPost(postReq.data)
+
+        const communityReq = await getCommunity(postReq.data.forumId.toString())
+        if (!communityReq.success) throw new Error(communityReq.message)
+
+        setCommunity(communityReq.data)
+
         await fetchComments()
       } catch (err) {
         console.error('Error fetching data:', err)
@@ -55,7 +62,7 @@ export default function Page({ params }: { params: Promise<PageParams> }) {
 
     fetchData()
   }, [id])
-
+  console.log(community)
   if (isLoading) {
     return (
       <main className="max-w-3xl mx-auto px-4 py-8">
@@ -91,13 +98,14 @@ export default function Page({ params }: { params: Promise<PageParams> }) {
 
   const isAuthor = post.Author.id === Number(authenticatedUser?.id)
   const currentUserId = authenticatedUser?.id?.toString() || null
-  console.log(comments)
+
   return (
     <main className="max-w-3xl mx-auto px-4 py-8">
       <PostCard
+        key={post.id}
         post={post}
-        communityId={post.Forum.Community.id}
-        communityName={post.Forum.Community.name}
+        communityId={post.forumId}
+        communityName={community?.name || 'Unknown'}
         isAuthor={isAuthor}
         initialVoteStatus={post.voteType}
       />

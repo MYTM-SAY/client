@@ -14,7 +14,7 @@ import {
 interface Props {
   communities: {
     communityName: string
-    communityId: number
+    communityId: number | string
   }[]
   posts: PostsResponse[]
   id: number | string
@@ -37,7 +37,7 @@ export default function ContributionsInCommunities({
     currentCommunityId === null
       ? []
       : posts.filter((post) => post.forumId === currentCommunityId)
-
+  console.log(filteredPosts)
   return (
     <div className="flex flex-col gap-8 w-full mt-10 ">
       <div className="flex-between flex-wrap gap-6 rounded-lg text-foreground px-4 py-2">
@@ -70,7 +70,7 @@ export default function ContributionsInCommunities({
           post={post}
           communityId={post.forumId}
           communityName={getCommunityName(post.forumId)}
-          isAuthor={post.authorId === id}
+          isAuthor={post.Author.id === id}
           initialVoteStatus={post.voteType}
         />
       ))}
