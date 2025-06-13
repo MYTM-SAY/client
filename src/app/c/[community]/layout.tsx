@@ -25,7 +25,7 @@ export default async function CommunityLayout({ children, params }: Props) {
     <section className="flex flex-col gap-4">
       <header className="">
         <h2 className="text-4xl text-center font-bold my-10">
-          Welcome to the {res.data.name} Community!
+          Welcome to {res.data.name}!
         </h2>
       </header>
       <CommunityNavBar /> {children}

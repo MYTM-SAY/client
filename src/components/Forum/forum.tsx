@@ -18,14 +18,13 @@ export default async function Forum({
   if (!postsReq.success) {
     return <>Internal Server Error</> // TODO: put the 500 page
   }
-  console.log(postsReq.data)
   const rposts = postsReq.data.map((post) => (
     <PostCard
       key={post.id}
       post={post}
       communityId={community.id}
       communityName={community.name}
-      isAuthor={authedUserId == post.authorId}
+      isAuthor={authedUserId == post.Author.id}
       initialVoteStatus={post.voteType}
     />
   ))

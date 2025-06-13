@@ -7,7 +7,7 @@ body {
 }
 
 .cont {
-  @apply container max-w-[1024px] px-5 mx-auto
+  @apply container max-w-[1024px] px-5 mx-auto;
 }
 
 @layer base {
@@ -372,4 +372,38 @@ body {
   .dark .MuiPagination-root .MuiPaginationItem-root.Mui-selected:hover {
     @apply bg-muted/80;
   }
+}
+
+@keyframes wave {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes progress {
+  0% {
+    width: 0;
+    opacity: 1;
+  }
+  90% {
+    width: 100%;
+    opacity: 1;
+  }
+  100% {
+    width: 100%;
+    opacity: 0;
+  }
+}
+
+.animate-wave {
+  animation: wave 1.2s ease-in-out infinite;
+}
+
+.animate-progress {
+  animation: progress 2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
 }

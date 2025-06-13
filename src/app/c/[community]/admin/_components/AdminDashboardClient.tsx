@@ -83,34 +83,27 @@ export default function AdminDashboardClient({
     setDeletingId(userId)
     setError(null)
 
-    try {
-      const result = await deleteMember(communityId, userId)
+    const result = await deleteMember(communityId, userId)
 
-      if (result.success) {
-        setMembers((prev) => prev.filter((member) => member.id !== userId))
-        toast({
-          title: 'Success',
-          description: 'Member removed successfully',
-        })
-      } else {
-        setError(result.message || 'Failed to delete member')
-        toast({
-          title: 'Error',
-          description: result.message || 'Failed to delete member',
-          variant: 'destructive',
-        })
-      }
-    } catch (error) {
-      setError('An error occurred while deleting the member')
-      console.error('Error deleting member:', error)
+    // Handle successful deletion (even with empty response)
+    if (!result || result.success !== false) {
+      setMembers((prev) => prev.filter((member) => member.id !== userId))
+      toast({
+        title: 'Success',
+        description: 'Member removed successfully',
+      })
+    }
+    // Handle error response
+    else {
+      setError(result.message || 'Failed to delete member')
       toast({
         title: 'Error',
-        description: 'An error occurred while deleting the member',
+        description: result.message || 'Failed to delete member',
         variant: 'destructive',
       })
-    } finally {
-      setDeletingId(null)
     }
+
+    setDeletingId(null)
   }
 
   const handleAction = (action: ActionType) => {
@@ -272,7 +265,7 @@ export default function AdminDashboardClient({
                     {members.map((member) => (
                       <div
                         key={member.id}
-                        className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent transition-colors"
+                        className="flex items-center justify-between p-4 border rounded-lg  transition-colors"
                       >
                         <div className="flex items-center space-x-4">
                           <Avatar className="w-10 h-10">
@@ -305,9 +298,7 @@ export default function AdminDashboardClient({
                           </div>
                         </div>
 
-                        <Button
-                          variant="ghost"
-                          size="icon"
+                        <button
                           onClick={() => handleDeleteMember(member.id)}
                           disabled={
                             deletingId === member.id || member.role === 'OWNER'
@@ -315,7 +306,7 @@ export default function AdminDashboardClient({
                           className={
                             member.role === 'OWNER'
                               ? 'text-muted-foreground cursor-not-allowed'
-                              : 'text-destructive hover:text-destructive-foreground hover:bg-destructive/10'
+                              : ' hover:text-destructive'
                           }
                         >
                           {deletingId === member.id ? (
@@ -323,7 +314,7 @@ export default function AdminDashboardClient({
                           ) : (
                             <Trash2 className="h-4 w-4" />
                           )}
-                        </Button>
+                        </button>
                       </div>
                     ))}
                   </div>
