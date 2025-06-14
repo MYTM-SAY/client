@@ -1,7 +1,7 @@
 // import { createClassroom } from '@/app/actions/classroom'
 
 import * as z from 'zod'
-import { useForm } from 'react-hook-form'
+import { useForm, useFieldArray } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
   Form,
@@ -26,6 +26,7 @@ import { instance } from '@/lib/utils/axios'
 import { Lesson, MaterialType } from '@/types'
 import { useState } from 'react'
 import LessonFileUploader from '@/components/LessonFileUploader'
+import { PlusIcon, X } from 'lucide-react'
 
 interface CreateLessonFormProps {
   sectionId: number
@@ -35,7 +36,9 @@ interface CreateLessonFormProps {
 
 const createLessonSchema = z.object({
   name: z.string().min(1),
-  notes: z.string().min(1),
+  notes: z.array(z.object({
+    content: z.string().min(1, "Note content is required")
+  })).min(1, "At least one note is required"),
   materialType: z.nativeEnum(MaterialType),
 })
 
@@ -51,9 +54,14 @@ export default function CreateLessonForm({
     resolver: zodResolver(createLessonSchema),
     defaultValues: {
       name: '',
-      notes: '',
+      notes: [{ content: '' }],
       materialType: MaterialType.DOC,
     },
+  })
+
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "notes"
   })
 
   const materialType = form.watch('materialType')
@@ -66,10 +74,13 @@ export default function CreateLessonForm({
 
     setIsSubmitting(true)
     try {
+      // Send notes as array of strings (server expects array format)
+      const notesArray = data.notes.map(note => note.content)
+      
       const res = await instance.post(`/lessons`, {
         lesson: {
           name: data.name,
-          notes: data.notes,
+          notes: notesArray, // Send as array as expected by server
           sectionId,
         },
         materials: [
@@ -86,7 +97,7 @@ export default function CreateLessonForm({
       if (res.data.success) {
         handleNewLesson({
           ...res.data.data,
-          Material: {
+          Materials: {
             ...res.data.data.Materials[0],
             materialType: res.data.data.Materials[0].materialType,
             fileUrl: res.data.data.Materials[0].fileUrl,
@@ -141,23 +152,49 @@ export default function CreateLessonForm({
           />
         </div>
         <div className="mb-4">
-          <FormField
-            control={form.control}
-            name="notes"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Notes</FormLabel>
-                <FormControl>
-                  <Textarea
-                    id="notes"
-                    placeholder="Enter notes for your lesson."
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <FormLabel>Notes</FormLabel>
+          <div className="space-y-3">
+            {fields.map((field, index) => (
+              <div key={field.id} className="flex gap-2">
+                <FormField
+                  control={form.control}
+                  name={`notes.${index}.content`}
+                  render={({ field: noteField }) => (
+                    <FormItem className="flex-1">
+                      <FormControl>
+                        <Textarea
+                          placeholder={`Note ${index + 1}`}
+                          {...noteField}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {fields.length > 1 && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => remove(index)}
+                    className="mt-0 px-2"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                )}
+              </div>
+            ))}
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => append({ content: '' })}
+              className="w-full"
+            >
+              <PlusIcon className="h-4 w-4 mr-2" />
+              Add Note
+            </Button>
+          </div>
         </div>
         <div className="mb-4">
           <FormField

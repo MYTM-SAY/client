@@ -118,11 +118,12 @@ export interface Section {
 export interface Lesson {
   id: number
   name: string
-  notes: string
+  notes: string[] | string // Support both array (new) and string (existing) formats
   sectionId: number
   createdAt: string
   updatedAt: string
   Materials: Material
+  Material?: Material // Optional for backward compatibility when creating new lessons
 }
 
 export interface Material {
