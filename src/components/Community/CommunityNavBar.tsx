@@ -24,10 +24,10 @@ export default function CommunityNavBar() {
   }, [community])
 
   const navItems = [
-    { name: 'Forum', path: '' },
-    { name: 'Classroom', path: 'classroom' },
-    { name: 'Calendar', path: 'calendar' },
-    { name: 'Leaderboards', path: 'leaderboards' },
+    ...(role === null ? [] : [{ name: 'Forum', path: '' }]),
+    ...(role === null ? [] : [{ name: 'Classroom', path: 'classroom' }]),
+    ...(role === null ? [] : [{ name: 'Calendar', path: 'calendar' }]),
+    ...(role === null ? [] : [{ name: 'Leaderboards', path: 'leaderboards' }]),
     { name: 'Members', path: 'members' },
     { name: 'About', path: 'about' },
     ...(role === 'OWNER' ? [{ name: 'Admin', path: 'admin' }] : []),

@@ -138,6 +138,7 @@ export default async function Page({ params }: Props) {
                   | 'MODERATOR'
                   | null
               }
+              isPending={communityInfo.data.isPendingRequest}
             />
           </div>
         </div>
