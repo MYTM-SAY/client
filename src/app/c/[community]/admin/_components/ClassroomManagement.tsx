@@ -564,8 +564,8 @@ const ClassroomManagement = ({
       {/* Modals */}
       {showClassroomForm && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-hidden">
-            <div className="flex justify-between items-center p-6 border-b border-gray-200">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-hidden flex flex-col">
+            <div className="flex justify-between items-center p-6 border-b border-gray-200 flex-shrink-0">
               <h3 className="text-xl font-bold text-gray-900">Create New Classroom</h3>
               <button
                 onClick={() => setShowClassroomForm(false)}
@@ -574,7 +574,7 @@ const ClassroomManagement = ({
                 <X className="h-5 w-5" />
               </button>
             </div>
-            <div className="p-6">
+            <div className="p-6 overflow-y-auto flex-1">
             <CreateClassroomForm
               handleNewClassroom={handleNewCreateClassroom}
               setShowClassroomForm={setShowClassroomForm}
@@ -587,8 +587,8 @@ const ClassroomManagement = ({
 
       {showSectionForm && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-hidden">
-            <div className="flex justify-between items-center p-6 border-b border-gray-200">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-hidden flex flex-col">
+            <div className="flex justify-between items-center p-6 border-b border-gray-200 flex-shrink-0">
               <h3 className="text-xl font-bold text-gray-900">Add New Section</h3>
               <button
                 onClick={() => setShowSectionForm(false)}
@@ -597,7 +597,7 @@ const ClassroomManagement = ({
                 <X className="h-5 w-5" />
               </button>
             </div>
-            <div className="p-6">
+            <div className="p-6 overflow-y-auto flex-1">
             <CreateSectionForm
               handleNewSection={handleNewCreateSection}
               setShowSectionForm={setShowSectionForm}
@@ -610,8 +610,8 @@ const ClassroomManagement = ({
 
       {showLessonForm && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-hidden">
-            <div className="flex justify-between items-center p-6 border-b border-gray-200">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-hidden flex flex-col">
+            <div className="flex justify-between items-center p-6 border-b border-gray-200 flex-shrink-0">
               <h3 className="text-xl font-bold text-gray-900">Add New Lesson</h3>
               <button
                 onClick={() => setShowLessonForm(false)}
@@ -620,7 +620,7 @@ const ClassroomManagement = ({
                 <X className="h-5 w-5" />
               </button>
             </div>
-            <div className="p-6">
+            <div className="p-6 overflow-y-auto flex-1">
             <CreateLessonForm
               handleNewLesson={handleNewCreateLesson}
               setShowLessonForm={setShowLessonForm}

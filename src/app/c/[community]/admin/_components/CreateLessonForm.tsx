@@ -131,7 +131,8 @@ export default function CreateLessonForm({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col h-full">
+        <div className="flex-1 space-y-4">
         <div className="mb-4">
           <FormField
             control={form.control}
@@ -246,7 +247,8 @@ export default function CreateLessonForm({
             </p>
           )}
         </div>
-        <div className="flex justify-end space-x-2">
+        </div>
+        <div className="flex justify-end space-x-2 pt-4 border-t border-gray-200 mt-6">
           <Button
             type="button"
             onClick={() => setShowLessonForm(false)}
