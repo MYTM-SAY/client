@@ -293,3 +293,23 @@ export async function joinCommunity(
     }
   }
 }
+
+export async function changeCommunityVisibility(
+  communityId: string | number,
+  isPublic: boolean,
+) {
+  try {
+    const res = await axiosInstance.put(`/communities/${communityId}/`, {
+      isPublic,
+    })
+    return res.data
+  } catch (error) {
+    const axiosError = error as AxiosError
+    const response = axiosError.response as never as ServerError
+    return {
+      success: false,
+      message: response.message || 'Internal server error',
+      statusCode: axiosError.status,
+    }
+  }
+}

@@ -12,6 +12,7 @@ import {
   UserCheck,
   Trash2,
   X,
+  Loader2,
 } from 'lucide-react'
 import {
   Card,
@@ -33,7 +34,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { deleteMember } from '@/app/actions/community'
+import { changeCommunityVisibility, deleteMember } from '@/app/actions/community'
 import { toast } from '@/hooks/use-toast'
 import { Classroom } from '@/types'
 
@@ -58,12 +59,14 @@ interface AdminDashboardClientProps {
   communityId: string
   initialClassrooms: Classroom[]
   initialMembers: Member[]
+  initialVisibility: 'public' | 'private'
 }
 
 export default function AdminDashboardClient({
   communityId,
   initialClassrooms,
   initialMembers,
+  initialVisibility,
 }: AdminDashboardClientProps) {
   const [classrooms] = useState<Classroom[]>(initialClassrooms)
   const [members, setMembers] = useState<Member[]>(initialMembers)
@@ -75,7 +78,8 @@ export default function AdminDashboardClient({
   const [role, setRole] = useState('member')
   const [communityVisibility, setCommunityVisibility] = useState<
     'public' | 'private'
-  >('public')
+  >(initialVisibility)
+  const [visibilityLoading, setVisibilityLoading] = useState(false)
   const [deletingId, setDeletingId] = useState<number | null>(null)
   const [error, setError] = useState<string | null>(null)
 
@@ -125,12 +129,41 @@ export default function AdminDashboardClient({
     })
   }
 
-  const handleVisibilityChange = (newVisibility: 'public' | 'private') => {
-    setCommunityVisibility(newVisibility)
-    toast({
-      title: 'Visibility updated',
-      description: `Community is now ${newVisibility}`,
-    })
+  const handleVisibilityChange = async (newVisibility: 'public' | 'private') => {
+    setVisibilityLoading(true)
+    setError(null)
+    
+    try {
+      const isPublic = newVisibility === 'public'
+      const result = await changeCommunityVisibility(communityId, isPublic)
+      
+      if (result.success) {
+        setCommunityVisibility(newVisibility)
+        toast({
+          title: 'Success',
+          description: `Community visibility changed to ${newVisibility}`,
+        })
+        console.log(`Community visibility changed to: ${newVisibility}`)
+      } else {
+        setError(result.message || 'Failed to change community visibility')
+        toast({
+          title: 'Error',
+          description: result.message || 'Failed to change community visibility',
+          variant: 'destructive',
+        })
+      }
+    } catch (error) {
+      const errorMessage = 'An error occurred while changing community visibility'
+      setError(errorMessage)
+      toast({
+        title: 'Error',
+        description: errorMessage,
+        variant: 'destructive',
+      })
+      console.error('Error changing community visibility:', error)
+    } finally {
+      setVisibilityLoading(false)
+    }
   }
 
   const stats = [
@@ -501,9 +534,20 @@ export default function AdminDashboardClient({
                         communityVisibility === 'public' ? 'private' : 'public',
                       )
                     }
+                    disabled={visibilityLoading}
+                    className="flex items-center gap-2"
                   >
-                    Change to{' '}
-                    {communityVisibility === 'public' ? 'Private' : 'Public'}
+                    {visibilityLoading ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Updating...
+                      </>
+                    ) : (
+                      <>
+                        Change to{' '}
+                        {communityVisibility === 'public' ? 'Private' : 'Public'}
+                      </>
+                    )}
                   </Button>
                 </div>
               </CardContent>
