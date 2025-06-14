@@ -6,7 +6,9 @@ interface FeedAuthor {
   id: number
   username: string
   fullname: string
-  profilePictureURL: string
+  UserProfile: {
+    profilePictureURL: string
+  }
 }
 
 export interface FeedPost {
@@ -18,9 +20,40 @@ export interface FeedPost {
   forumId: number
   createdAt: string
   updatedAt: string
-  commentCount: number
-  author: FeedAuthor
+  commentsCount: number
+  Author: FeedAuthor
   voteType: 'UPVOTE' | 'DOWNVOTE' | null
+  Forum: {
+    Community: {
+      id: number
+      name: string
+      description: string
+      bio: string
+      createdAt: string
+      updatedAt: string
+      coverImgURL: string
+      logoImgURL: string
+      ownerId: number
+      isPublic: boolean
+    }
+  }
+  Comments: {
+    id: number
+    content: string
+    parentId: number | null
+    postId: number
+    authorId: number
+    createdAt: string
+    updatedAt: string
+    Author: {
+      id: number
+      username: string
+      fullname: string
+      UserProfile: {
+        profilePictureURL: string
+      }
+    }
+  }[]
 }
 
 interface FeedResponse {
@@ -40,7 +73,7 @@ const useFeed = () => {
         setIsLoading(true)
         setError(null)
         const response = await instance.get<FeedResponse>('/posts/me/feed')
-        
+
         if (response.data.success) {
           setPosts(response.data.data)
         } else {
@@ -48,7 +81,10 @@ const useFeed = () => {
         }
       } catch (err) {
         const error = err as ApiResponseError
-        setError(error.response?.data?.message || 'An error occurred while fetching the feed')
+        setError(
+          error.response?.data?.message ||
+            'An error occurred while fetching the feed',
+        )
         setPosts([])
       } finally {
         setIsLoading(false)
@@ -63,7 +99,7 @@ const useFeed = () => {
       setIsLoading(true)
       setError(null)
       const response = await instance.get<FeedResponse>('/posts/me/feed')
-      
+
       if (response.data.success) {
         setPosts(response.data.data)
       } else {
@@ -71,7 +107,10 @@ const useFeed = () => {
       }
     } catch (err) {
       const error = err as ApiResponseError
-      setError(error.response?.data?.message || 'An error occurred while fetching the feed')
+      setError(
+        error.response?.data?.message ||
+          'An error occurred while fetching the feed',
+      )
       setPosts([])
     } finally {
       setIsLoading(false)
@@ -81,4 +120,4 @@ const useFeed = () => {
   return { posts, isLoading, error, refetchFeed }
 }
 
-export default useFeed 
+export default useFeed

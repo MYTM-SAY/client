@@ -21,7 +21,7 @@ const IMG_FALLBACK = '/imgFallBack.581a9fe3.png'
 interface Props {
   post: PostsResponse
   communityId: number | string
-  communityName: string
+  communityName: string | undefined
   isAuthor: boolean
   initialVoteStatus: 'UPVOTE' | 'DOWNVOTE' | null
 }
@@ -83,7 +83,8 @@ export default function PostCard({
           <div className="relative w-12 h-12 flex-shrink-0">
             <Image
               src={
-                !profileImageError && post.Author?.UserProfile?.profilePictureURL
+                !profileImageError &&
+                post.Author?.UserProfile?.profilePictureURL
                   ? post.Author?.UserProfile?.profilePictureURL
                   : IMG_FALLBACK
               }

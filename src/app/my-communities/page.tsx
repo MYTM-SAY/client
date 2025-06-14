@@ -8,19 +8,18 @@ import {
 import JoinedCommunityCard from '@/components/HomePage/CommunityCardImproved'
 import { getJoinedCommunities } from '@/app/actions/community'
 import { getUser } from '@/lib/actions/auth'
-import { getTheRoleOfAuth } from '@/app/actions/community'
 import { getFav, type FavoriteResponse } from '@/app/actions/community'
+
 export default async function MyCommunitiesPage() {
   const userReq = await getUser()
   if (!userReq.success) return <>Internal server error</>
-  const [roleReq, joinedCommunitiesReq, favReq] = await Promise.all([
-    getTheRoleOfAuth(userReq.user.id),
-    getJoinedCommunities(userReq.user.id),
+
+  const [joinedCommunitiesReq, favReq] = await Promise.all([
+    getJoinedCommunities(String(userReq.user.id)),
     getFav(),
   ])
 
-  if (!roleReq.success || !joinedCommunitiesReq.success)
-    return <>Internal server error</>
+  if (!joinedCommunitiesReq.success) return <>Internal server error</>
 
   const joinedCommunities = joinedCommunitiesReq.data
   const favoriteCommunities: FavoriteResponse[] = favReq.success
@@ -38,7 +37,7 @@ export default async function MyCommunitiesPage() {
       creator: joined?.Community.Owner?.fullname || 'Unknown',
     }
   }
-  console.log(favoriteCommunities)
+
   return (
     <div className="overflow-y-auto no-scrollbar w-full mx-auto max-w-[1000px]">
       <Accordion type="single" collapsible>
@@ -69,7 +68,7 @@ export default async function MyCommunitiesPage() {
                   <JoinedCommunityCard
                     key={fav.communityId}
                     id={fav.communityId}
-                    userRole={roleReq.data}
+                    communityId={fav.communityId} // Pass community ID for role lookup
                     name={fav.name}
                     members={members}
                     isPublic={fav.isPublic}
@@ -93,7 +92,7 @@ export default async function MyCommunitiesPage() {
                 <JoinedCommunityCard
                   key={comm.Community.id}
                   id={comm.Community.id}
-                  userRole={roleReq.data}
+                  communityId={comm.Community.id} // Pass community ID for role lookup
                   name={comm.Community.name}
                   members={Number(comm.Community.MembersCount)}
                   isPublic={comm.Community.isPublic}

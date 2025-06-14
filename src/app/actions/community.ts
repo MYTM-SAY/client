@@ -58,7 +58,7 @@ interface GetJoinedCommunitiesResponse {
 }
 
 export async function getJoinedCommunities(
-  id: string,
+  id: string | number,
 ): Promise<ServerResponse<GetJoinedCommunitiesResponse[]>> {
   try {
     const res = await axiosInstance.get(`/users/${id}/communities`)
@@ -89,7 +89,7 @@ export async function leaveCommunity(id: string | number) {
   }
 }
 
-export async function getTheRoleOfAuth(id: string) {
+export async function getTheRoleOfAuth(id: string | number) {
   try {
     const res = await axiosInstance.get(
       `/communities/${id}/user-role-in-a-community`,

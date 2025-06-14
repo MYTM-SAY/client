@@ -13,7 +13,7 @@ import { redirect } from 'next/navigation'
 
 const NavProfile = async () => {
   const userReq = await getUser()
-  
+  console.log(userReq)
   const handleSignOut = async () => {
     'use server'
     await signOutAction()
@@ -21,7 +21,7 @@ const NavProfile = async () => {
   }
 
   if (!userReq.success) {
-    return "An error has occurred"
+    return 'An error has occurred'
   }
 
   return (
@@ -30,8 +30,8 @@ const NavProfile = async () => {
       <DropdownMenu>
         <DropdownMenuTrigger>
           <Avatar>
-            <AvatarImage src="/pp-fallback.svg" />
-            <AvatarFallback>CN</AvatarFallback>
+            <AvatarImage src={userReq.user.profilePictureURL} />
+            <AvatarFallback>{userReq.user.username.charAt(0)}</AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="custom-dropdown-content">
