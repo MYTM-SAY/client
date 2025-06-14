@@ -58,7 +58,7 @@ const AppSidebar = async () => {
               isActive={false}
             >
               <Image
-                src="/pp-fallback.svg"
+                src={comm.Community.logoImgURL || '/pp-fallback.svg'}
                 width={56}
                 height={56}
                 alt="Community"
