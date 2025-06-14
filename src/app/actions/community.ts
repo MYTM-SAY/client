@@ -20,6 +20,7 @@ export interface GetCommunityResponse {
   membersCount: number
   role: Role
   onlineMembers: number | string
+  isPendingRequest: boolean
 }
 
 export async function getCommunity(
@@ -285,7 +286,8 @@ export async function joinCommunity(
     return res.data
   } catch (error) {
     const axiosError = error as AxiosError
-    const response = axiosError.response as never as ServerError
+    const response = axiosError.response?.data as never as ServerError
+    console.log('response', response)
     return {
       success: false,
       message: response.message || 'Internal server error',
