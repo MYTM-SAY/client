@@ -47,10 +47,13 @@ export type ApiResponseError = {
 }
 
 export type UserFromToken = {
-  id: string | number
+  id: number
   email: string
   username: string
   fullname: string
+  iat: number
+  exp: number
+  profilePictureURL: string
 }
 
 export interface SidebarProps {
