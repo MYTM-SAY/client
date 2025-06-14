@@ -139,11 +139,12 @@ export default function CreateLessonForm({
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Lesson Name</FormLabel>
+                <FormLabel className="dark:text-gray-200">Lesson Name</FormLabel>
                 <FormControl>
                   <Input
                     id="name"
                     placeholder="Enter the name of your lesson"
+                    className="dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400"
                     {...field}
                   />
                 </FormControl>
@@ -153,7 +154,7 @@ export default function CreateLessonForm({
           />
         </div>
         <div className="mb-4">
-          <FormLabel>Notes</FormLabel>
+          <FormLabel className="dark:text-gray-200">Notes</FormLabel>
           <div className="space-y-3">
             {fields.map((field, index) => (
               <div key={field.id} className="flex gap-2">
@@ -165,6 +166,7 @@ export default function CreateLessonForm({
                       <FormControl>
                         <Textarea
                           placeholder={`Note ${index + 1}`}
+                          className="dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400"
                           {...noteField}
                         />
                       </FormControl>
@@ -178,7 +180,7 @@ export default function CreateLessonForm({
                     variant="outline"
                     size="sm"
                     onClick={() => remove(index)}
-                    className="mt-0 px-2"
+                    className="mt-0 px-2 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
                   >
                     <X className="h-4 w-4" />
                   </Button>
@@ -190,7 +192,7 @@ export default function CreateLessonForm({
               variant="outline"
               size="sm"
               onClick={() => append({ content: '' })}
-              className="w-full"
+              className="w-full dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
             >
               <PlusIcon className="h-4 w-4 mr-2" />
               Add Note
@@ -203,7 +205,7 @@ export default function CreateLessonForm({
             name="materialType"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Material Type</FormLabel>
+                <FormLabel className="dark:text-gray-200">Material Type</FormLabel>
                 <FormControl>
                   <Select
                     onValueChange={(value) => {
@@ -213,15 +215,15 @@ export default function CreateLessonForm({
                     }}
                     defaultValue={field.value}
                   >
-                    <SelectTrigger className="w-full">
+                    <SelectTrigger className="w-full dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                       <SelectValue placeholder="Select material type" />
                     </SelectTrigger>
-                    <SelectContent className="bg-white dark:bg-gray-800">
-                      <SelectItem value={MaterialType.DOC}>Document</SelectItem>
-                      <SelectItem value={MaterialType.VIDEO}>Video</SelectItem>
-                      <SelectItem value={MaterialType.AUDIO}>Audio</SelectItem>
-                      <SelectItem value={MaterialType.IMG}>Image</SelectItem>
-                      <SelectItem value={MaterialType.FILE}>PDF</SelectItem>
+                    <SelectContent className="bg-white dark:bg-gray-800 dark:border-gray-600">
+                      <SelectItem value={MaterialType.DOC} className="dark:text-white dark:hover:bg-gray-700">Document</SelectItem>
+                      <SelectItem value={MaterialType.VIDEO} className="dark:text-white dark:hover:bg-gray-700">Video</SelectItem>
+                      <SelectItem value={MaterialType.AUDIO} className="dark:text-white dark:hover:bg-gray-700">Audio</SelectItem>
+                      <SelectItem value={MaterialType.IMG} className="dark:text-white dark:hover:bg-gray-700">Image</SelectItem>
+                      <SelectItem value={MaterialType.FILE} className="dark:text-white dark:hover:bg-gray-700">PDF</SelectItem>
                     </SelectContent>
                   </Select>
                 </FormControl>
@@ -231,7 +233,7 @@ export default function CreateLessonForm({
           />
         </div>
         <div className="mb-4">
-          <FormLabel>Lesson Material</FormLabel>
+          <FormLabel className="dark:text-gray-200">Lesson Material</FormLabel>
           <div className="mt-2">
             <LessonFileUploader
               materialType={materialType}
@@ -242,22 +244,27 @@ export default function CreateLessonForm({
             />
           </div>
           {form.formState.errors.root && (
-            <p className="text-sm text-red-500 mt-2">
+            <p className="text-sm text-red-500 dark:text-red-400 mt-2">
               {form.formState.errors.root.message}
             </p>
           )}
         </div>
         </div>
-        <div className="flex justify-end space-x-2 pt-4 border-t border-gray-200 mt-6">
+        <div className="flex justify-end space-x-2 pt-4 border-t border-gray-200 dark:border-gray-700 mt-6">
           <Button
             type="button"
             onClick={() => setShowLessonForm(false)}
             variant="outline"
             disabled={isSubmitting}
+            className="dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
           >
             Cancel
           </Button>
-          <Button type="submit" disabled={isSubmitting || !fileUrl}>
+          <Button 
+            type="submit" 
+            disabled={isSubmitting || !fileUrl}
+            className="dark:bg-blue-600 dark:hover:bg-blue-700"
+          >
             {isSubmitting ? 'Creating...' : 'Create Lesson'}
           </Button>
         </div>
