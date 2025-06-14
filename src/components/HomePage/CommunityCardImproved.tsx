@@ -1,10 +1,10 @@
 'use client'
 import Btn from '../ui/Btn'
 import { GiExitDoor } from 'react-icons/gi'
-import { Earth, GlobeLock, Users, EllipsisIcon } from 'lucide-react'
+import { Earth, GlobeLock, Users, EllipsisIcon, Loader } from 'lucide-react'
 import Link from 'next/link'
-import { leaveCommunity } from '@/app/actions/community'
-import { useState, useOptimistic } from 'react'
+import { leaveCommunity, getTheRoleOfAuth } from '@/app/actions/community'
+import { useState, useOptimistic, useEffect } from 'react'
 import { useToast } from '@/hooks/use-toast'
 import { useRouter } from 'next/navigation'
 import {
@@ -29,7 +29,7 @@ import { toggleFav } from '@/app/actions/community'
 interface CommunityCardProps {
   name?: string
   id: number | string
-  userRole: string
+  communityId: number | string // Add communityId prop
   members?: number
   isPublic?: boolean
   creator?: string
@@ -40,7 +40,7 @@ interface CommunityCardProps {
 export default function JoinedCommunityCard({
   name = 'Community Name',
   id,
-  userRole,
+  communityId, // Destructure communityId
   members = 0,
   isPublic = true,
   creator = 'Unknown',
@@ -51,6 +51,8 @@ export default function JoinedCommunityCard({
   const router = useRouter()
   const [showLeaveDialog, setShowLeaveDialog] = useState(false)
   const [isLeaving, setIsLeaving] = useState(false)
+  const [userRole, setUserRole] = useState<string | null>(null)
+  const [loadingRole, setLoadingRole] = useState(true)
 
   // State for cover image error handling
   const [coverImageError, setCoverImageError] = useState(false)
@@ -62,6 +64,35 @@ export default function JoinedCommunityCard({
     (state, newValue: boolean) => newValue,
   )
   const [isFavLoading, setIsFavLoading] = useState(false)
+
+  // Fetch user role for this community
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      try {
+        setLoadingRole(true)
+        const roleReq = await getTheRoleOfAuth(communityId)
+        if (roleReq.success) {
+          setUserRole(roleReq.data)
+        } else {
+          toast({
+            variant: 'destructive',
+            title: 'Role Error',
+            description: roleReq.message || 'Failed to fetch user role',
+          })
+        }
+      } catch (error) {
+        toast({
+          variant: 'destructive',
+          title: 'Error',
+          description: 'Failed to fetch user role',
+        })
+      } finally {
+        setLoadingRole(false)
+      }
+    }
+
+    fetchUserRole()
+  }, [communityId, toast])
 
   const isOwner = userRole === 'OWNER'
 
@@ -205,40 +236,46 @@ export default function JoinedCommunityCard({
           </h3>
 
           {/* Dropdown Menu */}
-          <DropdownMenu>
-            <DropdownMenuTrigger
-              className="ml-2 rounded-full p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-              disabled={isOwner}
-              aria-label="Community options"
-            >
-              <EllipsisIcon
-                size={20}
-                className="text-gray-500 dark:text-gray-400"
-              />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-              className="min-w-[200px] border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl bg-white dark:bg-gray-900"
-              align="end"
-            >
-              {!isOwner ? (
-                <DropdownMenuItem
-                  className="flex items-center gap-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 px-3 py-2 rounded cursor-pointer transition-colors"
-                  onClick={() => setShowLeaveDialog(true)}
-                >
-                  <GiExitDoor className="text-lg" />
-                  <span>Leave community</span>
-                </DropdownMenuItem>
-              ) : (
-                <DropdownMenuItem
-                  className="flex items-center gap-2 text-amber-500 px-3 py-2"
-                  disabled
-                >
-                  <GiExitDoor className="text-lg" />
-                  <span>Owner cannot leave</span>
-                </DropdownMenuItem>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          {loadingRole ? (
+            <div className="ml-2 rounded-full p-1.5">
+              <Loader className="animate-spin w-5 h-5 text-gray-500 dark:text-gray-400" />
+            </div>
+          ) : (
+            <DropdownMenu>
+              <DropdownMenuTrigger
+                className="ml-2 rounded-full p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                disabled={isOwner}
+                aria-label="Community options"
+              >
+                <EllipsisIcon
+                  size={20}
+                  className="text-gray-500 dark:text-gray-400"
+                />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                className="min-w-[200px] border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl bg-white dark:bg-gray-900"
+                align="end"
+              >
+                {!isOwner ? (
+                  <DropdownMenuItem
+                    className="flex items-center gap-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 px-3 py-2 rounded cursor-pointer transition-colors"
+                    onClick={() => setShowLeaveDialog(true)}
+                  >
+                    <GiExitDoor className="text-lg" />
+                    <span>Leave community</span>
+                  </DropdownMenuItem>
+                ) : (
+                  <DropdownMenuItem
+                    className="flex items-center gap-2 text-amber-500 px-3 py-2"
+                    disabled
+                  >
+                    <GiExitDoor className="text-lg" />
+                    <span>Owner cannot leave</span>
+                  </DropdownMenuItem>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
         </div>
 
         {/* Creator Info */}

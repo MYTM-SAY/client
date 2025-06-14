@@ -89,7 +89,7 @@ export async function leaveCommunity(id: string | number) {
   }
 }
 
-export async function getTheRoleOfAuth(id: string) {
+export async function getTheRoleOfAuth(id: string | number) {
   try {
     const res = await axiosInstance.get(
       `/communities/${id}/user-role-in-a-community`,
