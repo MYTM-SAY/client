@@ -9,6 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
 import Link from 'next/link'
 import { getUser, signOutAction } from '@/lib/actions/auth'
+import { redirect } from 'next/navigation'
 
 const NavProfile = async () => {
   const userReq = await getUser()
@@ -16,6 +17,7 @@ const NavProfile = async () => {
   const handleSignOut = async () => {
     'use server'
     await signOutAction()
+    redirect('/sign-in')
   }
 
   if (!userReq.success) {

@@ -83,8 +83,8 @@ export default function PostCard({
           <div className="relative w-12 h-12 flex-shrink-0">
             <Image
               src={
-                !profileImageError && post.Author.UserProfile.profilePictureURL
-                  ? post.Author.UserProfile.profilePictureURL
+                !profileImageError && post.Author?.UserProfile?.profilePictureURL
+                  ? post.Author?.UserProfile?.profilePictureURL
                   : IMG_FALLBACK
               }
               className="rounded-full object-cover border-2 border-white dark:border-gray-800"

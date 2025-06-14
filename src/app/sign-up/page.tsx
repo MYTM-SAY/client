@@ -100,30 +100,30 @@ export default function RegisterPage() {
     <main className="w-screen min-h-screen fixed top-0 left-0 bg-background z-50">
       <div className="container relative min-h-screen flex-col items-center justify-center grid lg:max-w-none lg:grid-cols-2 lg:px-0">
         <div className="relative hidden h-full flex-col bg-muted p-10 text-white lg:flex dark:border-r">
-          <div className="absolute inset-0 bg-gradient-to-br from-[#1C2533] to-[#2A3441]" />
+          <div className="absolute inset-0 bg-gradient-to-br from-[#1e3a8a] to-[#1e40af]" />
           
           {/* Decorative elements */}
           <div className="absolute inset-0 opacity-10">
             <div className="absolute top-16 left-8">
-              <Target className="h-14 w-14 text-amber-500" />
+              <Target className="h-14 w-14 text-blue-300" />
             </div>
             <div className="absolute top-32 right-16">
-              <Lightbulb className="h-12 w-12 text-amber-400" />
+              <Lightbulb className="h-12 w-12 text-blue-400" />
             </div>
             <div className="absolute bottom-32 left-16">
-              <BookOpen className="h-16 w-16 text-amber-300" />
+              <BookOpen className="h-16 w-16 text-blue-500" />
             </div>
             <div className="absolute bottom-48 right-12">
-              <GraduationCap className="h-12 w-12 text-amber-500" />
+              <GraduationCap className="h-12 w-12 text-blue-300" />
             </div>
             <div className="absolute top-60 left-4">
-              <Users className="h-10 w-10 text-amber-400" />
+              <Users className="h-10 w-10 text-blue-400" />
             </div>
           </div>
 
           <div className="relative z-20 flex items-center text-lg font-medium">
-            <Icons.logo className="mr-2 h-8 w-8 text-amber-500" />
-            <span className="text-2xl font-bold bg-gradient-to-r from-amber-400 to-amber-600 bg-clip-text text-transparent">
+            <Icons.logo className="mr-2 h-8 w-8 text-blue-300" />
+            <span className="text-2xl font-bold bg-gradient-to-r from-blue-200 to-blue-400 bg-clip-text text-transparent">
               Learnverse
             </span>
           </div>
@@ -141,19 +141,19 @@ export default function RegisterPage() {
               
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
-                  <div className="flex-shrink-0 w-2 h-2 bg-amber-500 rounded-full"></div>
+                  <div className="flex-shrink-0 w-2 h-2 bg-blue-300 rounded-full"></div>
                   <span className="text-sm">Join vibrant learning communities</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="flex-shrink-0 w-2 h-2 bg-amber-500 rounded-full"></div>
+                  <div className="flex-shrink-0 w-2 h-2 bg-blue-300 rounded-full"></div>
                   <span className="text-sm">Create and share educational content</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="flex-shrink-0 w-2 h-2 bg-amber-500 rounded-full"></div>
+                  <div className="flex-shrink-0 w-2 h-2 bg-blue-300 rounded-full"></div>
                   <span className="text-sm">Track your learning progress</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="flex-shrink-0 w-2 h-2 bg-amber-500 rounded-full"></div>
+                  <div className="flex-shrink-0 w-2 h-2 bg-blue-300 rounded-full"></div>
                   <span className="text-sm">Access personalized recommendations</span>
                 </div>
               </div>
@@ -162,7 +162,7 @@ export default function RegisterPage() {
                 <p className="text-lg italic">
                   &quot;Since joining Learnverse, I&apos;ve been able to connect with amazing educators and students. The platform makes collaborative learning feel natural and engaging.&quot;
                 </p>
-                <footer className="text-sm text-amber-400 font-medium">
+                <footer className="text-sm text-blue-200 font-medium">
                   Maria Rodriguez, Graduate Student
                 </footer>
               </blockquote>
@@ -291,7 +291,7 @@ export default function RegisterPage() {
                   )}
                 />
                 
-                <Button className="w-full h-11 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-medium" type="submit" disabled={isLoading}>
+                <Button className="w-full h-11 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium" type="submit" disabled={isLoading}>
                   {isLoading && (
                     <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
                   )}
@@ -311,7 +311,7 @@ export default function RegisterPage() {
               </div>
             </div>
             
-            <Button
+            {/* <Button
               variant="outline"
               type="button"
               className="h-11"
@@ -326,12 +326,12 @@ export default function RegisterPage() {
                 <Icons.google className="mr-2 h-4 w-4" />
               )}
               Sign up with Google
-            </Button>
+            </Button> */}
             
             <p className="px-8 text-center text-sm text-muted-foreground">
               <Link
                 href="/sign-in"
-                className="hover:text-amber-600 underline underline-offset-4 font-medium"
+                className="hover:text-blue-700 underline underline-offset-4 font-medium"
               >
                 Already have an account? Sign in here
               </Link>

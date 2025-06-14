@@ -63,27 +63,27 @@ export default function LoginPage() {
     <main className="w-screen min-h-screen fixed top-0 left-0 bg-background z-50">
       <div className="container relative min-h-screen flex-col items-center justify-center grid lg:max-w-none lg:grid-cols-2 lg:px-0">
         <div className="relative hidden h-full flex-col bg-muted p-10 text-white lg:flex dark:border-r">
-          <div className="absolute inset-0 bg-gradient-to-br from-[#1C2533] to-[#2A3441]" />
+          <div className="absolute inset-0 bg-gradient-to-br from-[#1e3a8a] to-[#1e40af]" />
           
           {/* Decorative elements */}
           <div className="absolute inset-0 opacity-10">
             <div className="absolute top-20 left-10">
-              <BookOpen className="h-16 w-16 text-amber-500" />
+              <BookOpen className="h-16 w-16 text-blue-300" />
             </div>
             <div className="absolute top-40 right-20">
-              <GraduationCap className="h-12 w-12 text-amber-400" />
+              <GraduationCap className="h-12 w-12 text-blue-400" />
             </div>
             <div className="absolute bottom-40 left-20">
-              <Users className="h-14 w-14 text-amber-300" />
+              <Users className="h-14 w-14 text-blue-500" />
             </div>
             <div className="absolute bottom-60 right-10">
-              <Star className="h-10 w-10 text-amber-500" />
+              <Star className="h-10 w-10 text-blue-300" />
             </div>
           </div>
 
           <div className="relative z-20 flex items-center text-lg font-medium">
-            <Icons.logo className="mr-2 h-8 w-8 text-amber-500" />
-            <span className="text-2xl font-bold bg-gradient-to-r from-amber-400 to-amber-600 bg-clip-text text-transparent">
+            <Icons.logo className="mr-2 h-8 w-8 text-blue-300" />
+            <span className="text-2xl font-bold bg-gradient-to-r from-blue-200 to-blue-400 bg-clip-text text-transparent">
               Learnverse
             </span>
           </div>
@@ -101,15 +101,15 @@ export default function LoginPage() {
               
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
-                  <div className="flex-shrink-0 w-2 h-2 bg-amber-500 rounded-full"></div>
+                  <div className="flex-shrink-0 w-2 h-2 bg-blue-300 rounded-full"></div>
                   <span className="text-sm">Interactive learning communities</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="flex-shrink-0 w-2 h-2 bg-amber-500 rounded-full"></div>
+                  <div className="flex-shrink-0 w-2 h-2 bg-blue-300 rounded-full"></div>
                   <span className="text-sm">Real-time collaboration tools</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="flex-shrink-0 w-2 h-2 bg-amber-500 rounded-full"></div>
+                  <div className="flex-shrink-0 w-2 h-2 bg-blue-300 rounded-full"></div>
                   <span className="text-sm">Personalized learning experiences</span>
                 </div>
               </div>
@@ -118,7 +118,7 @@ export default function LoginPage() {
                 <p className="text-lg italic">
                   &quot;Learnverse has revolutionized how I engage with my students. The community features and interactive tools have made learning more collaborative and exciting than ever.&quot;
                 </p>
-                <footer className="text-sm text-amber-400 font-medium">
+                <footer className="text-sm text-blue-200 font-medium">
                   Dr. Sarah Chen, Professor of Computer Science
                 </footer>
               </blockquote>
@@ -178,7 +178,7 @@ export default function LoginPage() {
                   )}
                 />
                 
-                <Button className="w-full h-11 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-medium" type="submit" disabled={isLoading}>
+                <Button className="w-full h-11 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium" type="submit" disabled={isLoading}>
                   {isLoading && (
                     <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
                   )}
@@ -201,7 +201,7 @@ export default function LoginPage() {
             <p className="px-8 text-center text-sm text-muted-foreground">
               <Link
                 href="/sign-up"
-                className="hover:text-amber-600 underline underline-offset-4 font-medium"
+                className="hover:text-blue-700 underline underline-offset-4 font-medium"
               >
                 Create your account and start learning today
               </Link>
