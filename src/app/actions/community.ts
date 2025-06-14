@@ -58,7 +58,7 @@ interface GetJoinedCommunitiesResponse {
 }
 
 export async function getJoinedCommunities(
-  id: string,
+  id: string | number,
 ): Promise<ServerResponse<GetJoinedCommunitiesResponse[]>> {
   try {
     const res = await axiosInstance.get(`/users/${id}/communities`)

@@ -46,7 +46,9 @@ export default function FeedPostCard({ post }: Props) {
       >
         <header className="flex gap-4 items-center">
           <Image
-            src={post.author.profilePictureURL || '/pp-fallback.svg'}
+            src={
+              post.Author.UserProfile.profilePictureURL || '/pp-fallback.svg'
+            }
             className="rounded-full"
             alt="Profile Image"
             width={68}
@@ -54,11 +56,11 @@ export default function FeedPostCard({ post }: Props) {
           />
           <div>
             <Link
-              href={`/profile/${post.author.username}`}
+              href={`/profile/${post.Author.username}`}
               className="h4"
               onClick={(e) => e.stopPropagation()}
             >
-              {post.author.fullname}
+              {post.Author.fullname}
             </Link>
             <p className="p-muted">{formatDateTime(post.createdAt)}</p>
           </div>
@@ -93,7 +95,7 @@ export default function FeedPostCard({ post }: Props) {
           <PostActions
             id={post.id}
             votes={post.voteCounter}
-            commentCount={post.commentCount}
+            commentCount={post.commentsCount}
             title={post.title}
             initialVoteStatus={post.voteType}
           />
