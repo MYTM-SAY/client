@@ -8,7 +8,6 @@ import { Button } from '@/components/ui/button'
 import { getComments } from '@/app/actions/comment'
 import { CommentItem } from '@/components/Post/CommentItem'
 import { useUser } from '@/hooks/useUser'
-import { getCommunity } from '@/app/actions/community'
 import { Community } from '@/types'
 
 interface PageParams {
@@ -19,7 +18,6 @@ export default function Page({ params }: { params: Promise<PageParams> }) {
   const { id } = use(params)
 
   const [post, setPost] = useState<PostsResponse | null>(null)
-  const [communityName, setCommunityName] = useState<string>('')
   const [comments, setComments] = useState<Comment[]>([])
   const { user: authenticatedUser } = useUser()
   const [isLoading, setIsLoading] = useState(true)
@@ -42,13 +40,6 @@ export default function Page({ params }: { params: Promise<PageParams> }) {
         const postReq = await getPost(id)
         if (!postReq.success) throw new Error(postReq.message)
         setPost(postReq.data)
-
-        // Fetch community name only
-        const communityReq = await getCommunity(postReq.data.forumId.toString())
-        if (!communityReq.success) throw new Error(communityReq.message)
-
-        // Set just the community name
-        setCommunityName(communityReq.data?.name || 'Unknown')
 
         await fetchComments()
       } catch (err) {
@@ -124,6 +115,8 @@ export default function Page({ params }: { params: Promise<PageParams> }) {
 
   const isAuthor = post.Author.id === Number(authenticatedUser?.id)
   const currentUserId = authenticatedUser?.id?.toString() || null
+  console.log(post)
+  console.log(comments)
 
   return (
     <main className="max-w-3xl mx-auto px-4 py-8">
@@ -131,7 +124,7 @@ export default function Page({ params }: { params: Promise<PageParams> }) {
         key={post.id}
         post={post}
         communityId={post.forumId}
-        communityName={communityName}
+        communityName={post.Forum.Community.name}
         isAuthor={isAuthor}
         initialVoteStatus={post.voteType}
       />

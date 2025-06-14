@@ -74,19 +74,52 @@ export interface PostsResponse {
   id: number
   title: string
   content: string
-  voteCounter: number
   attachments: string[]
   forumId: number
   createdAt: string
   updatedAt: string
-  commentCount: number
+  voteCounter: number
   voteType: 'UPVOTE' | 'DOWNVOTE' | null
+  commentsCount: number
   Author: {
     id: number
     username: string
     fullname: string
-    profilePictureURL: string
+    UserProfile: {
+      profilePictureURL: string
+    }
   }
+  Forum: {
+    Community: {
+      id: number
+      name: string
+      description: string
+      bio: string
+      createdAt: string
+      updatedAt: string
+      coverImgURL: string
+      logoImgURL: string
+      ownerId: number
+      isPublic: boolean
+    }
+  }
+  Comments: {
+    id: number
+    content: string
+    parentId: number | null
+    postId: number
+    authorId: number
+    createdAt: string
+    updatedAt: string
+    Author: {
+      id: number
+      username: string
+      fullname: string
+      UserProfile: {
+        profilePictureURL: string
+      }
+    }
+  }[]
 }
 
 export async function getPosts(
