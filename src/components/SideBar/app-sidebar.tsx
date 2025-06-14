@@ -1,4 +1,3 @@
-
 import { FaCompass } from 'react-icons/fa6'
 import { Home, Users } from 'lucide-react'
 import { BsFillPlusCircleFill } from 'react-icons/bs'
@@ -17,7 +16,6 @@ import { getUser } from '@/lib/actions/auth'
 import { getJoinedCommunities } from '@/app/actions/community'
 
 const AppSidebar = async () => {
-  
   const userRequest = await getUser()
   if (!userRequest.success) {
     return <>Internal server error</>
@@ -38,10 +36,7 @@ const AppSidebar = async () => {
             <Home size={30} />
           </SideBarIcon>
 
-          <SideBarIcon
-            href="/my-communities"
-            isActive={false}
-          >
+          <SideBarIcon href="/my-communities" isActive={false}>
             <Users size={30} />
           </SideBarIcon>
         </SidebarMenu>

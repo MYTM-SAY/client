@@ -47,7 +47,7 @@ export type ApiResponseError = {
 }
 
 export type UserFromToken = {
-  id: string
+  id: string | number
   email: string
   username: string
   fullname: string

@@ -1,16 +1,50 @@
 'use client'
+import { useEffect, useState } from 'react'
 import CalendarHolder from '../components/HomePage/CalendarHolder'
-import FeedPostCard from '../components/Post/FeedPostCard'
 import useFeed from '../hooks/useFeed'
 import { Button } from '@/components/ui/button'
 import { Loader2, RefreshCw } from 'lucide-react'
+import PostCard from '@/components/Post/Post'
+import { useUser } from '@/hooks/useUser'
+import { getCommunity } from './actions/community'
+import { ServerResponse } from '@/types'
+import { AxiosError } from 'axios'
 
 export default function Page() {
   const { posts, isLoading, error, refetchFeed } = useFeed()
+  const { user } = useUser()
+  const [communityNames, setCommunityNames] = useState<Record<number, string>>(
+    {},
+  )
+
+  // Fetch community names
+  useEffect(() => {
+    const fetchCommunityNames = async () => {
+      const newCommunityNames: Record<number, string> = {}
+
+      await Promise.all(
+        posts.map(async (post) => {
+          if (!communityNames[post.forumId]) {
+            const res = await getCommunity(String(post.forumId))
+            if (res.success && res.data) {
+              newCommunityNames[post.forumId] = res.data.name
+            }
+          }
+        }),
+      )
+
+      setCommunityNames((prev) => ({ ...prev, ...newCommunityNames }))
+    }
+
+    if (posts.length > 0) {
+      fetchCommunityNames()
+    }
+  }, [posts])
 
   const handleRefresh = () => {
     refetchFeed()
   }
+  const getCommunityName = (id: number) => communityNames[id] || 'Community'
 
   return (
     <div className="grid grid-cols-8 gap-5">
@@ -32,7 +66,7 @@ export default function Page() {
               Refresh
             </Button>
           </div>
-          
+
           {isLoading && posts.length === 0 && (
             <div className="flex items-center justify-center py-12">
               <div className="flex items-center gap-2">
@@ -41,7 +75,7 @@ export default function Page() {
               </div>
             </div>
           )}
-          
+
           {error && (
             <div className="flex items-center justify-center py-12">
               <div className="text-center">
@@ -52,7 +86,7 @@ export default function Page() {
               </div>
             </div>
           )}
-          
+
           {!isLoading && !error && posts.length === 0 && (
             <div className="flex items-center justify-center py-12">
               <div className="text-center">
@@ -65,11 +99,18 @@ export default function Page() {
               </div>
             </div>
           )}
-          
+
           {posts.length > 0 && (
             <div className="space-y-4">
               {posts.map((post) => (
-                <FeedPostCard key={post.id} post={post} />
+                <PostCard
+                  key={post.id}
+                  post={post}
+                  communityId={post.forumId}
+                  communityName={getCommunityName(post.forumId)}
+                  isAuthor={post.Author.id === user?.id}
+                  initialVoteStatus={post.voteType}
+                />
               ))}
             </div>
           )}
@@ -80,4 +121,3 @@ export default function Page() {
     </div>
   )
 }
-

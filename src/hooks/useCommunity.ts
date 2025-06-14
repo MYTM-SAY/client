@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { instance } from '@/lib/utils/axios'
 import { ApiResponseError, ApiResponse, Community } from '@/types'
 
-const useCommunity = (id: string) => {
+const useCommunity = (id: string | number) => {
   const [community, setCommunity] = useState<Community | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)

@@ -46,7 +46,7 @@ export default function FeedPostCard({ post }: Props) {
       >
         <header className="flex gap-4 items-center">
           <Image
-            src={post.author.profilePictureURL || "/pp-fallback.svg"}
+            src={post.author.profilePictureURL || '/pp-fallback.svg'}
             className="rounded-full"
             alt="Profile Image"
             width={68}
@@ -60,17 +60,12 @@ export default function FeedPostCard({ post }: Props) {
             >
               {post.author.fullname}
             </Link>
-            <p className="p-muted">
-              {formatDateTime(post.createdAt)}
-            </p>
+            <p className="p-muted">{formatDateTime(post.createdAt)}</p>
           </div>
         </header>
 
         <div className="mt-4">
-          <PostContent
-            title={post.title}
-            content={post.content}
-          />
+          <PostContent title={post.title} content={post.content} />
         </div>
 
         {post.attachments && post.attachments.length > 0 && (
@@ -136,4 +131,4 @@ export default function FeedPostCard({ post }: Props) {
       </Dialog>
     </>
   )
-} 
+}
