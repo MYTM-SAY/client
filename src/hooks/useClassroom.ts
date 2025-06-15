@@ -104,6 +104,7 @@ export const useClassroomDetails = (classroomId: string) => {
         createdAt: string
         updatedAt: string
         lessonId: number
+        duration?: number
       }[]
     }[]
   }
@@ -115,6 +116,7 @@ export const useClassroomDetails = (classroomId: string) => {
     createdAt: string
     updatedAt: string
     lessonId: number
+    duration?: number
   }
 
   interface Lesson {
@@ -151,33 +153,57 @@ export const useClassroomDetails = (classroomId: string) => {
       try {
         const response = await instance.get(`/classrooms/${classroomId}?section=true&lesson=true`)
         const apiData = response.data.data
+        
         // Map API response to CourseContentSection[]
         const sections: CourseContentSection[] = Array.isArray(apiData.Sections)
           ? apiData.Sections.map((section: Section, idx: number) => {
               const lessonsArr = Array.isArray(section.Lessons) ? section.Lessons : []
               const completedCount = lessonsArr.filter((lesson: Lesson) => lesson.isCompleted).length
-              const totalDuration = lessonsArr.reduce((acc: number, lesson: Lesson) => acc + (lesson.duration || 0), 0)
+              
+              // Calculate total duration from materials first, fallback to lesson duration
+              const totalDuration = lessonsArr.reduce((acc: number, lesson: Lesson) => {
+                if (Array.isArray(lesson.Materials) && lesson.Materials.length > 0) {
+                  const materialDuration = lesson.Materials.reduce((matAcc: number, material: Material) => 
+                    matAcc + (material.duration || 0), 0
+                  )
+                  return acc + (materialDuration > 0 ? materialDuration : (lesson.duration || 0))
+                }
+                return acc + (lesson.duration || 0)
+              }, 0)
+              
               return {
                 section: idx + 1,
                 title: section.name || '',
                 completed: completedCount,
                 total: lessonsArr.length,
                 duration: totalDuration,
-                lessons: lessonsArr.map((lesson: Lesson) => ({
-                  id: lesson.id,
-                  title: lesson.name || '',
-                  duration: lesson.duration || 0,
-                  completed: !!lesson.isCompleted,
-                  notes: lesson.notes || '',
-                  materials: Array.isArray(lesson.Materials) ? lesson.Materials.map((mat: Material) => ({
-                    id: mat.id,
-                    materialType: mat.materialType,
-                    fileUrl: mat.fileUrl,
-                    createdAt: mat.createdAt,
-                    updatedAt: mat.updatedAt,
-                    lessonId: mat.lessonId,
-                  })) : [],
-                })),
+                lessons: lessonsArr.map((lesson: Lesson) => {
+                  // Calculate lesson duration from materials, fallback to lesson duration
+                  let lessonDuration = lesson.duration || 0
+                  if (Array.isArray(lesson.Materials) && lesson.Materials.length > 0) {
+                    const materialDuration = lesson.Materials.reduce((matAcc: number, material: Material) => 
+                      matAcc + (material.duration || 0), 0
+                    )
+                    lessonDuration = materialDuration > 0 ? materialDuration : lessonDuration
+                  }
+                  
+                  return {
+                    id: lesson.id,
+                    title: lesson.name || '',
+                    duration: lessonDuration,
+                    completed: !!lesson.isCompleted,
+                    notes: lesson.notes || '',
+                    materials: Array.isArray(lesson.Materials) ? lesson.Materials.map((mat: Material) => ({
+                      id: mat.id,
+                      materialType: mat.materialType,
+                      fileUrl: mat.fileUrl,
+                      createdAt: mat.createdAt,
+                      updatedAt: mat.updatedAt,
+                      lessonId: mat.lessonId,
+                      duration: mat.duration,
+                    })) : [],
+                  }
+                }),
               }
             })
           : []

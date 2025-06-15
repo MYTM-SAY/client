@@ -9,6 +9,7 @@ interface Material {
   createdAt: string
   updatedAt: string
   lessonId: number
+  duration?: number
 }
 
 interface Lesson {

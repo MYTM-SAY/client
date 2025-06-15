@@ -125,6 +125,7 @@ export interface Lesson {
   sectionId: number
   createdAt: string
   updatedAt: string
+  duration?: number
   Materials: Material
   Material?: Material // Optional for backward compatibility when creating new lessons
 }
@@ -135,6 +136,7 @@ export interface Material {
   fileUrl: string
   createdAt: string
   updatedAt: string
+  duration?: number
 }
 
 export enum MaterialType {

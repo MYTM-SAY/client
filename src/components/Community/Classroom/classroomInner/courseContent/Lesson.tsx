@@ -9,6 +9,7 @@ interface Material {
   createdAt: string
   updatedAt: string
   lessonId: number
+  duration?: number
 }
 
 interface LessonType {
@@ -37,6 +38,19 @@ const Lesson = ({ lesson, onSelect, selected, toggleLessonCompletion }: LessonPr
     }
   }
 
+  // Calculate total duration from materials, fallback to lesson duration
+  const getTotalDuration = () => {
+    if (lesson.materials && lesson.materials.length > 0) {
+      const materialDuration = lesson.materials.reduce((total, material) => 
+        total + (material.duration || 0), 0
+      )
+      return materialDuration > 0 ? materialDuration : lesson.duration
+    }
+    return lesson.duration
+  }
+
+  const totalDuration = getTotalDuration()
+
   return (
     <div
       className={`flex gap-2 cursor-pointer rounded px-2 py-1 ${selected ? 'bg-accent/20 border border-accent' : ''}`}
@@ -61,8 +75,8 @@ const Lesson = ({ lesson, onSelect, selected, toggleLessonCompletion }: LessonPr
         <div className="flex items-center gap-2 p-sm-muted">
           <MdOutlineScreenshotMonitor />
 
-          {lesson.duration > 0 && (
-            <span className="p-sm-muted">{lesson.duration} min</span>
+          {totalDuration > 0 && (
+            <span className="p-sm-muted">{totalDuration} min</span>
           )}
         </div>
       </div>
