@@ -19,6 +19,7 @@ import Image from 'next/image'
 import { instance } from '@/lib/utils/axios'
 import CreateSectionForm from './CreateSectionForm'
 import CreateLessonForm from './CreateLessonForm'
+import { useToast } from '@/hooks/use-toast'
 
 const ClassroomManagement = ({
   communityId,
@@ -37,6 +38,7 @@ const ClassroomManagement = ({
     null,
   )
   const [selectedSection, setSelectedSection] = useState<Section | null>(null)
+  const { toast } = useToast()
 
   const toggleSectionExpansion = (sectionId: number) => {
     setExpandedSections(prev => 
@@ -127,9 +129,18 @@ const ClassroomManagement = ({
         if (selectedClassroom?.id === id) {
           setSelectedClassroom(null)
         }
+        toast({
+          title: 'Success',
+          description: 'Classroom deleted successfully',
+        })
       }
-    } catch (error) {
+    } catch (error: any) {
       console.log(error)
+      toast({
+        title: 'Error',
+        description: error.response?.data?.message || 'Failed to delete classroom. Please try again.',
+        variant: 'destructive',
+      })
     }
   }
 
@@ -152,9 +163,18 @@ const ClassroomManagement = ({
         if (selectedSection?.id === id) {
           setSelectedSection(null)
         }
+        toast({
+          title: 'Success',
+          description: 'Section deleted successfully',
+        })
       }
-    } catch (error) {
+    } catch (error: any) {
       console.log(error)
+      toast({
+        title: 'Error',
+        description: error.response?.data?.message || 'Failed to delete section. Please try again.',
+        variant: 'destructive',
+      })
     }
   }
 
@@ -189,9 +209,18 @@ const ClassroomManagement = ({
           const updatedSection = updatedSections.find((s) => s.id === sectionId)
           setSelectedSection(updatedSection || null)
         }
+        toast({
+          title: 'Success',
+          description: 'Lesson deleted successfully',
+        })
       }
-    } catch (error) {
+    } catch (error: any) {
       console.log(error)
+      toast({
+        title: 'Error',
+        description: error.response?.data?.message || 'Failed to delete lesson. Please try again.',
+        variant: 'destructive',
+      })
     }
   }
 
