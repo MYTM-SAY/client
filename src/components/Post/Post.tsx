@@ -15,7 +15,7 @@ import { useState } from 'react'
 import { X } from 'lucide-react'
 import { formatDistanceToNow } from 'date-fns'
 import Comments from './Comments'
-
+import { Comment } from '@/app/actions/post'
 const IMG_FALLBACK = '/imgFallBack.581a9fe3.png'
 
 interface Props {
@@ -24,6 +24,8 @@ interface Props {
   communityName: string | undefined
   isAuthor: boolean
   initialVoteStatus: 'UPVOTE' | 'DOWNVOTE' | null
+  comments: Comment[]
+  setComments?: React.Dispatch<React.SetStateAction<Comment[]>>
 }
 
 const visuallyHidden = 'sr-only'
@@ -55,6 +57,8 @@ export default function PostCard({
   communityName,
   isAuthor,
   initialVoteStatus,
+  comments,
+  setComments,
 }: Props) {
   const [selectedAttachment, setSelectedAttachment] =
     useState<AttachmentType | null>(null)
@@ -183,7 +187,11 @@ export default function PostCard({
         </div>
 
         <div className="mt-5">
-          <Comments postId={post.id} />
+          <Comments
+            postId={post.id}
+            comments={comments}
+            setComments={setComments}
+          />
         </div>
       </div>
 

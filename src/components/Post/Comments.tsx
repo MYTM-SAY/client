@@ -1,15 +1,15 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Comment } from '@/app/actions/comment'
-
 import CommentForm from './CommentForm'
+import { Comment } from '@/app/actions/post'
 interface Props {
   postId: number
+  comments?: Comment[]
+  setComments?: React.Dispatch<React.SetStateAction<Comment[]>>
 }
 
-export default function Comments({ postId }: Props) {
-  const [comments, setComments] = useState<Comment[]>([])
+export default function Comments({ postId, comments, setComments }: Props) {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -22,12 +22,10 @@ export default function Comments({ postId }: Props) {
     fetchComments()
   }, [postId])
 
-  const handleNewComment = () => {}
-
   if (error) {
     return (
       <div className="space-y-6">
-        <CommentForm postId={postId} onCommentAdded={handleNewComment} />
+        <CommentForm postId={postId} />
         <div className="text-red-500">{error}</div>
       </div>
     )
@@ -35,7 +33,11 @@ export default function Comments({ postId }: Props) {
 
   return (
     <div className="space-y-6">
-      <CommentForm postId={postId} onCommentAdded={handleNewComment} />
+      <CommentForm
+        postId={postId}
+        comments={comments}
+        setComments={setComments}
+      />
     </div>
   )
 }

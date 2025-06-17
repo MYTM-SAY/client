@@ -127,6 +127,8 @@ export default function Page({ params }: { params: Promise<PageParams> }) {
         communityName={post.Forum.Community.name}
         isAuthor={isAuthor}
         initialVoteStatus={post.voteType}
+        comments={comments}
+        setComments={setComments}
       />
 
       <div className="mt-10 pt-6 border-t">

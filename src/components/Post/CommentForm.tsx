@@ -5,13 +5,14 @@ import { createComment } from '@/app/actions/comment'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { useToast } from '@/hooks/use-toast'
-
+import { Comment } from '@/app/actions/post'
 interface Props {
   postId: number
-  onCommentAdded: () => void
+  comments?: Comment[]
+  setComments?: React.Dispatch<React.SetStateAction<Comment[]>>
 }
 
-export default function CommentForm({ postId, onCommentAdded }: Props) {
+export default function CommentForm({ postId, comments, setComments }: Props) {
   const [content, setContent] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const { toast } = useToast()
@@ -40,7 +41,21 @@ export default function CommentForm({ postId, onCommentAdded }: Props) {
           title: 'Success',
           description: 'Comment posted successfully!',
         })
-        onCommentAdded()
+        console.log(comments)
+        if (setComments && result.data) {
+          const normalizedComment = {
+            ...result.data,
+            voteCount: 0,
+            voteType: 'NONE',
+            Author: {
+              id: result.data.authorId,
+              fullname: result.data.Author.username,
+              ...result.data.Author,
+            },
+          }
+
+          setComments([...(comments || []), normalizedComment])
+        }
       }
     } catch (err) {
       console.error('Failed to post comment:', err)
