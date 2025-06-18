@@ -68,6 +68,7 @@ export interface Comment {
   createdAt: string
   updatedAt: string
   Author: Author
+  voteCount: number
 }
 
 export interface PostsResponse {

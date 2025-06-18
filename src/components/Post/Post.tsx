@@ -24,7 +24,7 @@ interface Props {
   communityName: string | undefined
   isAuthor: boolean
   initialVoteStatus: 'UPVOTE' | 'DOWNVOTE' | null
-  comments: Comment[]
+  comments?: Comment[]
   setComments?: React.Dispatch<React.SetStateAction<Comment[]>>
 }
 
