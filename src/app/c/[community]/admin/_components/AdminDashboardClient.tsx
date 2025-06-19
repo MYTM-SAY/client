@@ -1,7 +1,8 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import ClassroomManagement from './ClassroomManagement'
 import JoinRequestManagement from './JoinRequestManagement'
+import QuizForm from '@/app/Quiz/components/QuizForm'
 import {
   Users,
   BookOpen,
@@ -34,9 +35,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { changeCommunityVisibility, deleteMember } from '@/app/actions/community'
+import {
+  changeCommunityVisibility,
+  deleteMember,
+} from '@/app/actions/community'
 import { toast } from '@/hooks/use-toast'
 import { Classroom } from '@/types'
+import { Quiz } from '@/types'
+import useQuiz from '@/hooks/useQuiz'
 
 interface Member {
   id: number
@@ -69,6 +75,7 @@ export default function AdminDashboardClient({
   initialVisibility,
 }: AdminDashboardClientProps) {
   const [classrooms] = useState<Classroom[]>(initialClassrooms)
+  const [showQuizForm, setShowQuizForm] = useState(false)
   const [members, setMembers] = useState<Member[]>(initialMembers)
   const [loading] = useState(false)
   const [selectedAction, setSelectedAction] = useState<ActionType>(null)
@@ -83,22 +90,34 @@ export default function AdminDashboardClient({
   const [deletingId, setDeletingId] = useState<number | null>(null)
   const [error, setError] = useState<string | null>(null)
 
+  const {
+    quizzes,
+    isLoading: quizzesLoading,
+    error: quizzesError,
+    createQuiz,
+    editQuiz,
+    deleteQuiz,
+    getQuizzesByCommunity,
+  } = useQuiz()
+
+  useEffect(() => {
+    getQuizzesByCommunity(communityId)
+    console.log(communityId)
+  }, [])
+
   const handleDeleteMember = async (userId: number) => {
     setDeletingId(userId)
     setError(null)
 
     const result = await deleteMember(communityId, userId)
 
-    // Handle successful deletion (even with empty response)
     if (!result || result.success !== false) {
       setMembers((prev) => prev.filter((member) => member.id !== userId))
       toast({
         title: 'Success',
         description: 'Member removed successfully',
       })
-    }
-    // Handle error response
-    else {
+    } else {
       setError(result.message || 'Failed to delete member')
       toast({
         title: 'Error',
@@ -129,40 +148,119 @@ export default function AdminDashboardClient({
     })
   }
 
-  const handleVisibilityChange = async (newVisibility: 'public' | 'private') => {
+  const handleVisibilityChange = async (
+    newVisibility: 'public' | 'private',
+  ) => {
     setVisibilityLoading(true)
     setError(null)
-    
+
     try {
       const isPublic = newVisibility === 'public'
       const result = await changeCommunityVisibility(communityId, isPublic)
-      
+
       if (result.success) {
         setCommunityVisibility(newVisibility)
         toast({
           title: 'Success',
           description: `Community visibility changed to ${newVisibility}`,
         })
-        console.log(`Community visibility changed to: ${newVisibility}`)
       } else {
         setError(result.message || 'Failed to change community visibility')
         toast({
           title: 'Error',
-          description: result.message || 'Failed to change community visibility',
+          description:
+            result.message || 'Failed to change community visibility',
           variant: 'destructive',
         })
       }
     } catch (error) {
-      const errorMessage = 'An error occurred while changing community visibility'
+      const errorMessage =
+        'An error occurred while changing community visibility'
       setError(errorMessage)
       toast({
         title: 'Error',
         description: errorMessage,
         variant: 'destructive',
       })
-      console.error('Error changing community visibility:', error)
     } finally {
       setVisibilityLoading(false)
+    }
+  }
+
+  const handleCreateQuiz = () => {
+    const newQuiz = {
+      id: '',
+      name: '',
+      duration: 30,
+      startDate: new Date().toISOString().slice(0, 16),
+      endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+        .toISOString()
+        .slice(0, 16),
+      classroomId: '',
+      active: true,
+      quizQuestions: [],
+    }
+    setShowQuizForm(true)
+  }
+
+  const handleEditQuiz = (quiz: Quiz) => {
+    setShowQuizForm(true)
+  }
+
+  const handleSubmitQuiz = async (formData: Partial<Quiz>) => {
+    try {
+      if (formData.id) {
+        await editQuiz(formData.id, {
+          name: formData.name,
+          duration: formData.duration,
+          startDate: formData.startDate,
+          endDate: formData.endDate,
+          classroomId: formData.classroomId,
+          active: formData.active,
+          quizQuestions: formData.quizQuestions,
+        })
+        toast({
+          title: 'Success',
+          description: 'Quiz updated successfully',
+        })
+      } else {
+        await createQuiz({
+          name: formData.name!,
+          duration: formData.duration!,
+          startDate: formData.startDate!,
+          endDate: formData.endDate!,
+          active: formData.active ?? true,
+          classroomId: formData.classroomId!,
+          quizQuestions: formData.quizQuestions || [],
+        })
+        toast({
+          title: 'Success',
+          description: 'Quiz created successfully',
+        })
+      }
+      setShowQuizForm(false)
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to save quiz',
+        variant: 'destructive',
+      })
+    }
+  }
+
+  const handleDeleteQuiz = async (id: number) => {
+    try {
+      await deleteQuiz(id)
+      toast({
+        title: 'Success',
+        description: 'Quiz deleted successfully',
+      })
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to delete quiz',
+        variant: 'destructive',
+      })
     }
   }
 
@@ -298,7 +396,7 @@ export default function AdminDashboardClient({
                     {members.map((member) => (
                       <div
                         key={member.id}
-                        className="flex items-center justify-between p-4 border rounded-lg  transition-colors"
+                        className="flex items-center justify-between p-4 border rounded-lg transition-colors"
                       >
                         <div className="flex items-center space-x-4">
                           <Avatar className="w-10 h-10">
@@ -419,7 +517,7 @@ export default function AdminDashboardClient({
 
         {/* Tabbed Interface */}
         <Tabs defaultValue="members" className="space-y-6">
-          <TabsList className="bg-muted grid w-full grid-cols-3 lg:w-fit">
+          <TabsList className="bg-muted grid w-full grid-cols-4 lg:w-fit">
             <TabsTrigger value="members" className="flex items-center gap-2">
               <Users className="h-4 w-4" />
               <span>Members</span>
@@ -431,6 +529,10 @@ export default function AdminDashboardClient({
             <TabsTrigger value="settings" className="flex items-center gap-2">
               <Settings className="h-4 w-4" />
               <span>Settings</span>
+            </TabsTrigger>
+            <TabsTrigger value="quizzes" className="flex items-center gap-2">
+              <Settings className="h-4 w-4" />
+              <span>Quizzes</span>
             </TabsTrigger>
           </TabsList>
 
@@ -545,7 +647,9 @@ export default function AdminDashboardClient({
                     ) : (
                       <>
                         Change to{' '}
-                        {communityVisibility === 'public' ? 'Private' : 'Public'}
+                        {communityVisibility === 'public'
+                          ? 'Private'
+                          : 'Public'}
                       </>
                     )}
                   </Button>
@@ -618,6 +722,107 @@ export default function AdminDashboardClient({
                     </div>
                   </div>
                 </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Quizzes Tab */}
+          <TabsContent value="quizzes" className="space-y-6">
+            <Card className="border">
+              <CardHeader>
+                <CardTitle className="text-xl flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-indigo-100 dark:bg-indigo-900/30">
+                      <BookOpen className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+                    </div>
+                    <div>
+                      Quizzes
+                      <CardDescription className="mt-1">
+                        Manage quizzes for your community
+                      </CardDescription>
+                    </div>
+                  </div>
+                  <Button onClick={handleCreateQuiz}>Create Quiz</Button>
+                </CardTitle>
+              </CardHeader>
+
+              <CardContent className="p-6 space-y-4">
+                {showQuizForm && (
+                  <div className="border p-4 rounded-lg bg-muted">
+                    <QuizForm
+                      quiz={{
+                        id: '',
+                        name: '',
+                        duration: 30,
+                        startDate: new Date().toISOString().slice(0, 16),
+                        endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+                          .toISOString()
+                          .slice(0, 16),
+                        classroomId: '',
+                        active: true,
+                        quizQuestions: [],
+                      }}
+                      onSubmit={handleSubmitQuiz}
+                      onCancel={() => setShowQuizForm(false)}
+                    />
+                  </div>
+                )}
+
+                {quizzesLoading && (
+                  <div className="flex justify-center py-8">
+                    <Loader2 className="h-8 w-8 animate-spin" />
+                  </div>
+                )}
+
+                {quizzesError && (
+                  <div className="bg-destructive/10 text-destructive p-3 rounded-lg">
+                    {quizzesError}
+                  </div>
+                )}
+
+                {!quizzesLoading && !quizzesError && quizzes.length === 0 && (
+                  <p className="text-muted-foreground text-sm">
+                    No quizzes available.
+                  </p>
+                )}
+
+                {!quizzesLoading && !quizzesError && quizzes.length > 0 && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                    {quizzes.map((quiz) => (
+                      <Card key={quiz.id} className="border hover:shadow-sm">
+                        <CardHeader className="flex flex-row justify-between items-center">
+                          <CardTitle className="text-lg font-semibold">
+                            {quiz.name}
+                          </CardTitle>
+                          <div className="space-x-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleEditQuiz(quiz)}
+                            >
+                              Edit
+                            </Button>
+                            <Button
+                              variant="destructive"
+                              size="sm"
+                              onClick={() => handleDeleteQuiz(quiz.id)}
+                            >
+                              Delete
+                            </Button>
+                          </div>
+                        </CardHeader>
+                        <CardContent className="text-sm space-y-1">
+                          <Badge
+                            variant={quiz.active ? 'default' : 'secondary'}
+                            className="mt-2"
+                          >
+                            {quiz.active ? 'Active' : 'Inactive'}
+                          </Badge>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>

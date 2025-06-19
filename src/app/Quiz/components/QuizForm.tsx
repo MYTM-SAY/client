@@ -1,14 +1,30 @@
 import { useState } from 'react'
 
+interface QuizQuestion {
+  questionId: string
+  points: number
+}
+
+interface QuizFormData {
+  id?: string
+  name: string
+  duration: number
+  startDate: string
+  endDate: string
+  classroomId: string
+  active: boolean
+  quizQuestions: QuizQuestion[]
+}
+
 interface QuizFormProps {
-  quiz: any
-  onSubmit: (data: any) => void
+  quiz: QuizFormData
+  onSubmit: (data: QuizFormData) => void
   onCancel: () => void
 }
 
 const QuizForm: React.FC<QuizFormProps> = ({ quiz, onSubmit, onCancel }) => {
-  const [formData, setFormData] = useState(quiz)
-  const [isEditing, setIsEditing] = useState(!!quiz.id)
+  const [formData, setFormData] = useState<QuizFormData>(quiz)
+  const [isEditing] = useState(!!quiz.id)
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -47,6 +63,7 @@ const QuizForm: React.FC<QuizFormProps> = ({ quiz, onSubmit, onCancel }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    console.log(formData)
     onSubmit(formData)
   }
 
@@ -117,25 +134,6 @@ const QuizForm: React.FC<QuizFormProps> = ({ quiz, onSubmit, onCancel }) => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Grade
-            </label>
-            <select
-              name="grade"
-              value={formData.grade}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-              required
-            >
-              <option value="A">A</option>
-              <option value="B">B</option>
-              <option value="C">C</option>
-              <option value="D">D</option>
-              <option value="F">F</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Classroom ID
             </label>
             <input
@@ -181,7 +179,7 @@ const QuizForm: React.FC<QuizFormProps> = ({ quiz, onSubmit, onCancel }) => {
           </div>
 
           <div className="space-y-4">
-            {formData.quizQuestions.map((question: any, index: number) => (
+            {formData.quizQuestions.map((question, index) => (
               <div
                 key={index}
                 className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-700"

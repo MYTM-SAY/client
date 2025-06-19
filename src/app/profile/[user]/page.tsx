@@ -30,6 +30,7 @@ export default async function Page({ params }: PageProps) {
     authenticatedUserReq.data?.id === userId.data.id
 
   const userInfoReq = await getUserProfileInfo(userId.data.id)
+  console.log(userInfoReq)
   if (!userInfoReq.success) {
     return 'An error has occurred (user info)'
   }

@@ -108,6 +108,18 @@ export interface Classroom {
   sections: Section[]
 }
 
+export interface Quiz {
+  id: number
+  name: string
+  duration: number
+  startDate: string
+  endDate: string
+  classroomId: number
+  active: boolean
+  createdAt: string
+  updatedAt: string
+}
+
 export interface Section {
   id: number
   name: string
