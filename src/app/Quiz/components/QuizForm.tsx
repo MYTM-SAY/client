@@ -1,7 +1,12 @@
 import { useState } from 'react'
 
+interface Question {
+  id: number
+  questionHeader: string
+}
+
 interface QuizQuestion {
-  questionId: string
+  questionId: number
   points: number
 }
 
@@ -20,9 +25,15 @@ interface QuizFormProps {
   quiz: QuizFormData
   onSubmit: (data: QuizFormData) => void
   onCancel: () => void
+  questions: Question[]
 }
 
-const QuizForm: React.FC<QuizFormProps> = ({ quiz, onSubmit, onCancel }) => {
+const QuizForm: React.FC<QuizFormProps> = ({
+  quiz,
+  onSubmit,
+  onCancel,
+  questions,
+}) => {
   const [formData, setFormData] = useState<QuizFormData>(quiz)
   const [isEditing] = useState(!!quiz.id)
 
@@ -41,17 +52,20 @@ const QuizForm: React.FC<QuizFormProps> = ({ quiz, onSubmit, onCancel }) => {
     value: string,
   ) => {
     const updatedQuestions = [...formData.quizQuestions]
-    updatedQuestions[index] = { ...updatedQuestions[index], [field]: value }
+    const parsedValue =
+      field === 'questionId' || field === 'points' ? parseInt(value, 10) : value
+
+    updatedQuestions[index] = {
+      ...updatedQuestions[index],
+      [field]: parsedValue,
+    }
     setFormData({ ...formData, quizQuestions: updatedQuestions })
   }
 
   const addQuestion = () => {
     setFormData({
       ...formData,
-      quizQuestions: [
-        ...formData.quizQuestions,
-        { questionId: '', points: 10 },
-      ],
+      quizQuestions: [...formData.quizQuestions, { questionId: 0, points: 10 }],
     })
   }
 
@@ -63,7 +77,6 @@ const QuizForm: React.FC<QuizFormProps> = ({ quiz, onSubmit, onCancel }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    console.log(formData)
     onSubmit(formData)
   }
 
@@ -187,11 +200,10 @@ const QuizForm: React.FC<QuizFormProps> = ({ quiz, onSubmit, onCancel }) => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                      Question ID
+                      Select Question
                     </label>
-                    <input
-                      type="text"
-                      value={question.questionId}
+                    <select
+                      value={question.questionId || ''}
                       onChange={(e) =>
                         handleQuestionChange(
                           index,
@@ -201,7 +213,14 @@ const QuizForm: React.FC<QuizFormProps> = ({ quiz, onSubmit, onCancel }) => {
                       }
                       className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
                       required
-                    />
+                    >
+                      <option value="">Select a question</option>
+                      {questions.map((q) => (
+                        <option key={q.id} value={q.id}>
+                          {q.questionHeader}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">

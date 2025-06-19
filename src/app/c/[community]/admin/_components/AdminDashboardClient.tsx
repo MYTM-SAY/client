@@ -44,11 +44,12 @@ import {
   deleteMember,
 } from '@/app/actions/community'
 import { toast } from '@/hooks/use-toast'
-import { Classroom } from '@/types'
-import { Quiz } from '@/types'
+import { Classroom, Quiz as QuizType } from '@/types'
 import useQuiz from '@/hooks/useQuiz'
 import useQuestion from '@/hooks/useQuestion'
 import QuestionForm from '../_components/QuestionForm'
+import { Question as QuestionType } from '@/types'
+
 interface Member {
   id: number
   fullname: string
@@ -73,13 +74,20 @@ interface AdminDashboardClientProps {
   initialVisibility: 'public' | 'private'
 }
 
-interface Question {
-  id: number
-  questionHeader: string
-  options: string[]
-  answer: string[]
-  classroomId: number
-  type: 'SINGLE' | 'MULTI' | 'TRUE_FALSE'
+interface QuizQuestionInput {
+  questionId: number
+  points: number
+}
+
+interface QuizFormData {
+  id?: string
+  name: string
+  duration: number
+  startDate: string
+  endDate: string
+  classroomId: string
+  active: boolean
+  quizQuestions: QuizQuestionInput[]
 }
 
 export default function AdminDashboardClient({
@@ -106,7 +114,9 @@ export default function AdminDashboardClient({
 
   // Question states
   const [showQuestionForm, setShowQuestionForm] = useState(false)
-  const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null)
+  const [currentQuestion, setCurrentQuestion] = useState<QuestionType | null>(
+    null,
+  )
   const [selectedClassroom, setSelectedClassroom] = useState<number | null>(
     null,
   )
@@ -135,7 +145,7 @@ export default function AdminDashboardClient({
 
   useEffect(() => {
     getQuizzesByCommunity(communityId)
-  }, [])
+  }, [communityId])
 
   useEffect(() => {
     if (selectedClassroom) {
@@ -229,21 +239,24 @@ export default function AdminDashboardClient({
     setShowQuizForm(true)
   }
 
-  const handleEditQuiz = (quiz: Quiz) => {
+  const handleEditQuiz = (quiz: QuizType) => {
     setShowQuizForm(true)
   }
 
-  const handleSubmitQuiz = async (formData: Partial<Quiz>) => {
+  const handleSubmitQuiz = async (formData: QuizFormData) => {
     try {
       if (formData.id) {
-        await editQuiz(formData.id, {
+        await editQuiz(Number(formData.id), {
           name: formData.name,
           duration: formData.duration,
           startDate: formData.startDate,
           endDate: formData.endDate,
-          classroomId: formData.classroomId,
           active: formData.active,
-          quizQuestions: formData.quizQuestions,
+          classroomId: Number(formData.classroomId),
+          quizQuestions: formData.quizQuestions.map((q) => ({
+            questionId: q.questionId,
+            points: q.points,
+          })),
         })
         toast({
           title: 'Success',
@@ -251,13 +264,16 @@ export default function AdminDashboardClient({
         })
       } else {
         await createQuiz({
-          name: formData.name!,
-          duration: formData.duration!,
-          startDate: formData.startDate!,
-          endDate: formData.endDate!,
-          active: formData.active ?? true,
-          classroomId: formData.classroomId!,
-          quizQuestions: formData.quizQuestions || [],
+          name: formData.name,
+          duration: formData.duration,
+          startDate: formData.startDate,
+          endDate: formData.endDate,
+          active: formData.active,
+          classroomId: Number(formData.classroomId),
+          quizQuestions: formData.quizQuestions.map((q) => ({
+            questionId: q.questionId,
+            points: q.points,
+          })),
         })
         toast({
           title: 'Success',
@@ -296,7 +312,7 @@ export default function AdminDashboardClient({
     setShowQuestionForm(true)
   }
 
-  const handleEditQuestion = (question: Question) => {
+  const handleEditQuestion = (question: QuestionType) => {
     setCurrentQuestion(question)
     setShowQuestionForm(true)
   }
@@ -849,12 +865,15 @@ export default function AdminDashboardClient({
                         endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
                           .toISOString()
                           .slice(0, 16),
-                        classroomId: '',
+                        classroomId: selectedClassroom
+                          ? selectedClassroom.toString()
+                          : '',
                         active: true,
                         quizQuestions: [],
                       }}
                       onSubmit={handleSubmitQuiz}
                       onCancel={() => setShowQuizForm(false)}
+                      questions={questions}
                     />
                   </div>
                 )}
@@ -1017,7 +1036,7 @@ export default function AdminDashboardClient({
                   ) : (
                     <div className="space-y-4">
                       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                        {questions.map((question) => (
+                        {questions.map((question: QuestionType) => (
                           <Card key={question.id} className="hover:shadow-sm">
                             <CardHeader className="pb-3">
                               <div className="flex justify-between items-start">
