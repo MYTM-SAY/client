@@ -14,6 +14,10 @@ import {
   Trash2,
   X,
   Loader2,
+  FileQuestion,
+  Plus,
+  Pencil,
+  Trash,
 } from 'lucide-react'
 import {
   Card,
@@ -43,7 +47,8 @@ import { toast } from '@/hooks/use-toast'
 import { Classroom } from '@/types'
 import { Quiz } from '@/types'
 import useQuiz from '@/hooks/useQuiz'
-
+import useQuestion from '@/hooks/useQuestion'
+import QuestionForm from '../_components/QuestionForm'
 interface Member {
   id: number
   fullname: string
@@ -68,6 +73,15 @@ interface AdminDashboardClientProps {
   initialVisibility: 'public' | 'private'
 }
 
+interface Question {
+  id: number
+  questionHeader: string
+  options: string[]
+  answer: string[]
+  classroomId: number
+  type: 'SINGLE' | 'MULTI' | 'TRUE_FALSE'
+}
+
 export default function AdminDashboardClient({
   communityId,
   initialClassrooms,
@@ -90,6 +104,14 @@ export default function AdminDashboardClient({
   const [deletingId, setDeletingId] = useState<number | null>(null)
   const [error, setError] = useState<string | null>(null)
 
+  // Question states
+  const [showQuestionForm, setShowQuestionForm] = useState(false)
+  const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null)
+  const [selectedClassroom, setSelectedClassroom] = useState<number | null>(
+    null,
+  )
+
+  // Quiz hook
   const {
     quizzes,
     isLoading: quizzesLoading,
@@ -100,10 +122,26 @@ export default function AdminDashboardClient({
     getQuizzesByCommunity,
   } = useQuiz()
 
+  // Question hook
+  const {
+    questions,
+    isLoading: questionsLoading,
+    error: questionsError,
+    createQuestion,
+    editQuestion,
+    deleteQuestion,
+    fetchQuestionsByClassroom,
+  } = useQuestion()
+
   useEffect(() => {
     getQuizzesByCommunity(communityId)
-    console.log(communityId)
   }, [])
+
+  useEffect(() => {
+    if (selectedClassroom) {
+      fetchQuestionsByClassroom(selectedClassroom)
+    }
+  }, [selectedClassroom])
 
   const handleDeleteMember = async (userId: number) => {
     setDeletingId(userId)
@@ -188,18 +226,6 @@ export default function AdminDashboardClient({
   }
 
   const handleCreateQuiz = () => {
-    const newQuiz = {
-      id: '',
-      name: '',
-      duration: 30,
-      startDate: new Date().toISOString().slice(0, 16),
-      endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-        .toISOString()
-        .slice(0, 16),
-      classroomId: '',
-      active: true,
-      quizQuestions: [],
-    }
     setShowQuizForm(true)
   }
 
@@ -259,6 +285,64 @@ export default function AdminDashboardClient({
       toast({
         title: 'Error',
         description: 'Failed to delete quiz',
+        variant: 'destructive',
+      })
+    }
+  }
+
+  // Question operations
+  const handleCreateQuestion = () => {
+    setCurrentQuestion(null)
+    setShowQuestionForm(true)
+  }
+
+  const handleEditQuestion = (question: Question) => {
+    setCurrentQuestion(question)
+    setShowQuestionForm(true)
+  }
+
+  const handleDeleteQuestion = async (id: number) => {
+    try {
+      await deleteQuestion(id)
+      toast({
+        title: 'Success',
+        description: 'Question deleted successfully',
+      })
+      if (selectedClassroom) {
+        fetchQuestionsByClassroom(selectedClassroom)
+      }
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to delete question',
+        variant: 'destructive',
+      })
+    }
+  }
+
+  const handleSubmitQuestion = async (data: any) => {
+    try {
+      if (currentQuestion) {
+        await editQuestion(currentQuestion.id, data)
+        toast({
+          title: 'Success',
+          description: 'Question updated successfully',
+        })
+      } else {
+        await createQuestion(data)
+        toast({
+          title: 'Success',
+          description: 'Question created successfully',
+        })
+      }
+      setShowQuestionForm(false)
+      if (selectedClassroom) {
+        fetchQuestionsByClassroom(selectedClassroom)
+      }
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to save question',
         variant: 'destructive',
       })
     }
@@ -517,7 +601,7 @@ export default function AdminDashboardClient({
 
         {/* Tabbed Interface */}
         <Tabs defaultValue="members" className="space-y-6">
-          <TabsList className="bg-muted grid w-full grid-cols-4 lg:w-fit">
+          <TabsList className="bg-muted grid w-full grid-cols-6 lg:w-fit">
             <TabsTrigger value="members" className="flex items-center gap-2">
               <Users className="h-4 w-4" />
               <span>Members</span>
@@ -531,8 +615,15 @@ export default function AdminDashboardClient({
               <span>Settings</span>
             </TabsTrigger>
             <TabsTrigger value="quizzes" className="flex items-center gap-2">
-              <Settings className="h-4 w-4" />
+              <BookOpen className="h-4 w-4" />
               <span>Quizzes</span>
+            </TabsTrigger>
+            <TabsTrigger
+              value="questionbank"
+              className="flex items-center gap-2"
+            >
+              <FileQuestion className="h-4 w-4" />
+              <span>Question Bank</span>
             </TabsTrigger>
           </TabsList>
 
@@ -823,6 +914,174 @@ export default function AdminDashboardClient({
                     ))}
                   </div>
                 )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Question Bank Tab */}
+          <TabsContent value="questionbank" className="space-y-6">
+            <Card className="border">
+              <CardHeader>
+                <CardTitle className="text-xl flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-indigo-100 dark:bg-indigo-900/30">
+                      <FileQuestion className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+                    </div>
+                    <div>
+                      Question Bank
+                      <CardDescription className="mt-1">
+                        Manage questions for your community
+                      </CardDescription>
+                    </div>
+                  </div>
+                  <Button onClick={handleCreateQuestion}>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Question
+                  </Button>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-6 space-y-6">
+                {/* Classroom Selection */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <Label htmlFor="classroom">Select Classroom</Label>
+                    <Select
+                      value={selectedClassroom?.toString() || ''}
+                      onValueChange={(value) =>
+                        setSelectedClassroom(Number(value))
+                      }
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select a classroom" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {initialClassrooms.map((classroom) => (
+                          <SelectItem
+                            key={classroom.id}
+                            value={classroom.id.toString()}
+                          >
+                            {classroom.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                {/* Question Form */}
+                {showQuestionForm && (
+                  <div className="border rounded-lg p-6 bg-muted/30">
+                    <h3 className="text-lg font-semibold mb-4">
+                      {currentQuestion
+                        ? 'Edit Question'
+                        : 'Create New Question'}
+                    </h3>
+                    <QuestionForm
+                      classrooms={initialClassrooms}
+                      question={currentQuestion}
+                      onSubmit={handleSubmitQuestion}
+                      onCancel={() => setShowQuestionForm(false)}
+                    />
+                  </div>
+                )}
+
+                {/* Questions List */}
+                <div className="space-y-4">
+                  {questionsLoading ? (
+                    <div className="flex justify-center py-8">
+                      <Loader2 className="h-8 w-8 animate-spin" />
+                    </div>
+                  ) : questionsError ? (
+                    <div className="bg-destructive/10 text-destructive p-3 rounded-lg">
+                      {questionsError}
+                    </div>
+                  ) : !selectedClassroom ? (
+                    <div className="flex flex-col items-center justify-center py-12 text-center">
+                      <FileQuestion className="h-12 w-12 text-muted-foreground mb-4" />
+                      <p className="text-lg font-medium">Select a classroom</p>
+                      <p className="text-muted-foreground mt-2">
+                        Choose a classroom to view its questions
+                      </p>
+                    </div>
+                  ) : questions.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center py-12 text-center">
+                      <FileQuestion className="h-12 w-12 text-muted-foreground mb-4" />
+                      <p className="text-lg font-medium">No questions yet</p>
+                      <p className="text-muted-foreground mt-2">
+                        Add your first question to get started
+                      </p>
+                      <Button onClick={handleCreateQuestion} className="mt-4">
+                        Create Question
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                        {questions.map((question) => (
+                          <Card key={question.id} className="hover:shadow-sm">
+                            <CardHeader className="pb-3">
+                              <div className="flex justify-between items-start">
+                                <CardTitle className="text-base font-medium">
+                                  {question.questionHeader}
+                                </CardTitle>
+                                <div className="flex gap-1">
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() => handleEditQuestion(question)}
+                                    className="h-8 w-8"
+                                  >
+                                    <Pencil className="h-3.5 w-3.5" />
+                                  </Button>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() =>
+                                      handleDeleteQuestion(question.id)
+                                    }
+                                    className="h-8 w-8 text-destructive hover:text-destructive"
+                                  >
+                                    <Trash className="h-3.5 w-3.5" />
+                                  </Button>
+                                </div>
+                              </div>
+                              <div className="flex gap-2 mt-2">
+                                <Badge variant="secondary">
+                                  {question.type.replace('_', ' ')}
+                                </Badge>
+                                <Badge variant="outline">
+                                  {question.options.length} options
+                                </Badge>
+                              </div>
+                            </CardHeader>
+                            <CardContent>
+                              <div className="space-y-2">
+                                <h4 className="text-sm font-medium">
+                                  Options:
+                                </h4>
+                                <ul className="text-sm text-muted-foreground grid grid-cols-2 gap-1">
+                                  {question.options.map((option, idx) => (
+                                    <li
+                                      key={idx}
+                                      className={`flex items-center ${
+                                        question.answer.includes(option)
+                                          ? 'text-green-600 dark:text-green-400 font-medium'
+                                          : ''
+                                      }`}
+                                    >
+                                      <span className="mr-2">•</span>
+                                      <span className="truncate">{option}</span>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
               </CardContent>
             </Card>
           </TabsContent>

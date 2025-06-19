@@ -26,6 +26,16 @@ export interface Post {
   createdAt: string
   updatedAt: string
 }
+export interface Question {
+  id: number
+  classroomId: number
+  createdAt: string
+  updatedAt: string
+  questionHeader: string
+  options: string[]
+  answer: string[]
+  type: 'SINGLE' | 'MULTIPLE'
+}
 
 export type ApiResponse<T> = {
   data: ApiResponseData<T>
