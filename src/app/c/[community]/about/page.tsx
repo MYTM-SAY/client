@@ -25,6 +25,7 @@ export default async function Page({ params }: Props) {
   if (!modsReq.success) {
     return 'An error has occurred'
   }
+  console.log(communityInfo)
   const bio = communityInfo.data.bio
   const text = communityInfo.data.description
   const ownerImg = await getUserProfileInfo(communityInfo.data.ownerId)
@@ -36,6 +37,18 @@ export default async function Page({ params }: Props) {
           <h2 className="text-4xl font-bold bg-gradient-to-r from-accent to-accent/60 bg-clip-text text-transparent animate-gradient">
             {communityInfo.data.name}
           </h2>
+          <p
+            className={`text-sm font-medium px-3 py-1 rounded-full w-fit ${
+              communityInfo.data.isPublic
+                ? 'bg-green-100 text-green-700'
+                : 'bg-red-100 text-red-700'
+            }`}
+          >
+            {communityInfo.data.isPublic
+              ? 'Public Community'
+              : 'Private Community'}
+          </p>
+
           <div className="bg-gradient-to-br from-accent/20 to-accent/5 h-[350px] flex items-center justify-center rounded-2xl overflow-hidden group hover:shadow-xl transition-all duration-300">
             <Image
               src={communityInfo.data.coverImgURL}
