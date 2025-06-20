@@ -20,11 +20,7 @@ import {
 import { Checkbox } from '@/components/ui/checkbox'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
-
-interface Question {
-  id: number
-  questionHeader: string
-}
+import { Question } from '@/types'
 
 interface QuizQuestion {
   questionId: number
@@ -47,13 +43,15 @@ interface QuizFormProps {
   onSubmit: (data: QuizFormData) => void
   onCancel: () => void
   questions?: Question[]
+  isLoading?: boolean
 }
 
 const QuizForm: React.FC<QuizFormProps> = ({
   quiz,
   onSubmit,
   onCancel,
-  questions,
+  questions = [],
+  isLoading = false,
 }) => {
   const [formData, setFormData] = useState<QuizFormData>(quiz)
   const [isEditing] = useState(!!quiz.id)
@@ -69,7 +67,7 @@ const QuizForm: React.FC<QuizFormProps> = ({
 
   const handleQuestionChange = (
     index: number,
-    field: string,
+    field: keyof QuizQuestion,
     value: string,
   ) => {
     const updatedQuestions = [...formData.quizQuestions]
@@ -118,6 +116,7 @@ const QuizForm: React.FC<QuizFormProps> = ({
                 value={formData.name}
                 onChange={handleChange}
                 required
+                disabled={isLoading}
               />
             </div>
             <div>
@@ -130,6 +129,7 @@ const QuizForm: React.FC<QuizFormProps> = ({
                 value={formData.duration}
                 onChange={handleChange}
                 required
+                disabled={isLoading}
               />
             </div>
             <div>
@@ -141,6 +141,7 @@ const QuizForm: React.FC<QuizFormProps> = ({
                 value={formData.startDate}
                 onChange={handleChange}
                 required
+                disabled={isLoading}
               />
             </div>
             <div>
@@ -152,6 +153,7 @@ const QuizForm: React.FC<QuizFormProps> = ({
                 value={formData.endDate}
                 onChange={handleChange}
                 required
+                disabled={isLoading}
               />
             </div>
             <div>
@@ -162,6 +164,7 @@ const QuizForm: React.FC<QuizFormProps> = ({
                 value={formData.classroomId}
                 onChange={handleChange}
                 required
+                disabled={isLoading}
               />
             </div>
           </div>
@@ -170,14 +173,9 @@ const QuizForm: React.FC<QuizFormProps> = ({
             <Checkbox
               id="active"
               checked={formData.active}
-              onCheckedChange={(checked) =>
-                handleChange({
-                  target: {
-                    name: 'active',
-                    type: 'checkbox',
-                    checked,
-                  } as any,
-                } as React.ChangeEvent<HTMLInputElement>)
+              disabled={isLoading}
+              onCheckedChange={(checked: boolean) =>
+                setFormData({ ...formData, active: checked })
               }
             />
             <Label htmlFor="active">Active Quiz</Label>
@@ -188,75 +186,126 @@ const QuizForm: React.FC<QuizFormProps> = ({
           <div className="space-y-4">
             <div className="flex justify-between items-center">
               <h3 className="text-lg font-medium">Questions</h3>
-              <Button type="button" onClick={addQuestion} size="sm">
+              <Button 
+                type="button" 
+                onClick={addQuestion} 
+                size="sm"
+                disabled={isLoading}
+              >
                 + Add Question
               </Button>
             </div>
+
+            {formData.quizQuestions.length === 0 && (
+              <div className="text-center py-8 text-gray-500">
+                No questions added yet. Click "Add Question" to start.
+              </div>
+            )}
 
             {formData.quizQuestions.map((q, index) => (
               <Card key={index} className="border border-muted">
                 <CardContent className="pt-4 space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <Label>Select Question</Label>
-                      <select
-                        className="w-full border rounded px-3 py-2 bg-background"
-                        value={q.questionId || ''}
-                        onChange={(e) =>
-                          handleQuestionChange(
-                            index,
-                            'questionId',
-                            e.target.value,
-                          )
+                      <Label htmlFor={`question-${index}`}>Select Question</Label>
+                      <Select
+                        value={q.questionId.toString()}
+                        onValueChange={(value) =>
+                          handleQuestionChange(index, 'questionId', value)
                         }
-                        required
+                        disabled={isLoading}
                       >
-                        <option value="">Select a question</option>
-                        {questions &&
-                          questions.map((question) => (
-                            <option key={question.id} value={question.id}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a question" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">Select a question</SelectItem>
+                          {questions.map((question) => (
+                            <SelectItem
+                              key={question.id}
+                              value={question.id.toString()}
+                            >
                               {question.questionHeader}
-                            </option>
+                            </SelectItem>
                           ))}
-                      </select>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div>
-                      <Label>Points</Label>
+                      <Label htmlFor={`points-${index}`}>Points</Label>
                       <Input
+                        id={`points-${index}`}
                         type="number"
-                        value={q.points}
                         min={1}
+                        value={q.points}
                         onChange={(e) =>
                           handleQuestionChange(index, 'points', e.target.value)
                         }
                         required
+                        disabled={isLoading}
                       />
                     </div>
                   </div>
-                </CardContent>
-                <CardFooter className="justify-end">
-                  {formData.quizQuestions.length > 1 && (
+                  
+                  {/* Show question preview if selected */}
+                  {q.questionId > 0 && (
+                    <div className="mt-4 p-3 bg-gray-50 dark:bg-gray-800 rounded-md">
+                      {(() => {
+                        const selectedQuestion = questions.find(
+                          (question) => question.id === q.questionId
+                        )
+                        return selectedQuestion ? (
+                          <div>
+                            <p className="font-medium text-sm text-gray-700 dark:text-gray-300">
+                              Preview: {selectedQuestion.questionHeader}
+                            </p>
+                            <div className="mt-2 text-xs text-gray-600 dark:text-gray-400">
+                              Type: {selectedQuestion.type} | Options: {selectedQuestion.options.length}
+                            </div>
+                          </div>
+                        ) : null
+                      })()}
+                    </div>
+                  )}
+
+                  <div className="flex justify-end">
                     <Button
-                      variant="ghost"
+                      type="button"
+                      variant="destructive"
                       size="sm"
                       onClick={() => removeQuestion(index)}
-                      className="text-destructive"
+                      disabled={isLoading}
                     >
-                      Remove Question
+                      Remove
                     </Button>
-                  )}
-                </CardFooter>
+                  </div>
+                </CardContent>
               </Card>
             ))}
           </div>
         </CardContent>
 
-        <CardFooter className="flex justify-end gap-3">
-          <Button type="button" variant="outline" onClick={onCancel}>
+        <CardFooter className="flex justify-end space-x-4">
+          <Button 
+            type="button" 
+            variant="outline" 
+            onClick={onCancel}
+            disabled={isLoading}
+          >
             Cancel
           </Button>
-          <Button type="submit">
-            {isEditing ? 'Update Quiz' : 'Create Quiz'}
+          <Button 
+            type="submit" 
+            disabled={isLoading || formData.quizQuestions.length === 0}
+          >
+            {isLoading ? (
+              <>
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                {isEditing ? 'Updating...' : 'Creating...'}
+              </>
+            ) : (
+              isEditing ? 'Update Quiz' : 'Create Quiz'
+            )}
           </Button>
         </CardFooter>
       </Card>

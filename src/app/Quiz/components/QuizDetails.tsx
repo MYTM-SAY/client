@@ -1,4 +1,13 @@
-import { Quiz } from '../data/quizData'
+import React from 'react'
+import { Quiz } from '@/types'
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+} from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 
 interface QuizDetailsProps {
   quiz: Quiz
@@ -7,153 +16,89 @@ interface QuizDetailsProps {
 
 const QuizDetails: React.FC<QuizDetailsProps> = ({ quiz, onClose }) => {
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString(undefined, {
-      year: 'numeric',
+    return new Date(dateString).toLocaleDateString(undefined, {
       month: 'long',
       day: 'numeric',
+      year: 'numeric',
+    })
+  }
+
+  const formatTime = (dateString: string) => {
+    return new Date(dateString).toLocaleTimeString(undefined, {
       hour: '2-digit',
       minute: '2-digit',
     })
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 mb-8">
-      <div className="flex justify-between items-start mb-6">
-        <h2 className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-          {quiz.name}
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+          Quiz Details
         </h2>
-        <button
-          onClick={onClose}
-          className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-        </button>
+        <Button onClick={onClose} variant="outline">
+          Back to List
+        </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
-          <h3 className="text-sm font-medium text-blue-800 dark:text-blue-300 mb-2">
-            Quiz Information
-          </h3>
-          <div className="space-y-2">
-            <div className="flex justify-between">
-              <span className="text-gray-600 dark:text-gray-400">Status:</span>
-              <span
-                className={`font-medium ${
-                  quiz.active
-                    ? 'text-green-600 dark:text-green-400'
-                    : 'text-red-600 dark:text-red-400'
-                }`}
-              >
-                {quiz.active ? 'Active' : 'Inactive'}
-              </span>
+      <Card>
+        <CardHeader>
+          <div className="flex justify-between items-start">
+            <div>
+              <CardTitle className="text-xl">{quiz.name}</CardTitle>
+              <p className="text-gray-600 dark:text-gray-400 mt-1">
+                Classroom ID: {quiz.classroomId}
+              </p>
             </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600 dark:text-gray-400">Grade:</span>
-              <span className="font-medium">{quiz.grade}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600 dark:text-gray-400">
-                Duration:
-              </span>
-              <span className="font-medium">{quiz.duration} minutes</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600 dark:text-gray-400">
-                Classroom ID:
-              </span>
-              <span className="font-medium">{quiz.classroomId}</span>
-            </div>
+            <Badge variant={quiz.active ? 'default' : 'secondary'}>
+              {quiz.active ? 'Active' : 'Inactive'}
+            </Badge>
           </div>
-        </div>
+        </CardHeader>
 
-        <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
-          <h3 className="text-sm font-medium text-blue-800 dark:text-blue-300 mb-2">
-            Timing
-          </h3>
-          <div className="space-y-2">
-            <div className="flex justify-between">
-              <span className="text-gray-600 dark:text-gray-400">
-                Start Date:
-              </span>
-              <span className="font-medium">{formatDate(quiz.startDate)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600 dark:text-gray-400">
-                End Date:
-              </span>
-              <span className="font-medium">{formatDate(quiz.endDate)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600 dark:text-gray-400">Created:</span>
-              <span className="font-medium">{formatDate(quiz.createdAt)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600 dark:text-gray-400">
-                Last Updated:
-              </span>
-              <span className="font-medium">{formatDate(quiz.updatedAt)}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="mb-6">
-        <h3 className="text-lg font-medium text-blue-600 dark:text-blue-400 mb-4">
-          Questions ({quiz.questionCount})
-        </h3>
-
-        <div className="space-y-4">
-          {quiz.QuizQuestions.map((quizQuestion, index) => (
-            <div
-              key={quizQuestion.id}
-              className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600"
-            >
-              <div className="flex justify-between items-start mb-3">
-                <h4 className="font-semibold text-gray-900 dark:text-white">
-                  {quizQuestion.Question.questionHeader}
-                </h4>
-                <span className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-sm font-medium px-2.5 py-0.5 rounded">
-                  {quizQuestion.points} points
-                </span>
-              </div>
-
-              <div className="space-y-2">
-                {quizQuestion.Question.options.map((option, idx) => (
-                  <div
-                    key={idx}
-                    className={`p-2 rounded ${
-                      option === quizQuestion.Question.answer
-                        ? 'bg-green-100 dark:bg-green-900 border border-green-300 dark:border-green-700'
-                        : 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700'
-                    }`}
-                  >
-                    {option}{' '}
-                    {option === quizQuestion.Question.answer && (
-                      <span className="text-green-600 dark:text-green-400 ml-2">
-                        ✓ Correct Answer
-                      </span>
-                    )}
-                  </div>
-                ))}
+        <CardContent className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <h3 className="font-semibold text-gray-900 dark:text-white mb-2">
+                Schedule
+              </h3>
+              <div className="space-y-2 text-sm">
+                <div>
+                  <span className="text-gray-600 dark:text-gray-400">Start:</span>{' '}
+                  {formatDate(quiz.startDate)} at {formatTime(quiz.startDate)}
+                </div>
+                <div>
+                  <span className="text-gray-600 dark:text-gray-400">End:</span>{' '}
+                  {formatDate(quiz.endDate)} at {formatTime(quiz.endDate)}
+                </div>
               </div>
             </div>
-          ))}
-        </div>
-      </div>
+
+            <div>
+              <h3 className="font-semibold text-gray-900 dark:text-white mb-2">
+                Duration
+              </h3>
+              <p className="text-sm">{quiz.duration} minutes</p>
+            </div>
+          </div>
+
+          <div>
+            <h3 className="font-semibold text-gray-900 dark:text-white mb-2">
+              Metadata
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+              <div>
+                <span className="text-gray-600 dark:text-gray-400">Created:</span>{' '}
+                {formatDate(quiz.createdAt)}
+              </div>
+              <div>
+                <span className="text-gray-600 dark:text-gray-400">Updated:</span>{' '}
+                {formatDate(quiz.updatedAt)}
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }

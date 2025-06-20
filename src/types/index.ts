@@ -37,6 +37,40 @@ export interface Question {
   type: 'SINGLE' | 'MULTI' | 'TRUE_FALSE'
 }
 
+export interface QuizQuestion {
+  id: number
+  quizId: number
+  questionId: number
+  points: number
+  Question: Question
+}
+
+export interface Quiz {
+  id: number
+  name: string
+  duration: number
+  startDate: string
+  endDate: string
+  classroomId: number
+  active: boolean
+  createdAt: string
+  updatedAt: string
+  QuizQuestions?: QuizQuestion[]
+  questionCount?: number
+  finalScore?: number
+  isAttempted?: boolean
+}
+
+export interface QuizSubmission {
+  quizId: number
+  answers: QuizAnswer[]
+}
+
+export interface QuizAnswer {
+  questionId: number
+  selectedAnswers: string[]
+}
+
 export type ApiResponse<T> = {
   data: ApiResponseData<T>
 }
@@ -116,18 +150,6 @@ export interface Classroom {
   communityId: string
   progress: number
   sections: Section[]
-}
-
-export interface Quiz {
-  id: number
-  name: string
-  duration: number
-  startDate: string
-  endDate: string
-  classroomId: number
-  active: boolean
-  createdAt: string
-  updatedAt: string
 }
 
 export interface Section {

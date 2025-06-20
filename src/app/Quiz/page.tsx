@@ -1,91 +1,172 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import QuizTable from './components/QuizTable'
 import StatsCard from './components/StatsCard'
 import QuizForm from './components/QuizForm'
 import QuizDetails from './components/QuizDetails'
-import { quizzes, newQuiz, updatedQuiz } from './data/quizData'
+import useQuiz from '@/hooks/useQuiz'
+import useQuestion from '@/hooks/useQuestion'
+import { Quiz } from '@/types'
+
+interface QuizFormData {
+  id?: string
+  name: string
+  duration: number
+  startDate: string
+  endDate: string
+  classroomId: string
+  active: boolean
+  quizQuestions: Array<{
+    questionId: number
+    points: number
+  }>
+}
 
 export default function QuizDashboard() {
-  const [quizzesData, setQuizzesData] = useState(quizzes)
-  const [currentQuiz, setCurrentQuiz] = useState<any>(null)
+  const searchParams = useSearchParams()
+  const classroomId = searchParams.get('classroomId')
+  const communityId = searchParams.get('communityId')
+  
+  const {
+    quizzes,
+    quiz: selectedQuiz,
+    isLoading: quizLoading,
+    error: quizError,
+    createQuiz,
+    editQuiz,
+    deleteQuiz,
+    getQuizzesByClassroom,
+    getQuizzesByCommunity,
+    getQuizById,
+  } = useQuiz()
+
+  const {
+    questions,
+    isLoading: questionsLoading,
+    error: questionsError,
+    fetchQuestionsByClassroom,
+  } = useQuestion()
+
+  const [currentQuiz, setCurrentQuiz] = useState<Quiz | null>(null)
   const [viewMode, setViewMode] = useState<'list' | 'create' | 'edit' | 'view'>(
     'list',
   )
   const [deletingQuiz, setDeletingQuiz] = useState<number | null>(null)
 
+  useEffect(() => {
+    // Load quizzes based on context
+    if (classroomId) {
+      getQuizzesByClassroom(classroomId)
+      fetchQuestionsByClassroom(parseInt(classroomId))
+    } else if (communityId) {
+      getQuizzesByCommunity(communityId)
+    }
+  }, [classroomId, communityId])
+
   const handleCreateQuiz = () => {
-    setCurrentQuiz(newQuiz)
+    setCurrentQuiz(null)
     setViewMode('create')
   }
 
-  const handleEditQuiz = (quiz: any) => {
-    setCurrentQuiz(quiz)
+  const handleEditQuiz = async (quiz: Quiz) => {
+    await getQuizById(quiz.id)
+    setCurrentQuiz(selectedQuiz || quiz)
     setViewMode('edit')
   }
 
-  const handleViewQuiz = (quiz: any) => {
-    setCurrentQuiz(quiz)
+  const handleViewQuiz = async (quiz: Quiz) => {
+    await getQuizById(quiz.id)
+    setCurrentQuiz(selectedQuiz || quiz)
     setViewMode('view')
   }
 
-  const handleDeleteQuiz = (id: number) => {
+  const handleDeleteQuiz = async (id: number) => {
     setDeletingQuiz(id)
 
-    // Simulate confirmation dialog
     if (window.confirm('Are you sure you want to delete this quiz?')) {
-      setQuizzesData(quizzesData.filter((quiz) => quiz.id !== id))
+      try {
+        await deleteQuiz(id)
+      } catch (error) {
+        console.error('Failed to delete quiz:', error)
+      }
     }
 
     setDeletingQuiz(null)
   }
 
-  const handleFormSubmit = (quizData: any) => {
-    if (viewMode === 'create') {
-      // Simulate creating a new quiz
-      const newQuizWithId = {
-        ...quizData,
-        id: Math.max(...quizzesData.map((q) => q.id)) + 1,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        questionCount: quizData.quizQuestions.length,
-        QuizQuestions: quizData.quizQuestions.map((q: any, idx: number) => ({
-          id: idx + 1,
-          quizId: Math.max(...quizzesData.map((q) => q.id)) + 1,
-          questionId: q.questionId,
-          points: q.points,
-          Question: {
-            id: idx + 1,
-            questionHeader: `Question ${idx + 1}`,
-            options: ['Option 1', 'Option 2', 'Option 3'],
-            answer: 'Option 1',
-            classroomId: 1,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-          },
-        })),
+  const handleFormSubmit = async (quizData: QuizFormData) => {
+    try {
+      if (viewMode === 'create') {
+        await createQuiz({
+          name: quizData.name,
+          duration: quizData.duration,
+          startDate: quizData.startDate,
+          endDate: quizData.endDate,
+          classroomId: parseInt(quizData.classroomId),
+          active: quizData.active,
+          quizQuestions: quizData.quizQuestions,
+        })
+      } else if (viewMode === 'edit' && currentQuiz) {
+        await editQuiz(currentQuiz.id, {
+          name: quizData.name,
+          duration: quizData.duration,
+          startDate: quizData.startDate,
+          endDate: quizData.endDate,
+          classroomId: parseInt(quizData.classroomId),
+          active: quizData.active,
+          quizQuestions: quizData.quizQuestions,
+        })
       }
-
-      setQuizzesData([...quizzesData, newQuizWithId])
-    } else if (viewMode === 'edit') {
-      // Simulate updating a quiz
-      const updatedQuizzes = quizzesData.map((quiz) =>
-        quiz.id === currentQuiz.id
-          ? { ...quizData, updatedAt: new Date().toISOString() }
-          : quiz,
-      )
-      setQuizzesData(updatedQuizzes)
+      setViewMode('list')
+    } catch (error) {
+      console.error('Failed to save quiz:', error)
     }
-
-    setViewMode('list')
   }
 
   const handleCancel = () => {
     setViewMode('list')
+    setCurrentQuiz(null)
+  }
+
+  // Show loading state
+  if (quizLoading || questionsLoading) {
+    return (
+      <div className="min-h-screen bg-card border rounded-xl py-8 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex justify-center items-center h-64">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Show error state
+  if (quizError || questionsError) {
+    return (
+      <div className="min-h-screen bg-card border rounded-xl py-8 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center py-8">
+            <div className="text-red-500 mb-4">
+              <svg className="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z" />
+              </svg>
+            </div>
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+              Error Loading Data
+            </h3>
+            <p className="text-gray-600 dark:text-gray-400">
+              {quizError || questionsError}
+            </p>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
-    <div className="min-h-screen bg-card border rounded-xl  py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-card border rounded-xl py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <div>
@@ -121,33 +202,55 @@ export default function QuizDashboard() {
 
         {viewMode === 'list' && (
           <>
-            <StatsCard quizzes={quizzesData} />
+            <StatsCard quizzes={quizzes} />
             <QuizTable
-              quizzes={quizzesData}
+              quizzes={quizzes}
               onEdit={handleEditQuiz}
               onView={handleViewQuiz}
               onDelete={handleDeleteQuiz}
+              isDeleting={deletingQuiz}
             />
           </>
         )}
 
         {viewMode === 'create' && (
           <QuizForm
-            quiz={currentQuiz}
+            quiz={{
+              name: '',
+              duration: 60,
+              startDate: '',
+              endDate: '',
+              classroomId: classroomId || '',
+              active: true,
+              quizQuestions: [],
+            }}
+            questions={questions}
             onSubmit={handleFormSubmit}
             onCancel={handleCancel}
+            isLoading={quizLoading}
           />
         )}
 
-        {viewMode === 'edit' && (
+        {viewMode === 'edit' && currentQuiz && (
           <QuizForm
-            quiz={currentQuiz}
+            quiz={{
+              id: currentQuiz.id.toString(),
+              name: currentQuiz.name,
+              duration: currentQuiz.duration,
+              startDate: currentQuiz.startDate,
+              endDate: currentQuiz.endDate,
+              classroomId: currentQuiz.classroomId.toString(),
+              active: currentQuiz.active,
+              quizQuestions: [],
+            }}
+            questions={questions}
             onSubmit={handleFormSubmit}
             onCancel={handleCancel}
+            isLoading={quizLoading}
           />
         )}
 
-        {viewMode === 'view' && (
+        {viewMode === 'view' && currentQuiz && (
           <QuizDetails quiz={currentQuiz} onClose={handleCancel} />
         )}
       </div>

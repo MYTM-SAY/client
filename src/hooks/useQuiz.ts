@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { instance } from '@/lib/utils/axios'
-import { ApiResponseError, ApiResponse, Quiz } from '@/types'
+import { ApiResponseError, ApiResponse, Quiz, QuizSubmission } from '@/types'
 
 interface QuizQuestionInput {
   questionId: number
@@ -17,7 +17,15 @@ interface CreateQuiz {
   quizQuestions: QuizQuestionInput[]
 }
 
-interface EditQuiz extends Partial<CreateQuiz> {}
+interface EditQuiz {
+  name?: string
+  duration?: number
+  startDate?: string
+  endDate?: string
+  classroomId?: number
+  active?: boolean
+  quizQuestions?: QuizQuestionInput[]
+}
 
 const useQuiz = () => {
   const [quizzes, setQuizzes] = useState<Quiz[]>([])
@@ -118,6 +126,23 @@ const useQuiz = () => {
     }
   }
 
+  async function submitQuiz(submission: QuizSubmission) {
+    try {
+      setIsLoading(true)
+      const response: ApiResponse<{ success: boolean; message: string }> = await instance.post(
+        `/quizzes/${submission.quizId}/submit`,
+        submission
+      )
+      return response.data.data
+    } catch (err) {
+      const error = err as ApiResponseError
+      setError(error.response?.data?.message)
+      throw error
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return {
     quizzes,
     quiz,
@@ -129,6 +154,7 @@ const useQuiz = () => {
     getQuizzesByClassroom,
     getQuizzesByCommunity,
     getQuizById,
+    submitQuiz,
   }
 }
 
