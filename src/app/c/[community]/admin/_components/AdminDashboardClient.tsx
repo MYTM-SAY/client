@@ -617,7 +617,7 @@ export default function AdminDashboardClient({
 
         {/* Tabbed Interface */}
         <Tabs defaultValue="members" className="space-y-6">
-          <TabsList className="bg-muted grid w-full grid-cols-6 lg:w-fit">
+          <TabsList className="bg-muted">
             <TabsTrigger value="members" className="flex items-center gap-2">
               <Users className="h-4 w-4" />
               <span>Members</span>

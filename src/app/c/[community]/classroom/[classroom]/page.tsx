@@ -7,7 +7,8 @@ import React, { useState, useEffect, useCallback } from 'react'
 import { FaArrowLeftLong } from 'react-icons/fa6'
 import { useParams } from 'next/navigation'
 import { useClassroomDetails } from '@/hooks/useClassroom'
-
+import useQuiz from '@/hooks/useQuiz'
+import QuizPreview from '../_components/QuizPreview'
 // Define the lesson type for selectedLesson
 interface LessonType {
   id: number
@@ -25,8 +26,13 @@ interface LessonType {
   }[]
 }
 
+type TabType = 'content' | 'quizzes'
+
 export default function Page() {
   const { classroom: classroomId } = useParams() as { classroom: string }
+  const { community: communityId } = useParams() as {
+    community: string | number
+  }
   const {
     courseContent: initialCourseContent,
     isLoading,
@@ -38,7 +44,12 @@ export default function Page() {
   const [hideContent, setHideContent] = useState(false)
   const [courseContent, setCourseContent] = useState(initialCourseContent)
   const [selectedLesson, setSelectedLesson] = useState<LessonType | null>(null)
-
+  const [activeTab, setActiveTab] = useState<TabType>('content')
+  const {
+    quizzes,
+    isLoading: quizzesLoading,
+    getQuizzesByClassroom,
+  } = useQuiz()
   // Function to check screen width
   const handleResize = useCallback(() => {
     setIsMobile(window.innerWidth < 1024)
@@ -49,6 +60,12 @@ export default function Page() {
     window.addEventListener('resize', handleResize) // Add resize listener
     return () => window.removeEventListener('resize', handleResize) // Cleanup listener
   }, [handleResize])
+
+  useEffect(() => {
+    if (classroomId) {
+      getQuizzesByClassroom(classroomId)
+    }
+  }, [classroomId])
 
   useEffect(() => {
     setCourseContent(initialCourseContent)
@@ -128,25 +145,51 @@ export default function Page() {
           description={classroom?.description}
         />
       </div>
-      {hideContent && (
-        <FaArrowLeftLong
-          fontSize={24}
-          className="cursor-pointer mlg:hidden absolute top-4 right-4 py-2 px-4 w-16 h-10 rounded-sm bg-card z-10"
-          onClick={() => {
-            setHideContent(false)
-          }}
-        />
-      )}
+
       {((showContent && isMobile) || (!isMobile && !hideContent)) && (
-        <div className="relative">
-          <CourseProgress courseContent={courseContent} />
-          <CourseContent
-            setHideContent={setHideContent}
-            courseContent={courseContent}
-            selectedLesson={selectedLesson}
-            setSelectedLesson={setSelectedLesson}
-            toggleLessonCompletion={toggleLessonCompletion}
-          />
+        <div className="relative w-[400px] mlg:w-full">
+          <div className="flex border-b border-border">
+            <button
+              className={`flex-1 py-3 font-medium ${
+                activeTab === 'content'
+                  ? 'text-primary border-b-2 border-primary'
+                  : 'text-muted-foreground'
+              }`}
+              onClick={() => setActiveTab('content')}
+            >
+              Content
+            </button>
+            <button
+              className={`flex-1 py-3 font-medium ${
+                activeTab === 'quizzes'
+                  ? 'text-primary border-b-2 border-primary'
+                  : 'text-muted-foreground'
+              }`}
+              onClick={() => setActiveTab('quizzes')}
+            >
+              Quizzes
+            </button>
+          </div>
+
+          {activeTab === 'content' ? (
+            <>
+              <CourseProgress courseContent={courseContent} />
+              <CourseContent
+                setHideContent={setHideContent}
+                courseContent={courseContent}
+                selectedLesson={selectedLesson}
+                setSelectedLesson={setSelectedLesson}
+                toggleLessonCompletion={toggleLessonCompletion}
+              />
+            </>
+          ) : (
+            <QuizPreview
+              quizzes={quizzes}
+              isLoading={quizzesLoading}
+              classroomId={classroomId}
+              communityId={communityId}
+            />
+          )}
         </div>
       )}
     </div>

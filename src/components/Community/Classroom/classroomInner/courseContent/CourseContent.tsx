@@ -36,6 +36,7 @@ interface CourseContentProps {
   selectedLesson: Lesson | null
   setSelectedLesson: (lesson: Lesson) => void
   toggleLessonCompletion: (lessonId: number) => Promise<boolean>
+  className?: string
 }
 
 const CourseContent = ({
@@ -44,9 +45,12 @@ const CourseContent = ({
   selectedLesson,
   setSelectedLesson,
   toggleLessonCompletion,
+  className = '',
 }: CourseContentProps) => {
   return (
-    <div className="w-[400px] mlg:w-full pb-16 pt-4 rounded-lg px-4 mt-6 bg-card">
+    <div
+      className={`w-[400px] mlg:w-full pb-16 pt-4 rounded-lg px-4 mt-6 bg-card ${className}`}
+    >
       <div className="flex justify-between items-center pb-4  border-b border-border">
         <h5 className="h5"> Course Content</h5>
         <IoCloseSharp

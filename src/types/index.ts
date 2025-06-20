@@ -34,7 +34,7 @@ export interface Question {
   questionHeader: string
   options: string[]
   answer: string[]
-  type: 'SINGLE' | 'MULTIPLE'
+  type: 'SINGLE' | 'MULTI' | 'TRUE_FALSE'
 }
 
 export type ApiResponse<T> = {

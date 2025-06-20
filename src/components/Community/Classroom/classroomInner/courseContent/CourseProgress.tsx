@@ -40,10 +40,11 @@ const CourseProgress = ({ courseContent }: CourseProgressProps) => {
   }, 0)
 
   // Calculate percentage
-  const percentage = totalLessons > 0 ? Math.round((totalCompleted / totalLessons) * 100) : 0
+  const percentage =
+    totalLessons > 0 ? Math.round((totalCompleted / totalLessons) * 100) : 0
 
   return (
-    <div className="flex gap-2 justify-center items-center">
+    <div className="flex gap-2 justify-center items-center mt-8">
       <FaTrophy fontSize={22} className="text-yellow-500" />
       <div className="h-5 w-full relative">
         <span className="absolute top-[50%] translate-y-[-50%] left-2 z-10 p-sm">

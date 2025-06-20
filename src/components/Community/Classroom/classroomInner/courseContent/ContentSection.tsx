@@ -44,48 +44,55 @@ interface ContentSectionProps {
   toggleLessonCompletion: (lessonId: number) => Promise<boolean>
 }
 
-const ContentSection = ({ courseContent, selectedLesson, setSelectedLesson, toggleLessonCompletion }: ContentSectionProps) => {
+const ContentSection = ({
+  courseContent,
+  selectedLesson,
+  setSelectedLesson,
+  toggleLessonCompletion,
+}: ContentSectionProps) => {
   return (
-    <Accordion type="single" collapsible defaultValue="section-3">
-      {courseContent.map((section: CourseContentSection) => {
-        // Calculate the number of completed lessons dynamically
-        const completedLessons = section.lessons.filter(
-          (lesson: LessonType) => lesson.completed,
-        ).length
+    <div className="max-h-[calc(100vh-200px)] overflow-y-auto">
+      <Accordion type="single" collapsible defaultValue="section-3">
+        {courseContent.map((section: CourseContentSection) => {
+          // Calculate the number of completed lessons dynamically
+          const completedLessons = section.lessons.filter(
+            (lesson: LessonType) => lesson.completed,
+          ).length
 
-        return (
-          <AccordionItem
-            key={section.section}
-            value={`section-${section.section}`}
-          >
-            <AccordionTrigger>
-              <div className="flex flex-col items-start gap-2">
-                <div className="text-base font-semibold">
-                  Section {section.section}: {section.title}
+          return (
+            <AccordionItem
+              key={section.section}
+              value={`section-${section.section}`}
+            >
+              <AccordionTrigger>
+                <div className="flex flex-col items-start gap-2">
+                  <div className="text-base font-semibold">
+                    Section {section.section}: {section.title}
+                  </div>
+                  <span className="p-sm-muted">
+                    {completedLessons}/{section.lessons.length} |
+                    {section.duration} min
+                  </span>
                 </div>
-                <span className="p-sm-muted">
-                  {completedLessons}/{section.lessons.length} |
-                  {section.duration} min
-                </span>
-              </div>
-            </AccordionTrigger>
-            <AccordionContent>
-              <div className="flex flex-col gap-4">
-                {section.lessons.map((lesson: LessonType) => (
-                  <Lesson
-                    key={lesson.id}
-                    lesson={lesson}
-                    onSelect={() => setSelectedLesson(lesson)}
-                    selected={selectedLesson?.id === lesson.id}
-                    toggleLessonCompletion={toggleLessonCompletion}
-                  />
-                ))}
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-        )
-      })}
-    </Accordion>
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className="flex flex-col gap-4">
+                  {section.lessons.map((lesson: LessonType) => (
+                    <Lesson
+                      key={lesson.id}
+                      lesson={lesson}
+                      onSelect={() => setSelectedLesson(lesson)}
+                      selected={selectedLesson?.id === lesson.id}
+                      toggleLessonCompletion={toggleLessonCompletion}
+                    />
+                  ))}
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          )
+        })}
+      </Accordion>
+    </div>
   )
 }
 
