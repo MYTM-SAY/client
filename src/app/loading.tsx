@@ -8,25 +8,7 @@ export default function Loading() {
 
       {/* Animated text with staggered letters */}
       <p className="mt-6 text-lg font-medium text-gray-700 flex justify-center space-x-1">
-        {[
-          'L',
-          'o',
-          'a',
-          'd',
-          'i',
-          'n',
-          'g',
-          '',
-          'C',
-          'l',
-          'a',
-          's',
-          's',
-          'r',
-          'o',
-          'o',
-          'm',
-        ].map((char, i) => (
+        {['L', 'o', 'a', 'd', 'i', 'n', 'g'].map((char, i) => (
           <span
             key={i}
             className="animate-wave inline-block"
