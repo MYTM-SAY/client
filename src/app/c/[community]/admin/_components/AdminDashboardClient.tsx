@@ -973,7 +973,7 @@ export default function AdminDashboardClient({
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select a classroom" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="bg-white dark:bg-zinc-900">
                         {initialClassrooms.map((classroom) => (
                           <SelectItem
                             key={classroom.id}

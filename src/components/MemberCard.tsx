@@ -7,17 +7,9 @@ interface User {
   email: string
   profilePictureURL: string | null
   role: string
-  createdAt: string // Assuming API returns this
 }
 
 const MemberCard = ({ user }: { user: User }) => {
-  // Format join date
-  const joinDate = new Date(user.createdAt).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  })
-
   return (
     <div className="rounded-lg p-5 shadow-md space-y-4 border">
       <div className="flex justify-between items-start">
@@ -39,11 +31,6 @@ const MemberCard = ({ user }: { user: User }) => {
 
       <div className="text-center text-gray-600">
         <p>{user.email}</p>
-      </div>
-
-      <div className="flex justify-center items-center text-sm text-gray-500">
-        <SlCalender className="mr-2" />
-        <span>Joined {joinDate}</span>
       </div>
     </div>
   )

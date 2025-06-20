@@ -14,14 +14,13 @@ interface User {
   email: string
   profilePictureURL: string | null
   role: string
-  createdAt: string // Assuming API returns this
+  username: string
 }
 
 export const dynamic = 'force-dynamic'
 
-export default async function Page({ params, searchParams }: Props) {
+export default async function Page({ params }: Props) {
   const { community: communityId } = await params
-  const filter = (await searchParams)?.filter || 'all'
   const usersResponse = await getUsersOfCommunity(communityId)
 
   if (!usersResponse.success) {
@@ -29,40 +28,10 @@ export default async function Page({ params, searchParams }: Props) {
   }
 
   const allUsers = usersResponse.data
-  const filteredUsers =
-    filter === 'admins'
-      ? allUsers.filter(
-          (user: { role: string }) => user.role === 'OWNER' || user.role === 'MODERATOR',
-        )
-      : allUsers
-
   return (
     <div className="pb-10">
-      <div className="flex justify-between mb-5">
-        <div className="space-x-4">
-          <Link href="?filter=all">
-            <Btn
-              className={`px-5 py-3 ${
-                filter === 'all' ? 'bg-primary' : 'bg-accent'
-              } text-white`}
-            >
-              Members
-            </Btn>
-          </Link>
-          <Link href="?filter=admins">
-            <Btn
-              className={`px-5 py-3 ${
-                filter === 'admins' ? 'bg-primary' : 'bg-accent'
-              } text-white`}
-            >
-              Admins
-            </Btn>
-          </Link>
-        </div>
-        <Btn className="px-10 py-3 bg-accent text-white">Invite</Btn>
-      </div>
       <div className="grid md:grid-cols-3 gap-5">
-        {filteredUsers.map((user: User) => (
+        {allUsers.map((user: User) => (
           <MemberCard key={user.id} user={user} />
         ))}
       </div>
