@@ -107,7 +107,7 @@ export default function Page() {
                 'n',
                 'g',
                 '',
-                'C,',
+                'C',
                 'l',
                 'a',
                 's',
