@@ -1,12 +1,9 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { getTopTen } from '@/app/actions/leaderboard'
-import { Trophy, Crown, Medal, Star, Gem } from 'lucide-react'
-import { Badge } from '@/components/ui/badge'
+import { Trophy } from 'lucide-react'
 
 interface Props {
-  params: Promise<{
-    community: string
-  }>
+  params: Promise<{ community: string }>
 }
 
 interface LeaderboardDataType {
@@ -17,10 +14,90 @@ interface LeaderboardDataType {
   totalScore: number
 }
 
+function PodiumTopThree({ topThree }: { topThree: LeaderboardDataType[] }) {
+  const podiumOrder = [1, 0, 2]
+
+  return (
+    <div className="flex justify-center items-end gap-6 mb-10 min-h-[180px]">
+      {podiumOrder.map((pos) => {
+        const item = topThree[pos]
+
+        if (!item) {
+          return (
+            <div
+              key={`empty-${pos}`}
+              className="w-24 h-24 rounded-t-xl bg-gray-100 flex items-end justify-center text-gray-400 text-sm"
+            >
+              ---
+            </div>
+          )
+        }
+
+        const height = pos === 0 ? 'h-40' : pos === 1 ? 'h-32' : 'h-28'
+        const bgColor =
+          pos === 0
+            ? 'bg-yellow-400'
+            : pos === 1
+            ? 'bg-gray-300'
+            : 'bg-amber-700 text-white'
+
+        return (
+          <div
+            key={item.userId}
+            className={`flex flex-col items-center justify-end w-24 ${height} ${bgColor} rounded-t-xl relative`}
+          >
+            <Avatar className="w-14 h-14 -mt-10 ring-4 ring-white">
+              <AvatarImage
+                src={item.profilePictureURL || '/default-avatar.png'}
+              />
+              <AvatarFallback>{item.username.charAt(0)}</AvatarFallback>
+            </Avatar>
+            <div className="text-center mt-2">
+              <h3 className="font-bold text-sm truncate">{item.username}</h3>
+              <p className="text-xs">{item.totalScore} pts</p>
+            </div>
+            <div className="absolute -top-4 text-white text-xl font-bold bg-black/20 backdrop-blur px-2 py-1 rounded-full">
+              #{pos + 1}
+            </div>
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
+function LeaderboardList({ data }: { data: LeaderboardDataType[] }) {
+  return (
+    <div className="space-y-4">
+      {data.map((item, index) => (
+        <div
+          key={item.userId}
+          className="bg-white border border-gray-200 p-4 rounded-xl flex items-center shadow-sm hover:shadow-md transition"
+        >
+          <div className="w-10 h-10 bg-blue-100 text-blue-800 font-bold rounded-full flex items-center justify-center mr-4">
+            {index + 4}
+          </div>
+          <Avatar className="w-12 h-12">
+            <AvatarImage
+              src={item.profilePictureURL || '/default-avatar.png'}
+            />
+            <AvatarFallback>{item.username.charAt(0)}</AvatarFallback>
+          </Avatar>
+          <div className="ml-4 flex-1">
+            <h4 className="font-bold">{item.username}</h4>
+            <p className="text-gray-600 text-sm">{item.fullname}</p>
+          </div>
+          <div className="font-bold text-blue-600">{item.totalScore} pts</div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
 export default async function Page({ params }: Props) {
   const { community: communityId } = await params
   const leaderboardReq = await getTopTen(communityId)
-
+  console.log(leaderboardReq)
   if (!leaderboardReq.success) {
     return (
       <div className="max-w-3xl mx-auto p-6">
@@ -57,9 +134,12 @@ export default async function Page({ params }: Props) {
     )
   }
 
+  const topThree = leaderboardData.slice(0, 3)
+  const others = leaderboardData.slice(3)
+
   return (
     <div className="max-w-3xl mx-auto p-4 sm:p-6">
-      <div className="text-center mb-10">
+      <div className="text-center mb-8">
         <div className="inline-flex items-center justify-center bg-gradient-to-r from-blue-500 to-sky-600 p-3 rounded-full mb-4">
           <Trophy className="w-8 h-8 text-white" fill="currentColor" />
         </div>
@@ -69,114 +149,11 @@ export default async function Page({ params }: Props) {
         <p className="text-gray-600">Top performers this week</p>
       </div>
 
-      <div className="space-y-4">
-        {leaderboardData.map((item: LeaderboardDataType, index: number) => {
-          const isTopThree = index < 3
-          const isFirst = index === 0
+      {/* Podium for Top 3 */}
+      <PodiumTopThree topThree={topThree} />
 
-          return (
-            <div
-              key={item.userId}
-              className={`
-                relative rounded-2xl p-5 shadow-sm transition-all hover:shadow-md
-                ${
-                  isFirst
-                    ? 'bg-gradient-to-r from-blue-50/80 to-sky-50/80 border-2 border-blue-200'
-                    : 'bg-white border border-gray-200'
-                }
-                ${isTopThree ? 'pb-8' : ''}
-              `}
-            >
-              {isTopThree && (
-                <div
-                  className={`absolute -top-3 left-6 z-10 ${
-                    index === 0
-                      ? 'text-blue-500'
-                      : index === 1
-                      ? 'text-sky-400'
-                      : 'text-blue-300'
-                  }`}
-                >
-                  {index === 0 ? (
-                    <Crown className="w-8 h-8" fill="currentColor" />
-                  ) : index === 1 ? (
-                    <Medal className="w-8 h-8" fill="currentColor" />
-                  ) : (
-                    <Star className="w-8 h-8" fill="currentColor" />
-                  )}
-                </div>
-              )}
-
-              <div className="flex items-center">
-                <div className="flex-shrink-0 mr-4 relative">
-                  <div
-                    className={`
-                    w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold
-                    ${
-                      isTopThree
-                        ? index === 0
-                          ? 'bg-gradient-to-br from-blue-500 to-blue-700 text-white'
-                          : index === 1
-                          ? 'bg-gradient-to-br from-sky-400 to-sky-600 text-white'
-                          : 'bg-gradient-to-br from-blue-300 to-blue-500 text-white'
-                        : 'bg-blue-100 text-blue-700'
-                    }
-                  `}
-                  >
-                    {isTopThree ? '' : index + 1}
-                  </div>
-                </div>
-
-                <Avatar
-                  className={`${
-                    isFirst ? 'ring-4 ring-blue-300' : ''
-                  } w-14 h-14`}
-                >
-                  <AvatarImage
-                    src={item.profilePictureURL || '/default-avatar.png'}
-                    alt={item.username}
-                    className="object-cover"
-                  />
-                  <AvatarFallback className="bg-blue-100 text-blue-800 font-medium">
-                    {item.username.charAt(0).toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-
-                <div className="ml-4 flex-1 min-w-0">
-                  <h3 className="font-bold text-gray-900 truncate flex items-center">
-                    {item.username}
-                    {isFirst && (
-                      <Badge
-                        variant="default"
-                        className="ml-2 bg-gradient-to-r from-blue-600 to-sky-700"
-                      >
-                        <Gem className="w-4 h-4 mr-1" />
-                        Champion
-                      </Badge>
-                    )}
-                  </h3>
-                  <p className="text-gray-600 text-sm truncate">
-                    {item.fullname}
-                  </p>
-                </div>
-
-                <div className="ml-4 flex flex-col items-end">
-                  <span className="font-bold text-lg text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-sky-700">
-                    +{item.totalScore}
-                  </span>
-                  <span className="text-xs text-gray-500">points</span>
-                </div>
-              </div>
-
-              {isTopThree && (
-                <div className="mt-4 flex justify-center">
-                  <div className="w-16 h-1 rounded-full bg-gradient-to-r from-blue-300 to-sky-400"></div>
-                </div>
-              )}
-            </div>
-          )
-        })}
-      </div>
+      {/* List for 4 to 10 */}
+      {others.length > 0 && <LeaderboardList data={others} />}
     </div>
   )
 }

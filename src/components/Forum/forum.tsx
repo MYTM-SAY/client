@@ -2,7 +2,7 @@ import PostCard from '@/components/Post/Post'
 import CreatePostModal from './CreatePostModal'
 import { getPosts } from '@/app/actions/post'
 import { GetCommunityResponse } from '@/app/actions/community'
-
+import { getTheRoleOfAuth } from '@/app/actions/community'
 interface Props {
   forumId: number
   community: GetCommunityResponse
@@ -14,6 +14,7 @@ export default async function Forum({
   community,
   authedUserId,
 }: Props) {
+  const theRole = await getTheRoleOfAuth(forumId)
   const postsReq = await getPosts(forumId)
   if (!postsReq.success) {
     return <>Internal Server Error</> // TODO: put the 500 page
@@ -29,7 +30,11 @@ export default async function Forum({
       post={post}
       communityId={community.id}
       communityName={community.name}
-      isAuthor={authedUserId == post.Author.id}
+      isAuthor={
+        authedUserId == post.Author.id ||
+        theRole.data == 'MODERATOR' ||
+        theRole.data == 'OWNER'
+      }
       initialVoteStatus={post.voteType}
     />
   ))

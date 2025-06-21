@@ -25,10 +25,12 @@ export function CommentItem({
   comment,
   currentUserId,
   onCommentChange,
+  canModerate,
 }: {
   comment: CommentWithVotes
   currentUserId: string | null
   onCommentChange: () => void
+  canModerate?: boolean
 }) {
   // Comment management states
   const [isDeleting, setIsDeleting] = useState(false)
@@ -57,6 +59,11 @@ export function CommentItem({
   const [loadingReplies, setLoadingReplies] = useState(false)
   const [repliesError, setRepliesError] = useState<string | null>(null)
   const [hasReplies, setHasReplies] = useState(false)
+
+  // Check if user has delete permissions (author or moderator)
+  const canDelete =
+    !!currentUserId &&
+    (currentUserId === comment.authorId.toString() || canModerate === true)
 
   // Check if comment has replies
   useEffect(() => {
@@ -168,7 +175,7 @@ export function CommentItem({
   }
 
   const handleDelete = async () => {
-    if (!currentUserId || currentUserId !== comment.authorId.toString()) return
+    if (!canDelete) return
     setIsDeleting(true)
     setDeleteError(null)
 
@@ -320,24 +327,28 @@ export function CommentItem({
                 >
                   Reply
                 </button>
+
+                {/* Edit button (only for author) */}
                 {currentUserId === comment.authorId.toString() && (
-                  <div className="flex">
-                    <button
-                      onClick={() => setIsEditing(true)}
-                      className="mr-3 hover:text-blue-600"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={handleDelete}
-                      disabled={isDeleting}
-                      className={`hover:text-red-600 ${
-                        isDeleting ? 'opacity-50 cursor-not-allowed' : ''
-                      }`}
-                    >
-                      {isDeleting ? 'Deleting...' : 'Delete'}
-                    </button>
-                  </div>
+                  <button
+                    onClick={() => setIsEditing(true)}
+                    className="mr-3 hover:text-blue-600"
+                  >
+                    Edit
+                  </button>
+                )}
+
+                {/* Delete button (for author or moderator) */}
+                {canDelete && (
+                  <button
+                    onClick={handleDelete}
+                    disabled={isDeleting}
+                    className={`hover:text-red-600 ${
+                      isDeleting ? 'opacity-50 cursor-not-allowed' : ''
+                    }`}
+                  >
+                    {isDeleting ? 'Deleting...' : 'Delete'}
+                  </button>
                 )}
               </div>
             </>
@@ -419,6 +430,7 @@ export function CommentItem({
                   comment={child}
                   currentUserId={currentUserId}
                   onCommentChange={handleChildChange}
+                  canModerate={canModerate}
                 />
               ))
             ) : (

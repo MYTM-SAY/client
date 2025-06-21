@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { getComments } from '@/app/actions/comment'
 import { CommentItem } from '@/components/Post/CommentItem'
 import { useUser } from '@/hooks/useUser'
+import { getTheRoleOfAuth } from '@/app/actions/community' // Import the role function
 
 interface PageParams {
   id: string
@@ -22,6 +23,7 @@ export default function Page({ params }: { params: Promise<PageParams> }) {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [sortBy, setSortBy] = useState<'voteCount' | 'createdAt'>('createdAt')
+  const [userRole, setUserRole] = useState<string | null>(null)
 
   const fetchComments = async () => {
     try {
@@ -53,6 +55,32 @@ export default function Page({ params }: { params: Promise<PageParams> }) {
     fetchData()
   }, [id])
 
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      if (authenticatedUser && post) {
+        try {
+          const roleData = await getTheRoleOfAuth(post.Forum.Community.id)
+          console.log(roleData)
+          console.log(roleData.data)
+
+          if (roleData && roleData.data) {
+            console.log(88)
+            setUserRole(roleData.data)
+          } else {
+            setUserRole(null)
+          }
+        } catch (err) {
+          console.error('Error fetching user role:', err)
+          setUserRole(null)
+        }
+      } else {
+        setUserRole(null)
+      }
+    }
+
+    fetchUserRole()
+  }, [authenticatedUser, post])
+
   const sortedComments = useMemo(() => {
     return [...comments].sort((a, b) => {
       if (sortBy === 'voteCount') {
@@ -65,7 +93,7 @@ export default function Page({ params }: { params: Promise<PageParams> }) {
 
   const isAuthor = post?.Author.id === Number(authenticatedUser?.id)
   const currentUserId = authenticatedUser?.id?.toString() || null
-
+  const canModerate = userRole === 'OWNER' || userRole === 'MODERATOR'
   if (isLoading) {
     return (
       <main className="max-w-3xl mx-auto px-4 py-16 text-center">
@@ -151,6 +179,7 @@ export default function Page({ params }: { params: Promise<PageParams> }) {
                 key={comment.id}
                 comment={comment}
                 currentUserId={currentUserId}
+                canModerate={canModerate}
                 onCommentChange={fetchComments}
               />
             ))}
