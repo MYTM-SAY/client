@@ -42,6 +42,8 @@ import {
 import {
   changeCommunityVisibility,
   deleteMember,
+  promoteUserToMod,
+  demoteUserToMember,
 } from '@/app/actions/community'
 import { toast } from '@/hooks/use-toast'
 import { Classroom, Quiz as QuizType } from '@/types'
@@ -96,6 +98,12 @@ export default function AdminDashboardClient({
   initialMembers,
   initialVisibility,
 }: AdminDashboardClientProps) {
+  // Add these state variables
+  const [showRoleModal, setShowRoleModal] = useState(false)
+  const [processingRoleChange, setProcessingRoleChange] = useState<{
+    userId: number
+    action: 'promote' | 'demote'
+  } | null>(null)
   const [classrooms] = useState<Classroom[]>(initialClassrooms)
   const [showQuizForm, setShowQuizForm] = useState(false)
   const [members, setMembers] = useState<Member[]>(initialMembers)
@@ -175,6 +183,59 @@ export default function AdminDashboardClient({
     }
 
     setDeletingId(null)
+  }
+
+  const handleRoleChange = async (
+    userId: number,
+    action: 'promote' | 'demote',
+  ) => {
+    setProcessingRoleChange({ userId, action })
+    setError(null)
+
+    try {
+      const result =
+        action === 'promote'
+          ? await promoteUserToMod(communityId, userId)
+          : await demoteUserToMember(communityId, userId)
+
+      if (result && result.success !== false) {
+        setMembers((prev) =>
+          prev.map((member) => {
+            if (member.id === userId) {
+              return {
+                ...member,
+                role: action === 'promote' ? 'MODERATOR' : 'MEMBER',
+              }
+            }
+            return member
+          }),
+        )
+
+        toast({
+          title: 'Success',
+          description:
+            action === 'promote'
+              ? 'User promoted to moderator'
+              : 'User demoted to member',
+        })
+      } else {
+        setError(result?.message || `Failed to ${action} user`)
+        toast({
+          title: 'Error',
+          description: result?.message || `Failed to ${action} user`,
+          variant: 'destructive',
+        })
+      }
+    } catch (error) {
+      setError('An unexpected error occurred')
+      toast({
+        title: 'Error',
+        description: 'An unexpected error occurred',
+        variant: 'destructive',
+      })
+    } finally {
+      setProcessingRoleChange(null)
+    }
   }
 
   const handleAction = (action: ActionType) => {
@@ -406,33 +467,7 @@ export default function AdminDashboardClient({
             </div>
 
             <div className="p-6 space-y-4">
-              {selectedAction === 'role' && (
-                <>
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Member Email</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="Enter member's email"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="role">New Role</Label>
-                    <Select value={role} onValueChange={setRole}>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select role" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="member">Member</SelectItem>
-                        <SelectItem value="moderator">Moderator</SelectItem>
-                        <SelectItem value="admin">Admin</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </>
-              )}
+              {/* Content for action modal */}
             </div>
 
             <div className="p-6 border-t flex justify-end space-x-3">
@@ -443,6 +478,124 @@ export default function AdminDashboardClient({
                 Cancel
               </Button>
               <Button onClick={handleConfirm}>Confirm</Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Role Change Modal - TOP LEVEL */}
+      {showRoleModal && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 transition-opacity animate-in fade-in">
+          <div className="bg-background border rounded-lg shadow-xl w-full max-w-2xl max-h-[80vh] overflow-y-auto transform transition-all duration-200 ease-out animate-in zoom-in-95">
+            <div className="flex justify-between items-center p-6 border-b sticky top-0 bg-background z-10">
+              <h2 className="text-xl font-bold">Change Member Roles</h2>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowRoleModal(false)}
+                className="rounded-full"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+
+            <div className="p-6">
+              {members.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  <p>No members found in this community</p>
+                </div>
+              ) : (
+                <>
+                  {error && (
+                    <div className="mb-4 p-3 bg-destructive/10 text-destructive rounded-lg">
+                      {error}
+                    </div>
+                  )}
+
+                  <div className="space-y-3">
+                    {members
+                      .filter((member) => member.role !== 'OWNER')
+                      .map((member) => (
+                        <div
+                          key={member.id}
+                          className="flex items-center justify-between p-4 border rounded-lg"
+                        >
+                          <div className="flex items-center space-x-4">
+                            <Avatar className="w-10 h-10">
+                              <AvatarImage
+                                src={
+                                  member.profilePictureURL || '/pp-fallback.svg'
+                                }
+                                alt={member.fullname}
+                              />
+                              <AvatarFallback className="bg-muted">
+                                {member.fullname.charAt(0).toUpperCase()}
+                              </AvatarFallback>
+                            </Avatar>
+                            <div>
+                              <h3 className="font-semibold">
+                                {member.fullname}
+                              </h3>
+                              <p className="text-sm text-muted-foreground">
+                                {member.email}
+                              </p>
+                              <Badge
+                                variant={
+                                  member.role === 'MODERATOR'
+                                    ? 'default'
+                                    : 'secondary'
+                                }
+                                className="mt-1"
+                              >
+                                {member.role}
+                              </Badge>
+                            </div>
+                          </div>
+
+                          <div className="flex space-x-2">
+                            {member.role === 'MEMBER' && (
+                              <Button
+                                variant="default"
+                                size="sm"
+                                onClick={() =>
+                                  handleRoleChange(member.id, 'promote')
+                                }
+                                disabled={!!processingRoleChange}
+                              >
+                                {processingRoleChange?.userId === member.id &&
+                                processingRoleChange?.action === 'promote' ? (
+                                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                                ) : null}
+                                Promote to Moderator
+                              </Button>
+                            )}
+
+                            {member.role === 'MODERATOR' && (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() =>
+                                  handleRoleChange(member.id, 'demote')
+                                }
+                                disabled={!!processingRoleChange}
+                              >
+                                {processingRoleChange?.userId === member.id &&
+                                processingRoleChange?.action === 'demote' ? (
+                                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                                ) : null}
+                                Demote to Member
+                              </Button>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                </>
+              )}
+            </div>
+
+            <div className="p-6 border-t flex justify-end">
+              <Button onClick={() => setShowRoleModal(false)}>Close</Button>
             </div>
           </div>
         </div>
@@ -821,7 +974,7 @@ export default function AdminDashboardClient({
                       </div>
                       <Button
                         variant="outline"
-                        onClick={() => handleAction('role')}
+                        onClick={() => setShowRoleModal(true)}
                         className="mt-2"
                       >
                         Change Role

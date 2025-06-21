@@ -1,5 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { getTopTen } from '@/app/actions/leaderboard'
+import { Trophy, Crown, Medal, Star, Gem } from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
 
 interface Props {
   params: Promise<{
@@ -7,11 +9,12 @@ interface Props {
   }>
 }
 
-interface leaderboardDataTypes {
-  id: number
+interface LeaderboardDataType {
+  userId: number
   username: string
   fullname: string
-  score: number
+  profilePictureURL: string
+  totalScore: number
 }
 
 export default async function Page({ params }: Props) {
@@ -19,68 +22,161 @@ export default async function Page({ params }: Props) {
   const leaderboardReq = await getTopTen(communityId)
 
   if (!leaderboardReq.success) {
-    return 'An error has occurred'
+    return (
+      <div className="max-w-3xl mx-auto p-6">
+        <div className="bg-blue-50 border border-blue-200 rounded-xl p-8 text-center">
+          <h2 className="text-xl font-bold text-blue-800 mb-2">
+            Error Loading Leaderboard
+          </h2>
+          <p className="text-blue-600">Please try again later</p>
+        </div>
+      </div>
+    )
   }
 
   const leaderboardData = leaderboardReq.data
 
-  // Handle empty leaderboard
   if (leaderboardData.length === 0) {
     return (
-      <div className="text-center py-16">
-        <div className="bg-gray-100 border rounded-lg p-8 max-w-md mx-auto">
-          <div className="text-5xl mb-4">🏆</div>
-          <h1 className="text-2xl font-bold mb-2">Leaderboard is Empty</h1>
-          <p className="text-gray-600">
-            Be the first to join and start earning points!
+      <div className="max-w-3xl mx-auto p-6">
+        <div className="bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-200 rounded-2xl p-10 text-center shadow-sm">
+          <div className="bg-blue-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+            <Trophy className="w-12 h-12 text-blue-500" strokeWidth={1.5} />
+          </div>
+          <h1 className="text-3xl font-bold text-gray-800 mb-2">
+            Leaderboard is Empty
+          </h1>
+          <p className="text-gray-600 max-w-md mx-auto mb-6">
+            Be the first to participate and claim the top spot!
           </p>
+          <button className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-full transition-all">
+            Join Now
+          </button>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="">
-      <h1 className="text-3xl font-bold text-center py-8">Leaderboard</h1>
+    <div className="max-w-3xl mx-auto p-4 sm:p-6">
+      <div className="text-center mb-10">
+        <div className="inline-flex items-center justify-center bg-gradient-to-r from-blue-500 to-sky-600 p-3 rounded-full mb-4">
+          <Trophy className="w-8 h-8 text-white" fill="currentColor" />
+        </div>
+        <h1 className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-sky-700 mb-2">
+          Community Leaderboard
+        </h1>
+        <p className="text-gray-600">Top performers this week</p>
+      </div>
 
-      <ol className="">
-        {leaderboardData.map((item: leaderboardDataTypes, index: number) => (
-          <li key={item.id} className="p-4 my-4 rounded-lg shadow-md border">
-            <div className="flex justify-between items-center">
-              <div className="flex items-center space-x-4">
-                <span className="font-medium w-6">
+      <div className="space-y-4">
+        {leaderboardData.map((item: LeaderboardDataType, index: number) => {
+          const isTopThree = index < 3
+          const isFirst = index === 0
+
+          return (
+            <div
+              key={item.userId}
+              className={`
+                relative rounded-2xl p-5 shadow-sm transition-all hover:shadow-md
+                ${
+                  isFirst
+                    ? 'bg-gradient-to-r from-blue-50/80 to-sky-50/80 border-2 border-blue-200'
+                    : 'bg-white border border-gray-200'
+                }
+                ${isTopThree ? 'pb-8' : ''}
+              `}
+            >
+              {isTopThree && (
+                <div
+                  className={`absolute -top-3 left-6 z-10 ${
+                    index === 0
+                      ? 'text-blue-500'
+                      : index === 1
+                      ? 'text-sky-400'
+                      : 'text-blue-300'
+                  }`}
+                >
                   {index === 0 ? (
-                    <Avatar className="rounded-full w-8 h-8 mx-auto">
-                      <AvatarImage src="/Gold.png" alt="Gold medal" />
-                      <AvatarFallback>G</AvatarFallback>
-                    </Avatar>
+                    <Crown className="w-8 h-8" fill="currentColor" />
                   ) : index === 1 ? (
-                    <Avatar className="rounded-full w-8 h-8 mx-auto">
-                      <AvatarImage src="/Silver.png" alt="Silver medal" />
-                      <AvatarFallback>S</AvatarFallback>
-                    </Avatar>
-                  ) : index === 2 ? (
-                    <Avatar className="rounded-full w-8 h-8 mx-auto">
-                      <AvatarImage src="/Bronze.png" alt="Bronze medal" />
-                      <AvatarFallback>B</AvatarFallback>
-                    </Avatar>
+                    <Medal className="w-8 h-8" fill="currentColor" />
                   ) : (
-                    <p className="text-center">{index + 1}</p>
+                    <Star className="w-8 h-8" fill="currentColor" />
                   )}
-                </span>
-                <Avatar className="rounded-full w-12 h-12">
-                  <AvatarImage src="/pp-fallback.svg" alt={item.username} />
-                  <AvatarFallback>
+                </div>
+              )}
+
+              <div className="flex items-center">
+                <div className="flex-shrink-0 mr-4 relative">
+                  <div
+                    className={`
+                    w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold
+                    ${
+                      isTopThree
+                        ? index === 0
+                          ? 'bg-gradient-to-br from-blue-500 to-blue-700 text-white'
+                          : index === 1
+                          ? 'bg-gradient-to-br from-sky-400 to-sky-600 text-white'
+                          : 'bg-gradient-to-br from-blue-300 to-blue-500 text-white'
+                        : 'bg-blue-100 text-blue-700'
+                    }
+                  `}
+                  >
+                    {isTopThree ? '' : index + 1}
+                  </div>
+                </div>
+
+                <Avatar
+                  className={`${
+                    isFirst ? 'ring-4 ring-blue-300' : ''
+                  } w-14 h-14`}
+                >
+                  <AvatarImage
+                    src={item.profilePictureURL || '/default-avatar.png'}
+                    alt={item.username}
+                    className="object-cover"
+                  />
+                  <AvatarFallback className="bg-blue-100 text-blue-800 font-medium">
                     {item.username.charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
-                <h3 className="font-semibold">{item.username}</h3>
+
+                <div className="ml-4 flex-1 min-w-0">
+                  <h3 className="font-bold text-gray-900 truncate flex items-center">
+                    {item.username}
+                    {isFirst && (
+                      <Badge
+                        variant="default"
+                        className="ml-2 bg-gradient-to-r from-blue-600 to-sky-700"
+                      >
+                        <Gem className="w-4 h-4 mr-1" />
+                        Champion
+                      </Badge>
+                    )}
+                  </h3>
+                  <p className="text-gray-600 text-sm truncate">
+                    {item.fullname}
+                  </p>
+                </div>
+
+                <div className="ml-4 flex flex-col items-end">
+                  <span className="font-bold text-lg text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-sky-700">
+                    +{item.totalScore}
+                  </span>
+                  <span className="text-xs text-gray-500">points</span>
+                </div>
               </div>
-              <span className="text-green-600 font-bold">+{item.score}</span>
+
+              {isTopThree && (
+                <div className="mt-4 flex justify-center">
+                  <div className="w-16 h-1 rounded-full bg-gradient-to-r from-blue-300 to-sky-400"></div>
+                </div>
+              )}
             </div>
-          </li>
-        ))}
-      </ol>
+          )
+        })}
+      </div>
     </div>
   )
 }
