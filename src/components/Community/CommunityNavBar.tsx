@@ -26,7 +26,7 @@ export default function CommunityNavBar() {
   const navItems = [
     ...(role === null ? [] : [{ name: 'Forum', path: '' }]),
     ...(role === null ? [] : [{ name: 'Classroom', path: 'classroom' }]),
-    ...(role === null ? [] : [{ name: 'Calendar', path: 'calendar' }]),
+    // ...(role === null ? [] : [{ name: 'Calendar', path: 'calendar' }]),
     ...(role === null ? [] : [{ name: 'Leaderboards', path: 'leaderboards' }]),
     { name: 'Members', path: 'members' },
     { name: 'About', path: 'about' },

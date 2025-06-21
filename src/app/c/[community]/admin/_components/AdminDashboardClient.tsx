@@ -128,6 +128,8 @@ export default function AdminDashboardClient({
   const [selectedClassroom, setSelectedClassroom] = useState<number | null>(
     null,
   )
+  const [showBulkUploadModal, setShowBulkUploadModal] = useState(false)
+  const [uploadFile, setUploadFile] = useState<File | null>(null)
 
   // Quiz hook
   const {
@@ -149,6 +151,7 @@ export default function AdminDashboardClient({
     editQuestion,
     deleteQuestion,
     fetchQuestionsByClassroom,
+    bulkUploadQuestions,
   } = useQuestion()
 
   useEffect(() => {
@@ -397,7 +400,7 @@ export default function AdminDashboardClient({
     }
   }
 
-  const handleSubmitQuestion = async (data: any) => {
+  const handleSubmitQuestion = async (data: Partial<QuestionType>) => {
     try {
       if (currentQuestion) {
         await editQuestion(currentQuestion.id, data)
@@ -422,6 +425,48 @@ export default function AdminDashboardClient({
         description: 'Failed to save question',
         variant: 'destructive',
       })
+    }
+  }
+
+  const handleBulkUpload = async () => {
+    if (!uploadFile || !selectedClassroom) {
+      toast({
+        title: 'Error',
+        description: 'Please select a file and classroom',
+        variant: 'destructive',
+      })
+      return
+    }
+
+    try {
+      await bulkUploadQuestions(uploadFile, selectedClassroom)
+      
+      toast({
+        title: 'Success',
+        description: 'Questions uploaded successfully',
+      })
+
+      // Reset form and close modal
+      setUploadFile(null)
+      setShowBulkUploadModal(false)
+      
+      // Refresh questions list
+      if (selectedClassroom) {
+        fetchQuestionsByClassroom(selectedClassroom)
+      }
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to upload questions',
+        variant: 'destructive',
+      })
+    }
+  }
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (file) {
+      setUploadFile(file)
     }
   }
 
@@ -712,6 +757,93 @@ export default function AdminDashboardClient({
                 onClick={() => setShowMembersModal(false)}
               >
                 Close
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Bulk Upload Modal */}
+      {showBulkUploadModal && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 transition-opacity animate-in fade-in">
+          <div className="bg-background border rounded-lg shadow-xl w-full max-w-md transform transition-all duration-200 ease-out animate-in zoom-in-95">
+            <div className="flex justify-between items-center p-6 border-b">
+              <h2 className="text-xl font-bold">Bulk Upload Questions</h2>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowBulkUploadModal(false)}
+                className="rounded-full"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+
+            <div className="p-6 space-y-4">
+              <div>
+                <Label htmlFor="classroom-select">Classroom</Label>
+                <Select
+                  value={selectedClassroom?.toString() || ''}
+                  onValueChange={(value) => setSelectedClassroom(Number(value))}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select a classroom" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white dark:bg-zinc-900">
+                    {initialClassrooms.map((classroom) => (
+                      <SelectItem
+                        key={classroom.id}
+                        value={classroom.id.toString()}
+                      >
+                        {classroom.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label htmlFor="file-upload">Upload File</Label>
+                <Input
+                  id="file-upload"
+                  type="file"
+                  accept=".csv,.xlsx,.xls,.json,.txt"
+                  onChange={handleFileChange}
+                  className="mt-1"
+                />
+                {uploadFile && (
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Selected: {uploadFile.name}
+                  </p>
+                )}
+              </div>
+
+              <div className="text-sm text-muted-foreground">
+                <p>Supported formats: CSV, Excel (.xlsx, .xls), JSON, TXT</p>
+                <p>Make sure your file follows the required format.</p>
+              </div>
+            </div>
+
+            <div className="p-6 border-t flex justify-end space-x-3">
+              <Button
+                variant="outline"
+                onClick={() => setShowBulkUploadModal(false)}
+                disabled={questionsLoading}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleBulkUpload}
+                disabled={!uploadFile || !selectedClassroom || questionsLoading}
+              >
+                {questionsLoading ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                    Uploading...
+                  </>
+                ) : (
+                  'Upload Questions'
+                )}
               </Button>
             </div>
           </div>
@@ -1107,10 +1239,17 @@ export default function AdminDashboardClient({
                       </CardDescription>
                     </div>
                   </div>
+                  <div className="flex gap-2">
                   <Button onClick={handleCreateQuestion}>
                     <Plus className="h-4 w-4 mr-2" />
                     Add Question
                   </Button>
+                  <Button onClick={() => setShowBulkUploadModal(true)}>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Bulk Upload
+                  </Button>
+
+                  </div>
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-6 space-y-6">

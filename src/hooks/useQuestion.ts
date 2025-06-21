@@ -78,11 +78,37 @@ const useQuestion = () => {
     }
   }
 
+  const bulkUploadQuestions = async (file: File, classroomId: number) => {
+    try {
+      setIsLoading(true)
+      const formData = new FormData()
+      formData.append('file', file)
+
+      const response = await instance.post(
+        `/questions/bulk-questions/classrooms/${classroomId}`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      )
+      return response.data
+    } catch (err) {
+      const error = err as ApiResponseError
+      setError(error.response?.data?.message || 'Failed to upload questions')
+      throw error
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return {
     createQuestion,
     editQuestion,
     deleteQuestion,
     fetchQuestionsByClassroom,
+    bulkUploadQuestions,
     questions,
     isLoading,
     error,
