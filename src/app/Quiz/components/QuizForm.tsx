@@ -45,7 +45,7 @@ interface QuizFormProps {
   onCancel: () => void
   questions?: Question[]
   isLoading?: boolean
-  communityId: string | number
+  communityId?: string | number
 }
 
 const QuizForm: React.FC<QuizFormProps> = ({
@@ -59,9 +59,9 @@ const QuizForm: React.FC<QuizFormProps> = ({
   const [formData, setFormData] = useState<QuizFormData>(quiz)
   const [isEditing] = useState(!!quiz.id)
 
-  // Fetch classrooms for the community
+  // Fetch classrooms for the community if communityId is present
   const { classrooms, isLoading: isClassroomsLoading } = useClassrooms(
-    String(communityId),
+    communityId ? String(communityId) : '',
   )
 
   const handleChange = (
@@ -172,12 +172,14 @@ const QuizForm: React.FC<QuizFormProps> = ({
                 onValueChange={(value) =>
                   setFormData({ ...formData, classroomId: value })
                 }
-                disabled={isLoading || isClassroomsLoading}
+                disabled={isLoading || isClassroomsLoading || !communityId}
               >
                 <SelectTrigger>
                   <SelectValue
                     placeholder={
-                      isClassroomsLoading
+                      !communityId
+                        ? 'No community selected'
+                        : isClassroomsLoading
                         ? 'Loading classrooms...'
                         : classrooms.length > 0
                         ? 'Select a classroom'
@@ -285,7 +287,6 @@ const QuizForm: React.FC<QuizFormProps> = ({
                     </div>
                   </div>
 
-                  {/* Show question preview if selected */}
                   {q.questionId > 0 && (
                     <div className="mt-4 p-3 bg-gray-50 dark:bg-gray-800 rounded-md">
                       {(() => {
