@@ -46,7 +46,7 @@ import {
   demoteUserToMember,
 } from '@/app/actions/community'
 import { toast } from '@/hooks/use-toast'
-import { Classroom, Quiz as QuizType } from '@/types'
+import { Classroom } from '@/types'
 import useQuiz from '@/hooks/useQuiz'
 import useQuestion from '@/hooks/useQuestion'
 import QuestionForm from '../_components/QuestionForm'
@@ -90,6 +90,15 @@ interface QuizFormData {
   classroomId: string
   active: boolean
   quizQuestions: QuizQuestionInput[]
+}
+
+// Define QuestionBody interface locally since it's not exported from useQuestion hook
+interface QuestionBody {
+  questionHeader: string
+  options: string[]
+  answer: string[]
+  classroomId: number
+  type: 'SINGLE' | 'MULTI' | 'TRUE_FALSE'
 }
 
 export default function AdminDashboardClient({
@@ -229,7 +238,7 @@ export default function AdminDashboardClient({
           variant: 'destructive',
         })
       }
-    } catch (error) {
+    } catch {
       setError('An unexpected error occurred')
       toast({
         title: 'Error',
@@ -285,7 +294,7 @@ export default function AdminDashboardClient({
           variant: 'destructive',
         })
       }
-    } catch (error) {
+    } catch {
       const errorMessage =
         'An error occurred while changing community visibility'
       setError(errorMessage)
@@ -303,7 +312,7 @@ export default function AdminDashboardClient({
     setShowQuizForm(true)
   }
 
-  const handleEditQuiz = (quiz: QuizType) => {
+  const handleEditQuiz = () => {
     setShowQuizForm(true)
   }
 
@@ -345,7 +354,7 @@ export default function AdminDashboardClient({
         })
       }
       setShowQuizForm(false)
-    } catch (error) {
+    } catch {
       toast({
         title: 'Error',
         description: 'Failed to save quiz',
@@ -361,7 +370,7 @@ export default function AdminDashboardClient({
         title: 'Success',
         description: 'Quiz deleted successfully',
       })
-    } catch (error) {
+    } catch {
       toast({
         title: 'Error',
         description: 'Failed to delete quiz',
@@ -391,7 +400,7 @@ export default function AdminDashboardClient({
       if (selectedClassroom) {
         fetchQuestionsByClassroom(selectedClassroom)
       }
-    } catch (error) {
+    } catch {
       toast({
         title: 'Error',
         description: 'Failed to delete question',
@@ -400,7 +409,7 @@ export default function AdminDashboardClient({
     }
   }
 
-  const handleSubmitQuestion = async (data: Partial<QuestionType>) => {
+  const handleSubmitQuestion = async (data: QuestionBody) => {
     try {
       if (currentQuestion) {
         await editQuestion(currentQuestion.id, data)
@@ -419,7 +428,7 @@ export default function AdminDashboardClient({
       if (selectedClassroom) {
         fetchQuestionsByClassroom(selectedClassroom)
       }
-    } catch (error) {
+    } catch {
       toast({
         title: 'Error',
         description: 'Failed to save question',
@@ -454,7 +463,7 @@ export default function AdminDashboardClient({
       if (selectedClassroom) {
         fetchQuestionsByClassroom(selectedClassroom)
       }
-    } catch (error) {
+    } catch {
       toast({
         title: 'Error',
         description: 'Failed to upload questions',
@@ -1194,7 +1203,7 @@ export default function AdminDashboardClient({
                             <Button
                               variant="outline"
                               size="sm"
-                              onClick={() => handleEditQuiz(quiz)}
+                              onClick={() => handleEditQuiz()}
                             >
                               Edit
                             </Button>
