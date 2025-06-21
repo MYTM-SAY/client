@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import CommunityCardDiscover from '@/components/CommunityCardDiscover'
 import TagList from '@/components/Discover/TagList'
 import { Input } from '@/components/ui/input'
@@ -48,6 +48,18 @@ interface DiscoverContentProps {
 }
 export default function DiscoverContent(communities: DiscoverContentProps) {
   const [selectedTags, setSelectedTags] = useState<number[]>([])
+  const [searchTerm, setSearchTerm] = useState<string>('')
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState<string>('')
+  
+  // Debounce search term
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm)
+    }, 300)
+
+    return () => clearTimeout(timer)
+  }, [searchTerm])
+
   const handleTagClick = (tagId: number) => {
     setSelectedTags((prev) =>
       prev.includes(tagId)
@@ -55,9 +67,25 @@ export default function DiscoverContent(communities: DiscoverContentProps) {
         : [...prev, tagId],
     )
   }
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value)
+  }
+
   console.log(communities.communities)
 
-  const allComunitites = communities.communities.map((community) => (
+  // Filter communities based on debounced search term
+  const filteredCommunities = communities.communities.filter((community) => {
+    const searchLower = debouncedSearchTerm.toLowerCase()
+    return (
+      debouncedSearchTerm === '' ||
+      community.name.toLowerCase().includes(searchLower) ||
+      community.description.toLowerCase().includes(searchLower) ||
+      community.bio.toLowerCase().includes(searchLower)
+    )
+  })
+
+  const allComunitites = filteredCommunities.map((community) => (
     <CommunityCardDiscover
       communityId={community.id}
       key={community.id}
@@ -78,6 +106,8 @@ export default function DiscoverContent(communities: DiscoverContentProps) {
           type="text"
           placeholder="Search ..."
           className="border-0 w-full text-xl font-normal tracking-tight md:text-2xl"
+          value={searchTerm}
+          onChange={handleSearchChange}
         />
       </div>
 
