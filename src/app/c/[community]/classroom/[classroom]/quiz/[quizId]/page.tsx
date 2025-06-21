@@ -16,10 +16,11 @@ export default function QuizPage() {
   const router = useRouter()
   const quizId = parseInt(params.quizId as string)
   
-  const { quiz, isLoading, error, getQuizById } = useQuiz()
+  const { quiz, isLoading, error, getQuizById, submitQuiz } = useQuiz()
   const [currentView, setCurrentView] = useState<'overview' | 'taking' | 'results'>('overview')
   const [quizSubmission, setQuizSubmission] = useState<QuizSubmission | null>(null)
   const [timeRemaining, setTimeRemaining] = useState<number>(0)
+  const [quizStartTime, setQuizStartTime] = useState<Date | null>(null)
 
   useEffect(() => {
     if (quizId) {
@@ -30,6 +31,7 @@ export default function QuizPage() {
   useEffect(() => {
     if (quiz && currentView === 'taking') {
       setTimeRemaining(quiz.duration * 60) // Convert minutes to seconds
+      setQuizStartTime(new Date()) // Track when quiz started
     }
   }, [quiz, currentView])
 
@@ -71,19 +73,35 @@ export default function QuizPage() {
   }
 
   const handleQuizSubmit = async (submission: QuizSubmission) => {
+    if (!quizStartTime) {
+      console.error('Quiz start time not recorded')
+      return
+    }
+
     try {
+      const endTime = new Date()
+      
+      // Use the submitQuiz function from the hook
+      await submitQuiz(submission, quizStartTime, endTime)
+      
+      console.log('Quiz submitted successfully')
       setQuizSubmission(submission)
       setCurrentView('results')
-      // Here you would typically send the submission to your API
-      console.log('Quiz submitted:', submission)
     } catch (error) {
       console.error('Failed to submit quiz:', error)
+      alert('Failed to submit quiz. Please try again.')
     }
   }
 
   const handleBackToOverview = () => {
-    setCurrentView('overview')
-    setTimeRemaining(0)
+    // If coming from results view, refresh the page to reset the quiz state
+    if (currentView === 'results') {
+      window.location.reload()
+    } else {
+      // If coming from taking view, just reset to overview
+      setCurrentView('overview')
+      setTimeRemaining(0)
+    }
   }
 
   const formatDate = (dateString: string) => {

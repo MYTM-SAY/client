@@ -27,11 +27,41 @@ interface EditQuiz {
   quizQuestions?: QuizQuestionInput[]
 }
 
+interface QuizSubmissionRequest {
+  startDate: string
+  endDate: string
+  score: number
+}
+
 const useQuiz = () => {
   const [quizzes, setQuizzes] = useState<Quiz[]>([])
   const [quiz, setQuiz] = useState<Quiz | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  const calculateScore = (submission: QuizSubmission, quizData: Quiz): number => {
+    if (!quizData?.QuizQuestions) return 0
+    
+    let totalScore = 0
+    
+    submission.answers.forEach(answer => {
+      const quizQuestion = quizData.QuizQuestions?.find(qq => qq.questionId === answer.questionId)
+      if (quizQuestion) {
+        const correctAnswers = quizQuestion.Question.answer
+        const userAnswers = answer.selectedAnswers
+        
+        // Check if answers match (considering multi-select questions)
+        const isCorrect = correctAnswers.length === userAnswers.length &&
+          correctAnswers.every(ans => userAnswers.includes(ans))
+        
+        if (isCorrect) {
+          totalScore += quizQuestion.points
+        }
+      }
+    })
+    
+    return totalScore
+  }
 
   async function createQuiz(quiz: CreateQuiz) {
     try {
@@ -126,12 +156,25 @@ const useQuiz = () => {
     }
   }
 
-  async function submitQuiz(submission: QuizSubmission) {
+  async function submitQuiz(submission: QuizSubmission, startTime: Date, endTime: Date) {
     try {
       setIsLoading(true)
+      
+      if (!quiz) {
+        throw new Error('Quiz data not available')
+      }
+      
+      const score = calculateScore(submission, quiz)
+      
+      const submissionData: QuizSubmissionRequest = {
+        startDate: startTime.toISOString(),
+        endDate: endTime.toISOString(),
+        score: score
+      }
+      
       const response: ApiResponse<{ success: boolean; message: string }> = await instance.post(
-        `/quizzes/${submission.quizId}/submit`,
-        submission
+        `/quizzes/${submission.quizId}/submit-quiz`,
+        submissionData
       )
       return response.data.data
     } catch (err) {
