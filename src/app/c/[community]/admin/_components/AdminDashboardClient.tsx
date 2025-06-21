@@ -874,6 +874,7 @@ export default function AdminDashboardClient({
                       onSubmit={handleSubmitQuiz}
                       onCancel={() => setShowQuizForm(false)}
                       questions={questions}
+                      communityId={communityId}
                     />
                   </div>
                 )}
@@ -960,6 +961,23 @@ export default function AdminDashboardClient({
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-6 space-y-6">
+                {/* Question Form */}
+                {showQuestionForm && (
+                  <div className="border rounded-lg p-6 bg-muted/30">
+                    <h3 className="text-lg font-semibold mb-4">
+                      {currentQuestion
+                        ? 'Edit Question'
+                        : 'Create New Question'}
+                    </h3>
+                    <QuestionForm
+                      classrooms={initialClassrooms}
+                      question={currentQuestion}
+                      onSubmit={handleSubmitQuestion}
+                      onCancel={() => setShowQuestionForm(false)}
+                    />
+                  </div>
+                )}
+
                 {/* Classroom Selection */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
@@ -986,23 +1004,6 @@ export default function AdminDashboardClient({
                     </Select>
                   </div>
                 </div>
-
-                {/* Question Form */}
-                {showQuestionForm && (
-                  <div className="border rounded-lg p-6 bg-muted/30">
-                    <h3 className="text-lg font-semibold mb-4">
-                      {currentQuestion
-                        ? 'Edit Question'
-                        : 'Create New Question'}
-                    </h3>
-                    <QuestionForm
-                      classrooms={initialClassrooms}
-                      question={currentQuestion}
-                      onSubmit={handleSubmitQuestion}
-                      onCancel={() => setShowQuestionForm(false)}
-                    />
-                  </div>
-                )}
 
                 {/* Questions List */}
                 <div className="space-y-4">

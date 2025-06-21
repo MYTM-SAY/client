@@ -128,7 +128,7 @@ export default function QuestionForm({
             <SelectTrigger>
               <SelectValue placeholder="Select type" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="bg-white dark:bg-zinc-900">
               <SelectItem value="SINGLE">Single Choice</SelectItem>
               <SelectItem value="MULTI">Multiple Choice</SelectItem>
               <SelectItem value="TRUE_FALSE">True/False</SelectItem>
@@ -147,7 +147,7 @@ export default function QuestionForm({
             <SelectTrigger>
               <SelectValue placeholder="Select classroom" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="bg-white dark:bg-zinc-900">
               {classrooms.map((classroom) => (
                 <SelectItem key={classroom.id} value={classroom.id.toString()}>
                   {classroom.name}

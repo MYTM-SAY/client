@@ -151,26 +151,45 @@ export const useClassroomDetails = (classroomId: string) => {
     const fetchClassroom = async () => {
       setIsLoading(true)
       try {
-        const response = await instance.get(`/classrooms/${classroomId}?section=true&lesson=true`)
+        const response = await instance.get(
+          `/classrooms/${classroomId}?section=true&lesson=true`,
+        )
         const apiData = response.data.data
-        
+
         // Map API response to CourseContentSection[]
         const sections: CourseContentSection[] = Array.isArray(apiData.Sections)
           ? apiData.Sections.map((section: Section, idx: number) => {
-              const lessonsArr = Array.isArray(section.Lessons) ? section.Lessons : []
-              const completedCount = lessonsArr.filter((lesson: Lesson) => lesson.isCompleted).length
-              
+              const lessonsArr = Array.isArray(section.Lessons)
+                ? section.Lessons
+                : []
+              const completedCount = lessonsArr.filter(
+                (lesson: Lesson) => lesson.isCompleted,
+              ).length
+
               // Calculate total duration from materials first, fallback to lesson duration
-              const totalDuration = lessonsArr.reduce((acc: number, lesson: Lesson) => {
-                if (Array.isArray(lesson.Materials) && lesson.Materials.length > 0) {
-                  const materialDuration = lesson.Materials.reduce((matAcc: number, material: Material) => 
-                    matAcc + (material.duration || 0), 0
-                  )
-                  return acc + (materialDuration > 0 ? materialDuration : (lesson.duration || 0))
-                }
-                return acc + (lesson.duration || 0)
-              }, 0)
-              
+              const totalDuration = lessonsArr.reduce(
+                (acc: number, lesson: Lesson) => {
+                  if (
+                    Array.isArray(lesson.Materials) &&
+                    lesson.Materials.length > 0
+                  ) {
+                    const materialDuration = lesson.Materials.reduce(
+                      (matAcc: number, material: Material) =>
+                        matAcc + (material.duration || 0),
+                      0,
+                    )
+                    return (
+                      acc +
+                      (materialDuration > 0
+                        ? materialDuration
+                        : lesson.duration || 0)
+                    )
+                  }
+                  return acc + (lesson.duration || 0)
+                },
+                0,
+              )
+
               return {
                 section: idx + 1,
                 title: section.name || '',
@@ -180,28 +199,36 @@ export const useClassroomDetails = (classroomId: string) => {
                 lessons: lessonsArr.map((lesson: Lesson) => {
                   // Calculate lesson duration from materials, fallback to lesson duration
                   let lessonDuration = lesson.duration || 0
-                  if (Array.isArray(lesson.Materials) && lesson.Materials.length > 0) {
-                    const materialDuration = lesson.Materials.reduce((matAcc: number, material: Material) => 
-                      matAcc + (material.duration || 0), 0
+                  if (
+                    Array.isArray(lesson.Materials) &&
+                    lesson.Materials.length > 0
+                  ) {
+                    const materialDuration = lesson.Materials.reduce(
+                      (matAcc: number, material: Material) =>
+                        matAcc + (material.duration || 0),
+                      0,
                     )
-                    lessonDuration = materialDuration > 0 ? materialDuration : lessonDuration
+                    lessonDuration =
+                      materialDuration > 0 ? materialDuration : lessonDuration
                   }
-                  
+
                   return {
                     id: lesson.id,
                     title: lesson.name || '',
                     duration: lessonDuration,
                     completed: !!lesson.isCompleted,
                     notes: lesson.notes || '',
-                    materials: Array.isArray(lesson.Materials) ? lesson.Materials.map((mat: Material) => ({
-                      id: mat.id,
-                      materialType: mat.materialType,
-                      fileUrl: mat.fileUrl,
-                      createdAt: mat.createdAt,
-                      updatedAt: mat.updatedAt,
-                      lessonId: mat.lessonId,
-                      duration: mat.duration,
-                    })) : [],
+                    materials: Array.isArray(lesson.Materials)
+                      ? lesson.Materials.map((mat: Material) => ({
+                          id: mat.id,
+                          materialType: mat.materialType,
+                          fileUrl: mat.fileUrl,
+                          createdAt: mat.createdAt,
+                          updatedAt: mat.updatedAt,
+                          lessonId: mat.lessonId,
+                          duration: mat.duration,
+                        }))
+                      : [],
                   }
                 }),
               }
@@ -234,29 +261,33 @@ export const useClassroomDetails = (classroomId: string) => {
   // Add the toggle lesson completion function
   const toggleLessonCompletion = async (lessonId: number) => {
     try {
-      const response = await instance.patch(`/lessons/${lessonId}/toggle-completed`)
+      const response = await instance.patch(
+        `/lessons/${lessonId}/toggle-completed`,
+      )
       const { isCompleted } = response.data.data
-      
+
       // Update the courseContent state with the new completion status
-      setCourseContent(prevContent => 
-        prevContent.map(section => ({
+      setCourseContent((prevContent) =>
+        prevContent.map((section) => ({
           ...section,
-          lessons: section.lessons.map(lesson => 
-            lesson.id === lessonId 
+          lessons: section.lessons.map((lesson) =>
+            lesson.id === lessonId
               ? { ...lesson, completed: isCompleted }
-              : lesson
+              : lesson,
           ),
           // Recalculate completed count for the section
-          completed: section.lessons.filter(lesson => 
-            lesson.id === lessonId ? isCompleted : lesson.completed
-          ).length
-        }))
+          completed: section.lessons.filter((lesson) =>
+            lesson.id === lessonId ? isCompleted : lesson.completed,
+          ).length,
+        })),
       )
-      
+
       return isCompleted
     } catch (err) {
       const error = err as ApiResponseError
-      setError(error.response?.data?.message || 'Failed to toggle lesson completion')
+      setError(
+        error.response?.data?.message || 'Failed to toggle lesson completion',
+      )
       throw error
     }
   }

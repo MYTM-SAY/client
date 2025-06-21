@@ -21,6 +21,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { Question } from '@/types'
+import useClassrooms from '@/hooks/useClassroom'
 
 interface QuizQuestion {
   questionId: number
@@ -44,6 +45,7 @@ interface QuizFormProps {
   onCancel: () => void
   questions?: Question[]
   isLoading?: boolean
+  communityId: string | number
 }
 
 const QuizForm: React.FC<QuizFormProps> = ({
@@ -52,9 +54,15 @@ const QuizForm: React.FC<QuizFormProps> = ({
   onCancel,
   questions = [],
   isLoading = false,
+  communityId,
 }) => {
   const [formData, setFormData] = useState<QuizFormData>(quiz)
   const [isEditing] = useState(!!quiz.id)
+
+  // Fetch classrooms for the community
+  const { classrooms, isLoading: isClassroomsLoading } = useClassrooms(
+    String(communityId),
+  )
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -156,16 +164,44 @@ const QuizForm: React.FC<QuizFormProps> = ({
                 disabled={isLoading}
               />
             </div>
+            {/* Classroom ID Dropdown */}
             <div>
-              <Label htmlFor="classroomId">Classroom ID</Label>
-              <Input
-                id="classroomId"
-                name="classroomId"
+              <Label htmlFor="classroomId">Classroom</Label>
+              <Select
                 value={formData.classroomId}
-                onChange={handleChange}
-                required
-                disabled={isLoading}
-              />
+                onValueChange={(value) =>
+                  setFormData({ ...formData, classroomId: value })
+                }
+                disabled={isLoading || isClassroomsLoading}
+              >
+                <SelectTrigger>
+                  <SelectValue
+                    placeholder={
+                      isClassroomsLoading
+                        ? 'Loading classrooms...'
+                        : classrooms.length > 0
+                        ? 'Select a classroom'
+                        : 'No classrooms available'
+                    }
+                  />
+                </SelectTrigger>
+                <SelectContent className="bg-white dark:bg-zinc-900">
+                  {classrooms.length > 0 ? (
+                    classrooms.map((classroom) => (
+                      <SelectItem
+                        key={classroom.id}
+                        value={String(classroom.id)}
+                      >
+                        {classroom.name}
+                      </SelectItem>
+                    ))
+                  ) : (
+                    <SelectItem value="no-classroom" disabled>
+                      No classrooms available
+                    </SelectItem>
+                  )}
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
@@ -186,9 +222,9 @@ const QuizForm: React.FC<QuizFormProps> = ({
           <div className="space-y-4">
             <div className="flex justify-between items-center">
               <h3 className="text-lg font-medium">Questions</h3>
-              <Button 
-                type="button" 
-                onClick={addQuestion} 
+              <Button
+                type="button"
+                onClick={addQuestion}
                 size="sm"
                 disabled={isLoading}
               >
@@ -207,7 +243,9 @@ const QuizForm: React.FC<QuizFormProps> = ({
                 <CardContent className="pt-4 space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor={`question-${index}`}>Select Question</Label>
+                      <Label htmlFor={`question-${index}`}>
+                        Select Question
+                      </Label>
                       <Select
                         value={q.questionId.toString()}
                         onValueChange={(value) =>
@@ -218,7 +256,7 @@ const QuizForm: React.FC<QuizFormProps> = ({
                         <SelectTrigger>
                           <SelectValue placeholder="Select a question" />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="bg-white dark:bg-zinc-900">
                           <SelectItem value="0">Select a question</SelectItem>
                           {questions.map((question) => (
                             <SelectItem
@@ -246,13 +284,13 @@ const QuizForm: React.FC<QuizFormProps> = ({
                       />
                     </div>
                   </div>
-                  
+
                   {/* Show question preview if selected */}
                   {q.questionId > 0 && (
                     <div className="mt-4 p-3 bg-gray-50 dark:bg-gray-800 rounded-md">
                       {(() => {
                         const selectedQuestion = questions.find(
-                          (question) => question.id === q.questionId
+                          (question) => question.id === q.questionId,
                         )
                         return selectedQuestion ? (
                           <div>
@@ -260,7 +298,8 @@ const QuizForm: React.FC<QuizFormProps> = ({
                               Preview: {selectedQuestion.questionHeader}
                             </p>
                             <div className="mt-2 text-xs text-gray-600 dark:text-gray-400">
-                              Type: {selectedQuestion.type} | Options: {selectedQuestion.options.length}
+                              Type: {selectedQuestion.type} | Options:{' '}
+                              {selectedQuestion.options.length}
                             </div>
                           </div>
                         ) : null
@@ -286,16 +325,16 @@ const QuizForm: React.FC<QuizFormProps> = ({
         </CardContent>
 
         <CardFooter className="flex justify-end space-x-4">
-          <Button 
-            type="button" 
-            variant="outline" 
+          <Button
+            type="button"
+            variant="outline"
             onClick={onCancel}
             disabled={isLoading}
           >
             Cancel
           </Button>
-          <Button 
-            type="submit" 
+          <Button
+            type="submit"
             disabled={isLoading || formData.quizQuestions.length === 0}
           >
             {isLoading ? (
@@ -303,8 +342,10 @@ const QuizForm: React.FC<QuizFormProps> = ({
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
                 {isEditing ? 'Updating...' : 'Creating...'}
               </>
+            ) : isEditing ? (
+              'Update Quiz'
             ) : (
-              isEditing ? 'Update Quiz' : 'Create Quiz'
+              'Create Quiz'
             )}
           </Button>
         </CardFooter>
